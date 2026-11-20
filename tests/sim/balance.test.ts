@@ -6,6 +6,7 @@ import {
   buildMeta,
   findViolations,
   generate,
+  laneRows,
   makeJobs,
   missingReasons,
   renderReport,
@@ -13,7 +14,14 @@ import {
   type GameRecord,
 } from '../../tools/sim/balance';
 
-const none: Exceptions = { factions: {}, cards: {} };
+const none: Exceptions = { factions: {}, cards: {}, lanes: {} };
+const quiet = (): GameRecord['lanes'] =>
+  (['lane-plain', 'lane-forge', 'lane-chasm'] as const).map((effectId) => ({
+    effectId,
+    units: [0, 0],
+    mana: [0, 0],
+    damage: [0, 0],
+  })) as GameRecord['lanes'];
 
 function rec(seed: number, winner: 0 | 1 | null, over: Partial<GameRecord> = {}): GameRecord {
   return {
@@ -23,6 +31,7 @@ function rec(seed: number, winner: 0 | 1 | null, over: Partial<GameRecord> = {})
     reason: 'rounds',
     rounds: 8,
     played: [['ember-a'], ['bastion-b']],
+    lanes: quiet(),
     ...over,
   };
 }
@@ -91,6 +100,7 @@ describe('aggregate and renderReport', () => {
     const ex: Exceptions = {
       factions: { ember: 'aggro by design', bastion: 'defensive by design' },
       cards: { 'ember-a': 'signature card' },
+      lanes: {},
     };
     const covered = renderReport(stats, buildMeta(1, ex)).split('## Exceptions')[1]!;
     expect(covered).not.toContain('MISSING REASON');
@@ -102,8 +112,50 @@ describe('aggregate and renderReport', () => {
   it('reports in-target data cleanly', () => {
     const balanced = aggregate([rec(1, 0), rec(2, 1)]);
     const md = renderReport(balanced, buildMeta(1, none));
-    expect(md).toContain('None: every faction and card is within target.');
+    expect(md).toContain('None: every faction, card and lane is within target.');
     expect(md).not.toContain('✗');
+  });
+});
+
+describe('lane stats', () => {
+  // 100 matches: Forge takes 64% of the units and always wins its damage race, Chasm is avoided.
+  const lanes = (): GameRecord['lanes'] => [
+    { effectId: 'lane-forge', units: [4, 3], mana: [8, 6], damage: [5, 0] },
+    { effectId: 'lane-chasm', units: [1, 1], mana: [2, 2], damage: [0, 0] },
+    { effectId: 'lane-plain', units: [1, 1], mana: [2, 2], damage: [0, 1] },
+  ];
+  const records = Array.from({ length: 100 }, (_, i) => rec(i + 1, 0, { lanes: lanes() }));
+  const stats = aggregate(records);
+
+  it('measures unit share, damage, the damage leader and draws per lane effect', () => {
+    const rows = Object.fromEntries(laneRows(stats).map((r) => [r.id, r]));
+    expect(rows['lane-forge']).toMatchObject({ appearances: 100, drawPct: 0 });
+    expect(rows['lane-forge']!.leaderWinPct).toBe(100);
+    expect(rows['lane-forge']!.unitPct).toBeCloseTo(63.64, 1);
+    expect(rows['lane-chasm']!.unitPct).toBeCloseTo(18.18, 1);
+    expect(rows['lane-plain']!.leaderWinPct).toBe(0); // player 1 led the damage and lost
+    expect(rows['lane-forge']!.damagePerMatch).toBe(5);
+  });
+
+  it('flags lanes that hog units or decide every match, and wants a reason for each', () => {
+    const v = findViolations(stats);
+    const flags = Object.fromEntries(v.lanes.map((l) => [l.id, l.flags]));
+    expect(flags['lane-forge']).toEqual(expect.arrayContaining(['share', 'leader']));
+    expect(missingReasons(stats, none)).toContain('lane lane-forge');
+    const covered: Exceptions = {
+      ...none,
+      lanes: Object.fromEntries(v.lanes.map((l) => [l.id, 'by design'])),
+    };
+    expect(missingReasons(stats, covered).filter((m) => m.startsWith('lane'))).toEqual([]);
+    const md = renderReport(stats, buildMeta(1, covered));
+    expect(md).toContain('## Lanes');
+    expect(md).toContain('| lane-forge | 100 | 63.6 |');
+    expect(md).toContain('- Lane lane-forge (');
+  });
+
+  it('does not judge a lane effect that appeared fewer than 100 times', () => {
+    const few = aggregate(records.slice(0, 20));
+    expect(findViolations(few).lanes).toEqual([]);
   });
 });
 
