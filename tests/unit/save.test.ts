@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fixtureV1 from '../fixtures/save-v1.json';
 import fixtureV2 from '../fixtures/save-v2.json';
 import fixtureV3 from '../fixtures/save-v3.json';
+import fixtureV4 from '../fixtures/save-v4.json';
 import {
   CURRENT_SCHEMA,
   exportSaveCode,
@@ -76,7 +77,35 @@ describe('schema and migrations', () => {
     expect(migrate({ ...fixtureV3, ascension: { best: 10 } }).ascension).toEqual({ best: 10, unlocked: 10 });
   });
 
-  it('save codes round-trip a v4 profile', async () => {
+  it('migrates the stored v4 sample save to v5: Sound and Haptics on, tutorial done, tip unseen', () => {
+    const p = migrate(fixtureV4);
+    expect(p.schemaVersion).toBe(CURRENT_SCHEMA);
+    expect(p.settings).toEqual({ fastAnimations: true, reduceMotion: false, sound: true, haptics: true });
+    expect(p.tutorialDone).toBe(true);
+    expect(p.iosTipSeen).toBe(false);
+    // Everything else is untouched.
+    expect(p.xp).toBe(640);
+    expect(p.decks).toHaveLength(1);
+    expect(p.activeRun!.choices).toEqual([{ t: 'move', col: 1 }]);
+  });
+
+  it('the v4 migration marks the tutorial done only when the profile has XP or results', () => {
+    const fresh = {
+      ...fixtureV4,
+      xp: 0,
+      level: 1,
+      unlocks: [],
+      stats: { quickPlay: {}, runs: {} },
+      activeRun: null,
+    };
+    expect(migrate(fresh).tutorialDone).toBe(false);
+    expect(migrate({ ...fresh, xp: 10 }).tutorialDone).toBe(true);
+    expect(
+      migrate({ ...fresh, stats: { quickPlay: { d1: { played: 1, won: 0 } }, runs: {} } }).tutorialDone,
+    ).toBe(true);
+  });
+
+  it('save codes round-trip a v5 profile', async () => {
     const p = migrate(fixtureV3);
     expect(await importSaveCode(await exportSaveCode(p))).toEqual(p);
     expect(() =>

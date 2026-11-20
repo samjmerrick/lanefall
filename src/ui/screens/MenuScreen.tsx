@@ -1,5 +1,6 @@
 import { getHero } from '../../run';
 import { useApp } from '../app';
+import { currentIosEnv, shouldShowIosTip } from '../ios';
 import { useRun } from '../runStore';
 import { XpBar } from './XpBar';
 
@@ -10,8 +11,10 @@ export function MenuScreen() {
   const active = profile.activeRun;
   const resume = useRun((s) => s.resume);
   const runError = useRun((s) => s.error);
+  const dismissIosTip = useApp((s) => s.dismissIosTip);
+  const showTip = shouldShowIosTip(currentIosEnv(), profile.iosTipSeen);
   return (
-    <main className="menu" aria-label="Main menu">
+    <main className={`menu${showTip ? ' menu--tip' : ''}`} aria-label="Main menu">
       <header className="menu__header">
         <h1>Lanefall</h1>
         <p>Three lanes. Hidden plans. Overflow wins.</p>
@@ -53,6 +56,17 @@ export function MenuScreen() {
           Settings
         </button>
       </nav>
+      {showTip && (
+        <aside className="ios-tip" data-testid="ios-tip" aria-label="Install tip">
+          <p>
+            Install Lanefall: tap Share, then Add to Home Screen. This keeps your save safe from Safari&apos;s
+            data clearing.
+          </p>
+          <button type="button" className="primary" onClick={dismissIosTip}>
+            Got it
+          </button>
+        </aside>
+      )}
     </main>
   );
 }

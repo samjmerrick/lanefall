@@ -1,7 +1,9 @@
 import { useShallow } from 'zustand/react/shallow';
 import { AnimatePresence, motion } from 'motion/react';
 import { manaLeft, MAX_ROUNDS, RESERVE_CAP, type PlayerId } from '../engine';
+import { FADE_SECONDS, useDurationScale } from './motion';
 import { HUMAN, useMatch } from './store';
+import { useReduceMotion } from './useReduceMotion';
 
 export function HeroBar({ side }: { side: PlayerId }) {
   const game = useMatch((s) => s.game);
@@ -10,6 +12,8 @@ export function HeroBar({ side }: { side: PlayerId }) {
   const endTurn = useMatch((s) => s.endTurn);
   const leave = useMatch((s) => s.leave);
   const fx = useMatch(useShallow((s) => s.fx.filter((f) => 'hero' in f.target && f.target.hero === side)));
+  const reduce = useReduceMotion();
+  const scale = useDurationScale();
   if (!game || !view) return null;
   const p = game.players[side];
   const isPlayer = side === HUMAN;
@@ -37,8 +41,9 @@ export function HeroBar({ side }: { side: PlayerId }) {
               key={f.id}
               className={`fx fx--${f.kind}`}
               initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: -16 }}
+              animate={reduce ? { opacity: 1 } : { opacity: 1, y: -16 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: (reduce ? FADE_SECONDS : 0.3) * scale }}
             >
               {f.kind === 'damage' ? `−${f.amount}` : `+${f.amount}`}
             </motion.span>

@@ -17,7 +17,9 @@ import { runAi } from './aiClient';
 import { PREBUILT_DECKS } from '../engine';
 import { useApp, type DeckChoice } from './app';
 import { useRun } from './runStore';
-import { animationScale, randomSeed, urlSeed } from './settings';
+import { haptic, sfx } from './feedback';
+import { currentScale } from './motion';
+import { randomSeed, urlSeed } from './settings';
 import { applyEvent, eventDuration, viewFromState, type BoardView } from './view';
 
 export const HUMAN: PlayerId = 0;
@@ -100,6 +102,26 @@ interface MatchStore {
   leave(): void;
 }
 
+/** Sound and haptics for an event as it plays. */
+function feedbackFor(e: GameEvent) {
+  switch (e.type) {
+    case 'CardRevealed':
+      sfx('reveal');
+      break;
+    case 'DamageDealt':
+      sfx('hit');
+      haptic('hit');
+      break;
+    case 'HeroDamaged':
+      sfx('heroHit');
+      haptic('heroHit');
+      break;
+    case 'UnitDied':
+      sfx('death');
+      break;
+  }
+}
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let fxId = 1;
 
@@ -175,8 +197,7 @@ export const useMatch = create<MatchStore>((set, get) => {
   }
 
   async function playback(events: GameEvent[]) {
-    const profile = useApp.getState().profile.settings;
-    const scale = animationScale() * (profile.fastAnimations ? 0.5 : 1);
+    const scale = currentScale();
     let cs: CombatScript | null = null;
     for (const e of events) {
       if (e.type === 'LaneCombat') {
@@ -203,6 +224,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       }));
       if (cs && a !== null) counterStop(cs, e, a);
       pushFx(e);
+      feedbackFor(e);
       const ms = eventDuration(e, cs !== null) * scale;
       if (ms > 0) await sleep(ms);
       if (e.type === 'CardRevealed') set({ revealing: null });
@@ -320,7 +342,11 @@ export const useMatch = create<MatchStore>((set, get) => {
       const { game, busy } = get();
       if (!game || busy) return;
       const next = guard(() => applyAction(game, { type: 'plan', player: HUMAN, action }));
-      if (next) set({ game: next });
+      if (next) {
+        set({ game: next });
+        sfx('play');
+        haptic('play');
+      }
     },
 
     unplan(index) {
@@ -333,6 +359,8 @@ export const useMatch = create<MatchStore>((set, get) => {
     async endTurn() {
       const { game, busy } = get();
       if (!game || busy || game.phase !== 'plan') return;
+      sfx('tap');
+      haptic('tap');
       set({ busy: true });
       let s = applyAction(game, { type: 'endTurn', player: HUMAN });
       s = await aiTurn(s);
@@ -341,6 +369,13 @@ export const useMatch = create<MatchStore>((set, get) => {
       await playback(events);
       set({ game: state, view: viewFromState(state), busy: false });
       autosave();
+      if (state.result) {
+        const won = state.result.winner === HUMAN;
+        if (state.result.winner !== null) {
+          sfx(won ? 'win' : 'lose');
+          haptic(won ? 'win' : 'lose');
+        }
+      }
       if (state.result && get().mode === 'quick') {
         const { winner } = state.result;
         const outcome = winner === null ? 'draw' : winner === HUMAN ? 'win' : 'loss';

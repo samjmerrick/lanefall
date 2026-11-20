@@ -1,10 +1,12 @@
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { getCard } from '../engine';
 import { getHero, getRelic, type UnlockBundle } from '../run';
 import { useApp } from './app';
 import { CardView } from './CardView';
 import { GLYPHS } from './factions';
-import { animationScale } from './settings';
+import { FADE_SECONDS, useDurationScale } from './motion';
+import { sfx } from './feedback';
 import { useMatch } from './store';
 import { useReduceMotion } from './useReduceMotion';
 
@@ -94,9 +96,15 @@ export function LevelUpOverlay() {
   const clear = useApp((s) => s.clearUnlocks);
   const matchOver = useMatch((s) => s.game?.phase === 'over' && !s.busy);
   const reduce = useReduceMotion();
+  const scale = useDurationScale();
+  const shown =
+    bundles.length > 0 && (screen === 'match' ? matchOver : screen !== 'loading' && screen !== 'corrupt');
+  useEffect(() => {
+    if (shown) sfx('levelUp');
+  }, [shown]);
   if (bundles.length === 0) return null;
   if (screen === 'match' ? !matchOver : screen === 'loading' || screen === 'corrupt') return null;
-  const dur = reduce ? 0.12 : 0.3 * animationScale();
+  const dur = (reduce ? FADE_SECONDS : 0.3) * scale;
   return (
     <motion.div
       className="overlay levelup"

@@ -65,6 +65,10 @@ interface AppStore {
   boot(): Promise<void>;
   go(screen: Screen): void;
   update(f: (p: Profile) => Profile): void;
+  /** Changes some settings and autosaves. */
+  setSettings(change: Partial<Profile['settings']>): void;
+  /** Marks the iOS home-screen tip as seen. Autosaves. */
+  dismissIosTip(): void;
   /** Applies `change` (if any), then adds XP: level, unlocks and `lastUnlocks` follow. Autosaves. */
   awardXp(xp: number, change?: (p: Profile) => Profile): void;
   clearUnlocks(): void;
@@ -149,6 +153,14 @@ export const useApp = create<AppStore>((set, get) => ({
     const profile = f(get().profile);
     set({ profile });
     void persistProfile(profile);
+  },
+
+  setSettings(change) {
+    get().update((p) => ({ ...p, settings: { ...p.settings, ...change } }));
+  },
+
+  dismissIosTip() {
+    get().update((p) => ({ ...p, iosTipSeen: true }));
   },
 
   awardXp(xp, change) {

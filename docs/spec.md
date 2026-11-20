@@ -217,7 +217,7 @@ The layout is designed for a 390 × 844 viewport (iPhone 14-class) and must work
 **Motion and feedback**
 
 - Reveal: cards flip in sequence, about 250 ms each. Combat: lane power numbers fly at the enemy units or hero, with damage numbers.
-- A Fast animations setting halves durations; the Reduce motion setting replaces movement with fades.
+- A Fast animations setting halves durations; the Reduce motion setting (which also follows the system setting) replaces movement with fades. Settings also has Sound and Haptics toggles, both on by default. Sounds are short synthesised tones.
 - Haptics use `navigator.vibrate` where the phone supports it (Android Chrome); on iOS Safari it does nothing.
 
 ## Tech stack and architecture

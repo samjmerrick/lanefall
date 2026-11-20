@@ -13,19 +13,23 @@ import { CardEmblem } from './CardView';
 import { dropClass, useDrag } from './drag';
 import { AI, HUMAN, useMatch, type Fx } from './store';
 import { useForecast } from './forecast';
+import { FADE_SECONDS, useDurationScale } from './motion';
+import { useReduceMotion } from './useReduceMotion';
 import type { ViewUnit } from './view';
 
 function FxFloat({ fx }: { fx: Fx[] }) {
+  const reduce = useReduceMotion();
+  const scale = useDurationScale();
   return (
     <AnimatePresence>
       {fx.map((f) => (
         <motion.span
           key={f.id}
           className={`fx fx--${f.kind}`}
-          initial={{ opacity: 0, y: 4, scale: 0.8 }}
-          animate={{ opacity: 1, y: -18, scale: 1.1 }}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, scale: 0.8 }}
+          animate={reduce ? { opacity: 1 } : { opacity: 1, y: -18, scale: 1.1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: (reduce ? FADE_SECONDS : 0.45) * scale }}
         >
           {f.kind === 'damage' ? `−${f.amount}` : `+${f.amount}`}
         </motion.span>
@@ -111,15 +115,17 @@ export function UnitToken({
   );
   const showDetail = useMatch((s) => s.showDetail);
   const drag = useDrag((s) => s.drag);
+  const reduce = useReduceMotion();
+  const scale = useDurationScale();
   const key = `unit:${unit.uid}`;
   const remaining = unit.health - unit.damage;
   return (
     <motion.div
-      layout
-      initial={{ scale: 0.6, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.4, opacity: 0, rotate: -8 }}
-      transition={{ duration: 0.2 }}
+      layout={!reduce}
+      initial={reduce ? { opacity: 0 } : { scale: 0.6, opacity: 0 }}
+      animate={reduce ? { opacity: 1 } : { scale: 1, opacity: 1 }}
+      exit={reduce ? { opacity: 0 } : { scale: 0.4, opacity: 0, rotate: -8 }}
+      transition={{ duration: (reduce ? FADE_SECONDS : 0.2) * scale }}
       className={`token faction-${card.faction}${unit.barrier ? ' token--barrier' : ''}${
         unit.guard ? ' token--guard' : ''
       }${dropClass(drag, key)}`}

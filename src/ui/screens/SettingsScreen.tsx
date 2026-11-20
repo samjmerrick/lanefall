@@ -9,11 +9,45 @@ const PERSIST_TEXT = {
   unsupported: 'This browser cannot protect saves from clearing. Keep a save code as a backup.',
 } as const;
 
+function Toggle({
+  label,
+  hint,
+  checked,
+  onChange,
+  testId,
+}: {
+  label: string;
+  hint?: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  testId: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      className="toggle"
+      data-testid={testId}
+      onClick={() => onChange(!checked)}
+    >
+      <span className="toggle__text">
+        <span className="toggle__label">{label}</span>
+        {hint && <span className="toggle__hint">{hint}</span>}
+      </span>
+      <span className="toggle__track" aria-hidden="true">
+        <span className="toggle__thumb" />
+      </span>
+    </button>
+  );
+}
+
 export function SettingsScreen() {
   const profile = useApp((s) => s.profile);
   const persist = useApp((s) => s.persist);
   const storageWorks = useApp((s) => s.storageWorks);
   const importSave = useApp((s) => s.importSave);
+  const setSettings = useApp((s) => s.setSettings);
   const [exported, setExported] = useState<string | null>(null);
   const [paste, setPaste] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -40,6 +74,36 @@ export function SettingsScreen() {
 
   return (
     <ScreenFrame title="Settings">
+      <h2 className="label">Play</h2>
+      <div className="toggles">
+        <Toggle
+          label="Fast animations"
+          checked={profile.settings.fastAnimations}
+          onChange={(v) => setSettings({ fastAnimations: v })}
+          testId="setting-fast"
+        />
+        <Toggle
+          label="Reduce motion"
+          hint="Fades instead of moving. Also follows your device setting."
+          checked={profile.settings.reduceMotion}
+          onChange={(v) => setSettings({ reduceMotion: v })}
+          testId="setting-reduce-motion"
+        />
+        <Toggle
+          label="Sound"
+          checked={profile.settings.sound}
+          onChange={(v) => setSettings({ sound: v })}
+          testId="setting-sound"
+        />
+        <Toggle
+          label="Haptics"
+          hint="Vibration on supported phones. Not available on iPhone."
+          checked={profile.settings.haptics}
+          onChange={(v) => setSettings({ haptics: v })}
+          testId="setting-haptics"
+        />
+      </div>
+
       <h2 className="label">Save storage</h2>
       <p className="hint" data-testid="persist-status">
         {!storageWorks

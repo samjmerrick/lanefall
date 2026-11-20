@@ -75,16 +75,18 @@ export async function savedJson(page: Page): Promise<string> {
 
 /** A new-game profile (src/save/profile.ts newProfile; not imported because that module needs a bundler for its JSON). */
 export const newProfile = (): Profile => ({
-  schemaVersion: 4,
+  schemaVersion: 5,
   xp: 0,
   level: 1,
   unlocks: [],
   decks: [],
   nextDeckId: 1,
-  settings: { fastAnimations: false, reduceMotion: false },
+  settings: { fastAnimations: false, reduceMotion: false, sound: true, haptics: true },
   stats: { quickPlay: {}, runs: {} },
   ascension: { best: 0, unlocked: 0 },
   activeRun: null,
+  tutorialDone: false,
+  iosTipSeen: false,
 });
 
 /** A save code for `profile` (format in src/save/code.ts; built here because that module needs a bundler). */
