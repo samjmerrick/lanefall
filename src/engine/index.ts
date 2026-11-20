@@ -18,6 +18,11 @@ export {
   getLaneEffect,
   collectibleCards,
   starterCollection,
+  upgradeCard,
+  isUpgraded,
+  baseId,
+  generatedText,
+  UPGRADED,
 } from './content';
 export * from './types';
 export type { CardDef, DeckDef, LaneEffectDef, Keyword, Faction } from './schema';

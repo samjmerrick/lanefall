@@ -41,10 +41,16 @@ test('tapping a hand card shows its full rules text', async ({ page }) => {
 });
 
 test('a planned unit can be taken back before End Turn', async ({ page }) => {
-  await startMatch(page, { seed: 5 });
-  await keepHand(page);
-  const before = await page.locator('.hand__slot').count();
-  expect(await playOneCard(page)).toBe(true);
+  // Find a seed whose opening hand has a 1-mana card.
+  let before = 0;
+  let played = false;
+  for (let seed = 5; seed < 25 && !played; seed++) {
+    await startMatch(page, { seed });
+    await keepHand(page);
+    before = await page.locator('.hand__slot').count();
+    played = await playOneCard(page);
+  }
+  expect(played).toBe(true);
   await expect(page.locator('.hand__slot')).toHaveCount(before - 1);
   const ghost = page.getByRole('button', { name: /^Planned:/ });
   if ((await ghost.count()) > 0) await ghost.first().click();

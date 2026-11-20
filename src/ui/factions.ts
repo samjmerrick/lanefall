@@ -8,3 +8,11 @@ export const GLYPHS: Record<Faction, string> = {
   bastion: '■',
   dusk: '◐',
 };
+
+export const FACTION_NAME: Record<Faction, string> = {
+  ember: 'Ember',
+  tide: 'Tide',
+  grove: 'Grove',
+  bastion: 'Bastion',
+  dusk: 'Dusk',
+};

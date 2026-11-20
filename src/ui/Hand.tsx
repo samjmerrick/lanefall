@@ -2,7 +2,7 @@ import type React from 'react';
 import { useEffect } from 'react';
 import { getCard, legalActions, type PlannedAction } from '../engine';
 import { CardView } from './CardView';
-import { dropKey, keyAt, useDrag } from './drag';
+import { dropKey, dropRects, pickTarget, rectCentre, useDrag } from './drag';
 import { HUMAN, useMatch } from './store';
 
 const TAP_SLOP = 8;
@@ -29,7 +29,9 @@ function QueuedSpells() {
   const unitName = (uid: number) => {
     for (const lane of view.lanes)
       for (const side of lane.slots) for (const u of side) if (u?.uid === uid) return getCard(u.cardId).name;
-    return 'unit';
+    // A unit planned this turn is still a hand card.
+    const planned = hand.find((h) => h.uid === uid);
+    return planned ? getCard(planned.cardId).name : 'unit';
   };
   const spells = game.players[HUMAN].plan
     .map((a, index) => ({ a, index }))
@@ -64,13 +66,9 @@ export function Hand() {
       const d = useDrag.getState().drag;
       if (!d) return;
       const moved = d.moved || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > TAP_SLOP;
-      setDrag({
-        ...d,
-        x: e.clientX,
-        y: e.clientY,
-        moved,
-        hover: moved ? keyAt(e.clientX, e.clientY - LIFT, d.targets) : null,
-      });
+      const rects = moved ? dropRects(d.targets) : [];
+      const hover = moved ? pickTarget(e.clientX, e.clientY - LIFT, rects) : null;
+      setDrag({ ...d, x: e.clientX, y: e.clientY, moved, hover, hoverAt: rectCentre(rects, hover) });
     };
     const up = (e: PointerEvent) => {
       const d = useDrag.getState().drag;
@@ -80,7 +78,7 @@ export function Hand() {
         showDetail(d.cardId);
         return;
       }
-      const key = keyAt(e.clientX, e.clientY - LIFT, d.targets);
+      const key = pickTarget(e.clientX, e.clientY - LIFT, dropRects(d.targets));
       const action = key ? d.targets.get(key) : undefined;
       if (action) play(action);
     };
@@ -120,6 +118,7 @@ export function Hand() {
       moved: false,
       targets,
       hover: null,
+      hoverAt: null,
     });
   };
 
@@ -158,17 +157,23 @@ export function DragLayer() {
   const drag = useDrag((s) => s.drag);
   if (!drag || !drag.moved) return null;
   const isSpell = getCard(drag.cardId).type === 'spell';
+  // A spell's arrow snaps onto the target it would hit; the card itself shrinks out of the way.
+  const tip = (isSpell && drag.hoverAt) || { x: drag.x, y: drag.y - LIFT };
   return (
     <div className="drag-layer" aria-hidden="true">
       {isSpell && (
-        <svg className="drag-arrow">
-          <line x1={drag.startX} y1={drag.startY} x2={drag.x} y2={drag.y - LIFT} />
-          <circle cx={drag.x} cy={drag.y - LIFT} r="7" />
+        <svg className={`drag-arrow${drag.hover ? ' drag-arrow--locked' : ''}`}>
+          <line x1={drag.startX} y1={drag.startY} x2={tip.x} y2={tip.y} />
+          <circle cx={tip.x} cy={tip.y} r={drag.hover ? 14 : 7} />
         </svg>
       )}
       <div
-        className="drag-card"
-        style={{ transform: `translate(${drag.x}px, ${drag.y - LIFT}px) translate(-50%, -50%)` }}
+        className={`drag-card${isSpell ? ' drag-card--spell' : ''}`}
+        style={{
+          transform: isSpell
+            ? `translate(${drag.x}px, ${drag.y}px) translate(-50%, -50%) scale(0.55)`
+            : `translate(${drag.x}px, ${drag.y - LIFT}px) translate(-50%, -50%)`,
+        }}
       >
         <CardView cardId={drag.cardId} />
       </div>

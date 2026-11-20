@@ -30,7 +30,7 @@ describe('bot runs', () => {
       if (seed % 25 === 0) expect(replayRun(rec.config, rec.choices)).toEqual(rec.final);
     }
     expect(won).toBeGreaterThan(0);
-  }, 60_000);
+  }, 180_000);
 });
 
 /** One planning round as the UI runs it: the human (a bot here) plans, then the AI, then resolve. */

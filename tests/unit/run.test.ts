@@ -4,6 +4,7 @@ import { seedRng } from '../../src/engine/rng';
 import {
   BOSS_XP,
   ENEMIES,
+  EVENTS,
   HEROES,
   IllegalChoiceError,
   MAP_ROWS,
@@ -18,7 +19,9 @@ import {
   getEnemy,
   getHero,
   getRelic,
+  getEvent,
   mapProblems,
+  maxHearts,
   nextCols,
   replayRun,
   runMatch,
@@ -43,16 +46,36 @@ function at(type: NodeType, extra: Partial<RunState> = {}): RunState {
   return applyChoice(r, { t: 'move', col: 0 });
 }
 
+/** Moves the run onto its act's boss node. */
+function atBoss(start: RunState): RunState {
+  const r = structuredClone(start);
+  r.row = MAP_ROWS - 1;
+  r.col = 0;
+  return applyChoice(r, { t: 'move', col: 0 });
+}
+
+function withFirstRow(r: RunState, type: NodeType) {
+  const map = structuredClone(r.map);
+  for (const n of map.rows[0]!) n.type = type;
+  return map;
+}
+
 const illegal = (r: RunState, c: Parameters<typeof applyChoice>[1]) =>
   expect(() => applyChoice(r, c)).toThrow(IllegalChoiceError);
 
 describe('content', () => {
-  it('has 3 starter heroes with a 12-card starter deck of their faction, 10 relics and an act 1 boss', () => {
+  it('has 3 starter heroes, 40 relics, 20 events, and fights, elites and 3 bosses in each of 3 acts', () => {
     expect(starterHeroes()).toHaveLength(3);
     for (const h of HEROES) for (const id of h.starterDeck) expect(getCard(id).faction).toBe(h.faction);
-    expect(RELICS).toHaveLength(10);
-    expect(ENEMIES.filter((e) => e.act === 1 && e.kind === 'boss')).toHaveLength(1);
-    expect(ENEMIES.filter((e) => e.act === 1 && e.kind === 'fight').length).toBeGreaterThanOrEqual(3);
+    expect(RELICS).toHaveLength(40);
+    expect(EVENTS).toHaveLength(20);
+    for (const act of [1, 2, 3]) {
+      expect(ENEMIES.filter((e) => e.act === act && e.kind === 'boss')).toHaveLength(3);
+      expect(ENEMIES.filter((e) => e.act === act && e.kind === 'elite').length).toBeGreaterThanOrEqual(3);
+      expect(ENEMIES.filter((e) => e.act === act && e.kind === 'fight').length).toBeGreaterThanOrEqual(3);
+    }
+    for (const b of ENEMIES.filter((e) => e.kind === 'boss')) expect(b.rule, b.id).toBeTruthy();
+    expect(() => getEvent('event-nope')).toThrow(/Unknown event/);
     expect(() => getHero('hero-nobody')).toThrow(/Unknown hero/);
     expect(() => getRelic('relic-nope')).toThrow(/Unknown relic/);
     expect(() => getEnemy('enemy-nope')).toThrow(/Unknown enemy/);
@@ -172,23 +195,152 @@ describe('run flow', () => {
     illegal(r, { t: 'leave' });
   });
 
-  it('the boss: a loss with Hearts left is a rematch, a win ends the run with doubled XP', () => {
-    let r = startRun(config());
-    r.row = MAP_ROWS - 1;
-    r.col = 0;
-    r = applyChoice(r, { t: 'move', col: 0 });
+  it('the boss: a loss with Hearts left is a rematch against the same act pool', () => {
+    let r = atBoss(startRun(config()));
     expect(currentNode(r)!.type).toBe('boss');
     if (r.phase.kind !== 'match') throw new Error('expected a match');
-    expect(getEnemy(r.phase.enemyId).kind).toBe('boss');
+    expect(getEnemy(r.phase.enemyId)).toMatchObject({ kind: 'boss', act: 1 });
     const first = r.phase.seed;
     r = applyChoice(r, { t: 'matchEnd', won: false });
     expect(r.phase.kind).toBe('match');
     expect(r.phase.kind === 'match' && r.phase.seed).not.toBe(first);
-    expect(runMatch(r).hooks.seesPlan).toBe(true);
+    expect(r.phase.kind === 'match' && getEnemy(r.phase.enemyId).kind).toBe('boss');
+  });
+
+  it('the act 1 boss gives a relic and gold and offers a second faction, which joins the card pool', () => {
+    let r = applyChoice(atBoss(startRun(config(1, 'hero-aldric'))), { t: 'matchEnd', won: true });
+    if (r.phase.kind !== 'actCleared') throw new Error('expected actCleared');
+    expect(r.phase.act).toBe(1);
+    expect(r.phase.factions).toEqual(['ember', 'tide', 'grove', 'dusk']);
+    expect(r.relics).toEqual([r.phase.relicId]);
+    illegal(r, { t: 'leave' });
+    illegal(r, { t: 'nextAct', faction: 9 });
+    const hearts = r.hearts;
+    const skipped = applyChoice({ ...r, hearts: 1 }, { t: 'nextAct', faction: null });
+    expect(skipped.secondFaction).toBeNull();
+    expect(skipped.hearts).toBe(2); // a new act restores 1 Heart
+    r = applyChoice(r, { t: 'nextAct', faction: 3 });
+    expect(r).toMatchObject({
+      act: 2,
+      row: -1,
+      secondFaction: 'dusk',
+      hearts: hearts,
+      phase: { kind: 'map' },
+    });
+    expect(mapProblems(r.map)).toEqual([]);
+    const factions = new Set(cardPool(r).map((id) => getCard(id).faction));
+    expect(factions).toEqual(new Set(['bastion', 'dusk']));
+    // Act 2 nodes use act 2 enemies.
+    r = applyChoice({ ...r, map: withFirstRow(r, 'fight') }, { t: 'move', col: 0 });
+    expect(r.phase.kind === 'match' && getEnemy(r.phase.enemyId).act).toBe(2);
+  });
+
+  it('the act 2 boss offers no faction; the act 3 boss wins the run with doubled XP', () => {
+    let r = applyChoice(atBoss({ ...startRun(config()), act: 2 }), { t: 'matchEnd', won: true });
+    expect(r.phase.kind === 'actCleared' && r.phase.factions).toEqual([]);
+    r = applyChoice(r, { t: 'nextAct', faction: null });
+    expect(r.act).toBe(3);
+    r = atBoss(r);
+    expect(r.phase.kind === 'match' && getEnemy(r.phase.enemyId).difficulty).toBe('hard');
+    const cleared = r.nodesCleared;
     r = applyChoice(r, { t: 'matchEnd', won: true });
     expect(r.phase).toEqual({ kind: 'over', won: true, abandoned: false });
     expect(nextCols(r)).toEqual([]);
-    expect(runXp(r)).toBe((NODE_XP + BOSS_XP) * 2);
+    expect(runXp(r)).toBe(((cleared + 1) * NODE_XP + 2 * BOSS_XP) * 2);
+  });
+
+  it('an elite gives a relic, extra gold and a card choice', () => {
+    const r = at('elite');
+    expect(r.phase.kind === 'match' && getEnemy(r.phase.enemyId).kind).toBe('elite');
+    const won = applyChoice(r, { t: 'matchEnd', won: true });
+    if (won.phase.kind !== 'reward') throw new Error('expected a reward');
+    expect(won.phase.relicId).not.toBeNull();
+    expect(won.relics).toEqual([won.phase.relicId]);
+    expect(won.phase.cards).toHaveLength(3);
+    expect(won.phase.gold).toBeGreaterThanOrEqual(30);
+  });
+
+  it('rest can upgrade one card instead of restoring a Heart', () => {
+    let r = at('rest');
+    const id = r.deck[2]!;
+    r = applyChoice(r, { t: 'upgrade', index: 2 });
+    expect(r.deck[2]).toBe(`${id}+`);
+    expect(getCard(r.deck[2]!).name).toBe(`${getCard(id).name}+`);
+    const again = at('rest', { deck: r.deck });
+    illegal(again, { t: 'upgrade', index: 2 });
+    illegal(again, { t: 'upgrade', index: 99 });
+  });
+
+  it('events: pay costs, apply outcomes, then leave', () => {
+    let r = at('event', { gold: 100 });
+    if (r.phase.kind !== 'event') throw new Error('expected an event');
+    expect(r.phase.chosen).toBeNull();
+    illegal(r, { t: 'leave' });
+    illegal(r, { t: 'event', index: 9 });
+    // Every event has a free choice, so it can always be passed.
+    for (const e of EVENTS) expect(e.choices.some((c) => !c.cost.gold && !c.cost.hearts)).toBe(true);
+    const ev = getEvent(r.phase.eventId);
+    const i = ev.choices.findIndex((c) => c.outcomes.length > 0 || c.cost.gold);
+    r = applyChoice(r, { t: 'event', index: i });
+    if (r.phase.kind !== 'event') throw new Error('expected an event');
+    expect(r.phase.chosen).toBe(i);
+    expect(r.phase.result.length).toBeGreaterThan(0);
+    illegal(r, { t: 'event', index: 0 });
+    expect(applyChoice(r, { t: 'leave' }).phase).toEqual({ kind: 'map' });
+  });
+
+  it('event outcomes do what they say', () => {
+    const run = (id: string, index: number, extra: Partial<RunState> = {}) => {
+      const r = at('event', { gold: 100, ...extra });
+      return applyChoice(
+        { ...r, phase: { kind: 'event', eventId: id, chosen: null, result: [] } },
+        { t: 'event', index },
+      );
+    };
+    const smith = run('event-wandering-smith', 0);
+    expect(smith.gold).toBe(70);
+    expect(smith.deck.filter((id) => id.endsWith('+'))).toHaveLength(2);
+    const shrine = run('event-old-shrine', 1, { hearts: 2 });
+    expect(shrine.hearts).toBe(1);
+    expect(shrine.gold).toBe(140);
+    illegal(
+      {
+        ...at('event', { hearts: 1 }),
+        phase: { kind: 'event', eventId: 'event-old-shrine', chosen: null, result: [] },
+      },
+      { t: 'event', index: 1 },
+    );
+    illegal(
+      {
+        ...at('event', { gold: 0 }),
+        phase: { kind: 'event', eventId: 'event-wandering-smith', chosen: null, result: [] },
+      },
+      { t: 'event', index: 0 },
+    );
+    const idol = run('event-cursed-idol', 0);
+    expect(idol.relics).toHaveLength(1);
+    expect(idol.hearts).toBe(2);
+    const library = run('event-ruined-library', 0);
+    expect(library.deck).toHaveLength(10);
+    const camp = run('event-battlefield', 0);
+    expect(camp.deck).toHaveLength(14);
+    const well = run('event-fountain', 0, { hearts: 2 });
+    expect(well.hearts).toBe(3);
+    const gamble = run('event-gambler', 0);
+    expect(gamble.gold).toBeGreaterThanOrEqual(75);
+    expect(gamble.gold).toBeLessThanOrEqual(145);
+  });
+
+  it('a Heart relic raises the Heart limit', () => {
+    const r = at('rest', { hearts: 3, relics: [] });
+    illegal(r, { t: 'rest' });
+    const withRelic = at('treasure', {
+      hearts: 2,
+      relics: RELICS.map((x) => x.id).filter((id) => id !== 'relic-fourth-heart'),
+    });
+    expect(withRelic.hearts).toBe(3);
+    expect(withRelic.relics).toContain('relic-fourth-heart');
+    expect(maxHearts(withRelic)).toBe(4);
   });
 
   it('rest restores a Heart (not past full) or can be left', () => {
@@ -275,7 +427,7 @@ describe('run flow', () => {
     expect(runXp(r)).toBe(0);
   });
 
-  it('card pool is owned cards of the hero faction', () => {
+  it('card pool is owned cards of the hero faction (until a second faction is added)', () => {
     const r = startRun(config(1, 'hero-aldric'));
     expect(cardPool(r).length).toBe(12);
     expect(cardPool(r).every((id) => getCard(id).faction === 'bastion')).toBe(true);

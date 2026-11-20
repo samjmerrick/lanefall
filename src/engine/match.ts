@@ -102,7 +102,17 @@ function slotAvailable(s: GameState, player: PlayerId, plan: PlannedAction[], la
   return unitsOf(s, lane, player).length + into.length < activeLaneEffect(s, lane).maxUnits;
 }
 
-function targetValid(s: GameState, player: PlayerId, cardId: string, target: SpellTarget): boolean {
+/**
+ * Whether `target` is legal for the spell. Friendly and any-unit spells may also target a unit that
+ * `player` planned earlier this turn (`plan`): it reveals before the spell, keeping its hand uid.
+ */
+function targetValid(
+  s: GameState,
+  player: PlayerId,
+  cardId: string,
+  target: SpellTarget,
+  plan: PlannedAction[],
+): boolean {
   const targeting = getCard(cardId).targeting;
   switch (targeting) {
     case 'none':
@@ -112,7 +122,7 @@ function targetValid(s: GameState, player: PlayerId, cardId: string, target: Spe
     default: {
       if (target.kind !== 'unit') return false;
       const loc = findUnit(s, target.uid);
-      if (!loc) return false;
+      if (!loc) return targeting !== 'enemyUnit' && plannedUnitUids(plan).includes(target.uid);
       if (targeting === 'enemyUnit') return loc.unit.owner !== player;
       if (targeting === 'friendlyUnit') return loc.unit.owner === player;
       return true;
@@ -141,7 +151,7 @@ function checkPlanned(s: GameState, player: PlayerId, a: PlannedAction): string 
     if (!slotAvailable(s, player, p.plan, a.lane, a.slot)) return 'slot unavailable';
   } else {
     if (def.type !== 'spell') return 'not a spell';
-    if (!targetValid(s, player, card.cardId, a.target)) return 'invalid target';
+    if (!targetValid(s, player, card.cardId, a.target, p.plan)) return 'invalid target';
   }
   if (!isAffordable(s, player, [...p.plan, a])) return 'not enough mana';
   return null;
@@ -218,7 +228,7 @@ export function legalActions(s: GameState, player: PlayerId): Action[] {
         for (let slot = 0; slot < SLOTS_PER_SIDE; slot++)
           candidates.push({ type: 'playUnit', uid: card.uid, lane, slot });
     } else {
-      for (const target of spellTargets(s, def.targeting))
+      for (const target of spellTargets(s, def.targeting, p.plan))
         candidates.push({ type: 'playSpell', uid: card.uid, target });
     }
   }
@@ -236,12 +246,17 @@ export function legalActions(s: GameState, player: PlayerId): Action[] {
   return out;
 }
 
-function spellTargets(s: GameState, targeting: string): SpellTarget[] {
+function plannedUnitUids(plan: PlannedAction[]): number[] {
+  return plan.flatMap((a) => (a.type === 'playUnit' ? [a.uid] : []));
+}
+
+function spellTargets(s: GameState, targeting: string, plan: PlannedAction[]): SpellTarget[] {
   if (targeting === 'none') return [{ kind: 'none' }];
   if (targeting === 'lane') return LANES.map((lane) => ({ kind: 'lane', lane }));
   const out: SpellTarget[] = [];
   for (const lane of LANES)
     for (const side of s.lanes[lane].slots)
       for (const u of side) if (u) out.push({ kind: 'unit', uid: u.uid });
+  for (const uid of plannedUnitUids(plan)) out.push({ kind: 'unit', uid });
   return out;
 }

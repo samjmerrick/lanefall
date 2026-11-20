@@ -155,5 +155,959 @@
       "ember-kindle"
     ],
     "modifiers": []
+  },
+  {
+    "id": "enemy-tide-wardens",
+    "name": "Tide Wardens",
+    "act": 1,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller",
+      "tide-wave-dancer",
+      "tide-coral-guardian",
+      "tide-insight",
+      "tide-mirror-mage",
+      "tide-riptide",
+      "tide-sea-witch",
+      "tide-storm-petrel"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "enemy-rotwood-brutes",
+    "name": "Rotwood Brutes",
+    "act": 1,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "grove-bloom",
+      "grove-call-saplings",
+      "grove-grove-tender",
+      "grove-ironbark",
+      "grove-overgrowth",
+      "grove-wolf-pack"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "enemy-grave-robbers",
+    "name": "Grave Robbers",
+    "act": 1,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "dusk-corpse-eater",
+      "dusk-ghoul",
+      "dusk-grave-call",
+      "dusk-shadow-bolt",
+      "dusk-soul-reaper",
+      "dusk-vampire-thrall"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "id": "boss-grove-warden",
+    "name": "The Grove Warden",
+    "act": 1,
+    "kind": "boss",
+    "difficulty": "normal",
+    "deck": [
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "grove-bloom",
+      "grove-call-saplings",
+      "grove-grove-tender",
+      "grove-ironbark",
+      "grove-overgrowth",
+      "grove-wolf-pack",
+      "grove-briar-guardian",
+      "grove-elder-stag"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 10
+      }
+    ],
+    "rule": "The Warden has +10 HP."
+  },
+  {
+    "id": "boss-tide-siren",
+    "name": "The Tide Siren",
+    "act": 1,
+    "kind": "boss",
+    "difficulty": "normal",
+    "deck": [
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller",
+      "tide-wave-dancer",
+      "tide-coral-guardian",
+      "tide-insight",
+      "tide-mirror-mage",
+      "tide-riptide",
+      "tide-sea-witch",
+      "tide-storm-petrel",
+      "tide-high-tide",
+      "tide-reef-serpent"
+    ],
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "draw",
+          "count": 1
+        }
+      }
+    ],
+    "rule": "The Siren draws an extra card each round."
+  },
+  {
+    "id": "enemy-drowned-crew",
+    "name": "Drowned Crew",
+    "act": 2,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver"
+    ]
+  },
+  {
+    "id": "enemy-thorn-raiders",
+    "name": "Thorn Raiders",
+    "act": 2,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite",
+      "ember-torchbearer",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback"
+    ]
+  },
+  {
+    "id": "enemy-iron-legion",
+    "name": "Iron Legion",
+    "act": 2,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "bastion-divine-shield",
+      "bastion-drill-sergeant",
+      "bastion-muster-captain",
+      "bastion-paladin",
+      "bastion-sanctify",
+      "bastion-wall-warden",
+      "bastion-reinforcements"
+    ]
+  },
+  {
+    "id": "enemy-cinder-cult",
+    "name": "Cinder Cult",
+    "act": 2,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound"
+    ]
+  },
+  {
+    "id": "enemy-reef-hunters",
+    "name": "Reef Hunters",
+    "act": 2,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver"
+    ]
+  },
+  {
+    "id": "enemy-blood-knights",
+    "name": "Blood Knights",
+    "act": 2,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 6
+      },
+      {
+        "kind": "startReserve",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "enemy-storm-callers",
+    "name": "Storm Callers",
+    "act": 2,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite",
+      "ember-torchbearer",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 6
+      },
+      {
+        "kind": "startHand",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "enemy-elder-grove",
+    "name": "Elder Grove",
+    "act": 2,
+    "kind": "elite",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 8
+      }
+    ]
+  },
+  {
+    "id": "boss-bone-king",
+    "name": "The Bone King",
+    "act": 2,
+    "kind": "boss",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "dusk-corpse-eater",
+      "dusk-ghoul",
+      "dusk-grave-call",
+      "dusk-shadow-bolt",
+      "dusk-soul-reaper",
+      "dusk-vampire-thrall",
+      "dusk-blood-ritual",
+      "dusk-crypt-guard",
+      "dusk-death-knight",
+      "dusk-doom"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "allFriendlyUnits",
+          "power": 1,
+          "health": 0,
+          "duration": "round"
+        }
+      }
+    ],
+    "rule": "Each round, the King's units get +1 Power."
+  },
+  {
+    "id": "boss-storm-matriarch",
+    "name": "The Storm Matriarch",
+    "act": 2,
+    "kind": "boss",
+    "difficulty": "normal",
+    "deck": [
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite",
+      "ember-torchbearer",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "randomEnemyUnit",
+          "amount": 2
+        }
+      }
+    ],
+    "rule": "Each round, lightning deals 2 damage to one of your units."
+  },
+  {
+    "id": "boss-iron-bastion",
+    "name": "The Iron Bastion",
+    "act": 2,
+    "kind": "boss",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "bastion-divine-shield",
+      "bastion-drill-sergeant",
+      "bastion-muster-captain",
+      "bastion-paladin",
+      "bastion-sanctify",
+      "bastion-wall-warden",
+      "bastion-reinforcements",
+      "bastion-shield-sergeant",
+      "bastion-standard-bearer"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "grantKeyword",
+          "target": "allFriendlyUnits",
+          "keyword": "barrier"
+        },
+        "rounds": [2, 4, 6]
+      }
+    ],
+    "rule": "In rounds 2, 4 and 6, the Bastion's units gain Barrier."
+  },
+  {
+    "id": "enemy-void-cultists",
+    "name": "Void Cultists",
+    "act": 3,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite"
+    ]
+  },
+  {
+    "id": "enemy-sea-giants",
+    "name": "Sea Giants",
+    "act": 3,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller",
+      "tide-wave-dancer"
+    ]
+  },
+  {
+    "id": "enemy-sun-templars",
+    "name": "Sun Templars",
+    "act": 3,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball"
+    ]
+  },
+  {
+    "id": "enemy-wild-hunt",
+    "name": "Wild Hunt",
+    "act": 3,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant"
+    ]
+  },
+  {
+    "id": "enemy-mist-court",
+    "name": "Mist Court",
+    "act": 3,
+    "kind": "fight",
+    "difficulty": "normal",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller"
+    ]
+  },
+  {
+    "id": "enemy-dread-legion",
+    "name": "Dread Legion",
+    "act": 3,
+    "kind": "elite",
+    "difficulty": "hard",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "bastion-divine-shield"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 8
+      },
+      {
+        "kind": "startReserve",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "enemy-primal-titans",
+    "name": "Primal Titans",
+    "act": 3,
+    "kind": "elite",
+    "difficulty": "hard",
+    "deck": [
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite",
+      "ember-torchbearer",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "ember-blaze-runner"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 8
+      }
+    ]
+  },
+  {
+    "id": "enemy-tempest-host",
+    "name": "Tempest Host",
+    "act": 3,
+    "kind": "elite",
+    "difficulty": "hard",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller",
+      "tide-wave-dancer",
+      "dusk-corpse-eater",
+      "dusk-ghoul"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 8
+      },
+      {
+        "kind": "startHand",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "boss-hollow-queen",
+    "name": "The Hollow Queen",
+    "act": 3,
+    "kind": "boss",
+    "difficulty": "hard",
+    "deck": [
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-shoal-crab",
+      "tide-undertow",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "tide-bubble-shield",
+      "tide-current-rider",
+      "tide-frost-snap",
+      "tide-pearl-diver",
+      "tide-tidecaller",
+      "tide-wave-dancer",
+      "dusk-corpse-eater",
+      "dusk-ghoul",
+      "dusk-grave-call",
+      "dusk-shadow-bolt"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      }
+    ],
+    "rule": "The Queen sees your planned cards.",
+    "ai": {
+      "seesPlan": true
+    }
+  },
+  {
+    "id": "boss-ancient-wyrm",
+    "name": "The Ancient Wyrm",
+    "act": 3,
+    "kind": "boss",
+    "difficulty": "hard",
+    "deck": [
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-spark-imp",
+      "grove-bramble-sprite",
+      "grove-sap",
+      "grove-seedling",
+      "grove-wild-growth",
+      "ember-ash-raider",
+      "ember-cinder-whelp",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-ignite",
+      "ember-torchbearer",
+      "grove-druid-initiate",
+      "grove-entangle",
+      "grove-mossback",
+      "grove-rejuvenate",
+      "grove-thorn-lasher",
+      "grove-young-treant",
+      "ember-blaze-runner",
+      "ember-pyre-zealot",
+      "ember-reckless-charge"
+    ],
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "enemyHero",
+          "amount": 1
+        }
+      }
+    ],
+    "rule": "Each round, the Wyrm deals 1 damage to your hero."
+  },
+  {
+    "id": "boss-eclipse",
+    "name": "The Eclipse",
+    "act": 3,
+    "kind": "boss",
+    "difficulty": "hard",
+    "deck": [
+      "bastion-mend",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-grave-rat",
+      "dusk-hex",
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-call-to-arms",
+      "bastion-field-medic",
+      "bastion-fortify",
+      "bastion-militia",
+      "dusk-bloodleech",
+      "dusk-bone-walker",
+      "dusk-drain-life",
+      "dusk-night-stalker",
+      "dusk-plague-rat",
+      "dusk-siphon",
+      "bastion-divine-shield",
+      "bastion-drill-sergeant",
+      "bastion-muster-captain"
+    ],
+    "modifiers": [
+      {
+        "kind": "startHand",
+        "amount": 2
+      },
+      {
+        "kind": "startReserve",
+        "amount": 2
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "heal",
+          "target": "friendlyHero",
+          "amount": 2
+        }
+      }
+    ],
+    "rule": "The Eclipse starts with 2 extra cards and 2 Reserve, and heals 2 each round."
   }
 ]

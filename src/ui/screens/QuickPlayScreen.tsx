@@ -8,6 +8,7 @@ import { DeckTile } from './DeckTile';
 const DIFFICULTIES: { id: Difficulty; label: string }[] = [
   { id: 'easy', label: 'Easy' },
   { id: 'normal', label: 'Normal' },
+  { id: 'hard', label: 'Hard' },
 ];
 
 export function QuickPlayScreen() {

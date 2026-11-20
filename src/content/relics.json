@@ -3,19 +3,34 @@
     "id": "relic-ember-coal",
     "name": "Ember Coal",
     "text": "Start each match with 1 Reserve mana.",
-    "modifiers": [{ "kind": "startReserve", "amount": 1 }]
+    "modifiers": [
+      {
+        "kind": "startReserve",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "relic-iron-heart",
     "name": "Iron Heart",
     "text": "Your hero has +5 HP.",
-    "modifiers": [{ "kind": "heroHp", "amount": 5 }]
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 5
+      }
+    ]
   },
   {
     "id": "relic-scout-map",
     "name": "Scout's Map",
     "text": "Draw 1 extra card at the start of each match.",
-    "modifiers": [{ "kind": "startHand", "amount": 1 }]
+    "modifiers": [
+      {
+        "kind": "startHand",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "relic-whetstone",
@@ -39,14 +54,30 @@
     "name": "Thorn Charm",
     "text": "At the start of each round, deal 1 damage to a random enemy unit.",
     "modifiers": [
-      { "kind": "roundStart", "action": { "op": "damage", "target": "randomEnemyUnit", "amount": 1 } }
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "randomEnemyUnit",
+          "amount": 1
+        }
+      }
     ]
   },
   {
     "id": "relic-healing-salve",
     "name": "Healing Salve",
     "text": "At the start of each round, heal your hero by 1.",
-    "modifiers": [{ "kind": "roundStart", "action": { "op": "heal", "target": "friendlyHero", "amount": 1 } }]
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "heal",
+          "target": "friendlyHero",
+          "amount": 1
+        }
+      }
+    ]
   },
   {
     "id": "relic-war-banner",
@@ -56,7 +87,11 @@
       {
         "kind": "roundStart",
         "rounds": [4],
-        "action": { "op": "grantKeyword", "target": "allFriendlyUnits", "keyword": "barrier" }
+        "action": {
+          "op": "grantKeyword",
+          "target": "allFriendlyUnits",
+          "keyword": "barrier"
+        }
       }
     ]
   },
@@ -64,18 +99,467 @@
     "id": "relic-merchant-purse",
     "name": "Merchant's Purse",
     "text": "Gain 10 more gold from each fight.",
-    "run": { "fightGold": 10 }
+    "run": {
+      "fightGold": 10
+    }
   },
   {
     "id": "relic-silver-tongue",
     "name": "Silver Tongue",
     "text": "Shop prices are 25% lower.",
-    "run": { "shopDiscount": 25 }
+    "run": {
+      "shopDiscount": 25
+    }
   },
   {
     "id": "relic-keen-eye",
     "name": "Keen Eye",
     "text": "Card rewards offer 4 cards instead of 3.",
-    "run": { "cardChoices": 1 }
+    "run": {
+      "cardChoices": 1
+    }
+  },
+  {
+    "id": "relic-lucky-coin",
+    "name": "Lucky Coin",
+    "text": "Fights give 5 more gold.",
+    "run": {
+      "fightGold": 5
+    }
+  },
+  {
+    "id": "relic-golden-idol",
+    "name": "Golden Idol",
+    "text": "Fights give 15 more gold. Your hero has -3 HP.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": -3
+      }
+    ],
+    "run": {
+      "fightGold": 15
+    }
+  },
+  {
+    "id": "relic-ledger",
+    "name": "Merchant's Ledger",
+    "text": "Shop prices are 15% lower.",
+    "run": {
+      "shopDiscount": 15
+    }
+  },
+  {
+    "id": "relic-gold-tooth",
+    "name": "Gold Tooth",
+    "text": "Fights give 5 more gold and shop prices are 10% lower.",
+    "run": {
+      "fightGold": 5,
+      "shopDiscount": 10
+    }
+  },
+  {
+    "id": "relic-fourth-heart",
+    "name": "Fourth Heart",
+    "text": "Gain a Heart. You can hold 1 more Heart.",
+    "run": {
+      "hearts": 1
+    }
+  },
+  {
+    "id": "relic-mana-crystal",
+    "name": "Mana Crystal",
+    "text": "Start each match with 2 Reserve mana.",
+    "modifiers": [
+      {
+        "kind": "startReserve",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "relic-heart-locket",
+    "name": "Heart Locket",
+    "text": "Your hero has +3 HP.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "id": "relic-titan-belt",
+    "name": "Titan's Belt",
+    "text": "Your hero has +8 HP.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 8
+      }
+    ]
+  },
+  {
+    "id": "relic-tome",
+    "name": "Old Tome",
+    "text": "At the start of round 1, draw a card.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "draw",
+          "count": 1
+        },
+        "rounds": [1]
+      }
+    ]
+  },
+  {
+    "id": "relic-hourglass",
+    "name": "Hourglass",
+    "text": "At the start of round 5, draw 2 cards.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "draw",
+          "count": 2
+        },
+        "rounds": [5]
+      }
+    ]
+  },
+  {
+    "id": "relic-seer-orb",
+    "name": "Seer's Orb",
+    "text": "At the start of rounds 3 and 6, draw a card.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "draw",
+          "count": 1
+        },
+        "rounds": [3, 6]
+      }
+    ]
+  },
+  {
+    "id": "relic-amber",
+    "name": "Amber Shard",
+    "text": "At the start of round 2, gain 1 extra mana in round 3.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "gainMana",
+          "amount": 1
+        },
+        "rounds": [2]
+      }
+    ]
+  },
+  {
+    "id": "relic-bloodstone",
+    "name": "Bloodstone",
+    "text": "At the start of each round, deal 1 damage to the enemy hero. Your hero has -4 HP.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": -4
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "enemyHero",
+          "amount": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "relic-cinder-charm",
+    "name": "Cinder Charm",
+    "text": "At the start of rounds 1, 3, 5 and 7, deal 1 damage to the enemy hero.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "enemyHero",
+          "amount": 1
+        },
+        "rounds": [1, 3, 5, 7]
+      }
+    ]
+  },
+  {
+    "id": "relic-pocket-watch",
+    "name": "Pocket Watch",
+    "text": "At the start of round 8, deal 4 damage to the enemy hero.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "enemyHero",
+          "amount": 4
+        },
+        "rounds": [8]
+      }
+    ]
+  },
+  {
+    "id": "relic-phoenix-feather",
+    "name": "Phoenix Feather",
+    "text": "Your hero has +3 HP. At the start of round 8, heal your hero by 5.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 3
+      },
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "heal",
+          "target": "friendlyHero",
+          "amount": 5
+        },
+        "rounds": [8]
+      }
+    ]
+  },
+  {
+    "id": "relic-sun-medallion",
+    "name": "Sun Medallion",
+    "text": "At the start of round 4, heal your hero by 5.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "heal",
+          "target": "friendlyHero",
+          "amount": 5
+        },
+        "rounds": [4]
+      }
+    ]
+  },
+  {
+    "id": "relic-thorn-crown",
+    "name": "Crown of Thorns",
+    "text": "At the start of rounds 4 and 8, deal 1 damage to all enemy units.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "allEnemyUnits",
+          "amount": 1
+        },
+        "rounds": [4, 8]
+      }
+    ]
+  },
+  {
+    "id": "relic-storm-bottle",
+    "name": "Bottled Storm",
+    "text": "At the start of round 5, deal 2 damage to all enemy units.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "allEnemyUnits",
+          "amount": 2
+        },
+        "rounds": [5]
+      }
+    ]
+  },
+  {
+    "id": "relic-venom-vial",
+    "name": "Venom Vial",
+    "text": "At the start of rounds 2, 4 and 6, deal 2 damage to a random enemy unit.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "damage",
+          "target": "randomEnemyUnit",
+          "amount": 2
+        },
+        "rounds": [2, 4, 6]
+      }
+    ]
+  },
+  {
+    "id": "relic-frost-sigil",
+    "name": "Frost Sigil",
+    "text": "At the start of round 3, give all enemy units -1 Power this round.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "allEnemyUnits",
+          "power": -1,
+          "health": 0,
+          "duration": "round"
+        },
+        "rounds": [3]
+      }
+    ]
+  },
+  {
+    "id": "relic-war-drum",
+    "name": "War Drum",
+    "text": "At the start of rounds 6, 7 and 8, give all friendly units +1 Power this round.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "allFriendlyUnits",
+          "power": 1,
+          "health": 0,
+          "duration": "round"
+        },
+        "rounds": [6, 7, 8]
+      }
+    ]
+  },
+  {
+    "id": "relic-war-horn",
+    "name": "War Horn",
+    "text": "At the start of each round, give a random friendly unit +2 Power this round.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 2,
+          "health": 0,
+          "duration": "round"
+        }
+      }
+    ]
+  },
+  {
+    "id": "relic-oak-charm",
+    "name": "Oak Charm",
+    "text": "At the start of each round, give a random friendly unit +2 Health.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 0,
+          "health": 2,
+          "duration": "permanent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "relic-ironwood-totem",
+    "name": "Ironwood Totem",
+    "text": "At the start of round 5, give all friendly units +2 Health.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "allFriendlyUnits",
+          "power": 0,
+          "health": 2,
+          "duration": "permanent"
+        },
+        "rounds": [5]
+      }
+    ]
+  },
+  {
+    "id": "relic-giant-tooth",
+    "name": "Giant's Tooth",
+    "text": "At the start of round 6, give a random friendly unit +3/+3.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 3,
+          "health": 3,
+          "duration": "permanent"
+        },
+        "rounds": [6]
+      }
+    ]
+  },
+  {
+    "id": "relic-aegis",
+    "name": "Aegis",
+    "text": "At the start of each round, give a random friendly unit Barrier.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "grantKeyword",
+          "target": "randomFriendlyUnit",
+          "keyword": "barrier"
+        }
+      }
+    ]
+  },
+  {
+    "id": "relic-vampiric-fang",
+    "name": "Vampiric Fang",
+    "text": "At the start of rounds 3 and 6, give a random friendly unit Lifesteal.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "grantKeyword",
+          "target": "randomFriendlyUnit",
+          "keyword": "lifesteal"
+        },
+        "rounds": [3, 6]
+      }
+    ]
+  },
+  {
+    "id": "relic-quiver",
+    "name": "Quiver",
+    "text": "At the start of rounds 4 and 8, give a random friendly unit Pierce.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "grantKeyword",
+          "target": "randomFriendlyUnit",
+          "keyword": "pierce"
+        },
+        "rounds": [4, 8]
+      }
+    ]
+  },
+  {
+    "id": "relic-moonstone",
+    "name": "Moonstone",
+    "text": "At the start of each round, heal all friendly units by 1.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "heal",
+          "target": "allFriendlyUnits",
+          "amount": 1
+        }
+      }
+    ]
   }
 ]

@@ -78,6 +78,16 @@ export const CardSchema = z
     rarity: z.enum(['common', 'uncommon', 'rare', 'legendary']),
     unlock: z.enum(['starter', 'track']),
     token: z.boolean().default(false),
+    /** Overrides for the upgraded version (`<id>+`). Omitted: see `upgradeCard`. */
+    upgrade: z
+      .object({
+        cost: z.number().int().min(0).max(10).optional(),
+        power: z.number().int().min(0).optional(),
+        health: z.number().int().min(1).optional(),
+        keywords: z.array(Keyword).optional(),
+        effects: z.array(EffectSchema).optional(),
+      })
+      .optional(),
   })
   .superRefine((card, ctx) => {
     const issue = (message: string) => ctx.addIssue({ code: 'custom', message: `${card.id}: ${message}` });
@@ -90,6 +100,16 @@ export const CardSchema = z
       if (card.keywords.length > 0) issue('spells have no keywords');
       if (card.effects.some((e) => e.trigger !== 'spell')) issue('spell effects must use the spell trigger');
       if (card.effects.length === 0) issue('spells need at least one effect');
+    }
+    // Lane-relative selectors and summons need a lane: a unit's own, a chosen lane, or a target's.
+    const hasLane = card.type === 'unit' || card.targeting !== 'none';
+    for (const e of [...card.effects, ...(card.upgrade?.effects ?? [])]) {
+      const a = e.action;
+      if (!hasLane && (a.op === 'summon' || ('target' in a && /InLane$/.test(a.target))))
+        issue('lane-relative effects need a lane');
+      if (card.type === 'spell' && card.targeting !== 'lane' && 'target' in a && a.target === 'self')
+        issue('spells have no self');
+      if (card.type === 'unit' && 'target' in a && a.target === 'target') issue('units have no target');
     }
     for (const e of card.effects) {
       if (e.trigger === 'ongoing' && e.action.op !== 'buff') issue('ongoing effects must be buffs');

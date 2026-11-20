@@ -1,10 +1,13 @@
 // Bot runs: a simple policy plays a whole roguelike run through the public run API.
 import type { Difficulty } from '../../src/ai';
 import { nextInt, seedRng, type RngState } from '../../src/engine/rng';
+import { getEvent } from '../../src/run/content';
 import {
   REMOVE_PRICE,
-  START_HEARTS,
   applyChoice,
+  canChoose,
+  maxHearts,
+  upgradable,
   nextCols,
   runMatch,
   startRun,
@@ -39,8 +42,24 @@ export function botChoice(r: RunState, rng: RngState): [RunChoice, RngState] {
         return [{ t: 'removeCard', index: 0 }, rng];
       return [{ t: 'leave' }, rng];
     }
-    case 'rest':
-      return [r.hearts < START_HEARTS ? { t: 'rest' } : { t: 'leave' }, rng];
+    case 'rest': {
+      if (r.hearts < maxHearts(r)) return [{ t: 'rest' }, rng];
+      const up = upgradable(r);
+      return [up.length > 0 ? { t: 'upgrade', index: up[0]! } : { t: 'leave' }, rng];
+    }
+    case 'event': {
+      if (p.chosen !== null) return [{ t: 'leave' }, rng];
+      const options = getEvent(p.eventId)
+        .choices.map((c, i) => ({ c, i }))
+        .filter(({ c }) => canChoose(r, c.cost));
+      const [i, next] = nextInt(rng, 0, options.length - 1);
+      return [{ t: 'event', index: options[i]!.i }, next];
+    }
+    case 'actCleared': {
+      if (p.factions.length === 0) return [{ t: 'nextAct', faction: null }, rng];
+      const [i, next] = nextInt(rng, 0, p.factions.length - 1);
+      return [{ t: 'nextAct', faction: i }, next];
+    }
     case 'treasure':
       return [{ t: 'leave' }, rng];
     default:

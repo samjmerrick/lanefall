@@ -8,7 +8,7 @@ const n = Number(process.argv[2] ?? 500);
 const player = (process.argv[3] as Difficulty) ?? 'easy';
 const pool = [...starterCollection()];
 const heroes = starterHeroes();
-const stats = new Map(heroes.map((h) => [h.id, { runs: 0, won: 0, nodes: 0 }]));
+const stats = new Map(heroes.map((h) => [h.id, { runs: 0, won: 0, nodes: 0, acts: [0, 0, 0, 0] }]));
 let matches = 0;
 const start = performance.now();
 for (let seed = 1; seed <= n; seed++) {
@@ -17,6 +17,7 @@ for (let seed = 1; seed <= n; seed++) {
   const st = stats.get(hero.id)!;
   st.runs++;
   st.nodes += rec.final.nodesCleared;
+  st.acts[rec.final.act]!++;
   if (rec.final.phase.kind === 'over' && rec.final.phase.won) st.won++;
   matches += rec.matches;
 }
@@ -24,5 +25,5 @@ const ms = performance.now() - start;
 console.log(`${n} bot runs (player AI: ${player}), ${matches} matches, ${(ms / n).toFixed(0)} ms per run`);
 for (const [id, s] of stats)
   console.log(
-    `${id}: won ${s.won}/${s.runs} (${((100 * s.won) / s.runs).toFixed(0)}%), ${(s.nodes / s.runs).toFixed(1)} nodes cleared`,
+    `${id}: won ${s.won}/${s.runs} (${((100 * s.won) / s.runs).toFixed(0)}%), ${(s.nodes / s.runs).toFixed(1)} nodes cleared, ended in act 1/2/3: ${s.acts.slice(1).join('/')}`,
   );

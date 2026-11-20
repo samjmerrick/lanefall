@@ -57,7 +57,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 **Card types**
 
 - **Unit:** cost, Power, Health, optional keywords and text. Played into an empty slot on your side of a lane.
-- **Spell:** cost and an effect. Targets are picked while planning; if a target has gone by the time the spell reveals, the spell fizzles and its mana is not refunded.
+- **Spell:** cost and an effect. Targets are picked while planning; a spell that targets a friendly unit (or any unit) may target a unit you planned earlier in the same turn. If a target has gone by the time the spell reveals, the spell fizzles and its mana is not refunded.
 
 **Lane effects**
 
@@ -135,6 +135,7 @@ There are two modes: Quick Play is one match against the AI; a Run is a 3-act ro
   - **Rest:** restore 1 Heart, or upgrade 1 card.
   - **Treasure:** a free relic.
 - Card choices come from your hero's faction. Beating the act 1 boss lets you add a second faction, which then appears in later card choices.
+- Starting a new act restores 1 Heart.
 
 **Cards, relics and bosses**
 

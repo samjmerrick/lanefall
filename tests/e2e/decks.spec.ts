@@ -38,7 +38,7 @@ test('build a deck, reload the page, and the deck is still there', async ({ page
   await expect(page.getByRole('main', { name: 'Main menu' })).toBeVisible();
   await page.getByRole('button', { name: 'Decks', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Edit Test Deck' })).toBeVisible();
-  await page.getByRole('button', { name: 'Back' }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('button', { name: 'Quick Play' }).click();
   await expect(page.getByRole('radio', { name: /Test Deck/ })).toBeVisible();
   expect(errors).toEqual([]);
@@ -47,12 +47,12 @@ test('build a deck, reload the page, and the deck is still there', async ({ page
 test('deck codes: copy a deck code and import it as a new deck', async ({ page }) => {
   await openMenu(page);
   await page.getByRole('button', { name: 'Decks', exact: true }).click();
-  await page.getByRole('button', { name: 'Copy Bastion Wall' }).click();
+  await page.getByRole('button', { name: 'Copy Grave Wardens' }).click();
   await page.getByRole('button', { name: /Show deck list/ }).click();
   await page.getByRole('button', { name: 'Copy deck code' }).click();
   const code = await page.getByRole('textbox', { name: 'Deck code', exact: true }).inputValue();
   expect(code).toMatch(/^LD1-/);
-  await page.getByRole('button', { name: 'Back' }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('textbox', { name: 'Deck code to import' }).fill(code);
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   await expect(page.locator('.deck-strip__count')).toHaveText('30/30');
@@ -67,9 +67,9 @@ test('deck codes: copy a deck code and import it as a new deck', async ({ page }
 test('save code: export, then restore into a fresh browser profile', async ({ page, browser }) => {
   await openMenu(page);
   await page.getByRole('button', { name: 'Decks', exact: true }).click();
-  await page.getByRole('button', { name: 'Copy Ember Blitz' }).click();
+  await page.getByRole('button', { name: 'Copy Steam Raiders' }).click();
   await page.getByRole('button', { name: 'Save' }).click();
-  await page.getByRole('button', { name: 'Back' }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('button', { name: 'Settings' }).click();
   await expect(page.getByTestId('persist-status')).not.toHaveText('Checking…');
   await page.getByRole('button', { name: 'Copy save code' }).click();
@@ -84,6 +84,6 @@ test('save code: export, then restore into a fresh browser profile', async ({ pa
   await fresh.getByRole('button', { name: 'Replace my save with this code' }).click();
   await expect(fresh.getByRole('main', { name: 'Main menu' })).toBeVisible();
   await fresh.getByRole('button', { name: 'Decks', exact: true }).click();
-  await expect(fresh.getByRole('button', { name: 'Edit Ember Blitz copy' })).toBeVisible();
+  await expect(fresh.getByRole('button', { name: 'Edit Steam Raiders copy' })).toBeVisible();
   await fresh.close();
 });
