@@ -8,6 +8,7 @@ export function HeroBar({ side }: { side: PlayerId }) {
   const view = useMatch((s) => s.view);
   const busy = useMatch((s) => s.busy);
   const endTurn = useMatch((s) => s.endTurn);
+  const leave = useMatch((s) => s.leave);
   const fx = useMatch(useShallow((s) => s.fx.filter((f) => 'hero' in f.target && f.target.hero === side)));
   if (!game || !view) return null;
   const p = game.players[side];
@@ -19,6 +20,11 @@ export function HeroBar({ side }: { side: PlayerId }) {
       className={`hero-bar hero-bar--${isPlayer ? 'player' : 'opponent'}`}
       data-zone={`${isPlayer ? 'player' : 'opponent'}-bar`}
     >
+      {!isPlayer && (
+        <button type="button" className="icon-button" aria-label="Leave match" onClick={leave}>
+          ✕
+        </button>
+      )}
       <span className="hero-bar__hp" aria-label={`${isPlayer ? 'Your' : 'Opponent'} HP ${view.hp[side]}`}>
         ♥ {view.hp[side]}
         <AnimatePresence>

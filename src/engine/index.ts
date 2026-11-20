@@ -10,6 +10,15 @@ export {
   findUnit,
   allUnits,
 } from './board';
-export { CARDS, LANE_EFFECTS, getCard, getLaneEffect, collectibleCards } from './content';
+export {
+  CARDS,
+  LANE_EFFECTS,
+  PREBUILT_DECKS,
+  getCard,
+  getLaneEffect,
+  collectibleCards,
+  starterCollection,
+} from './content';
 export * from './types';
-export type { CardDef, LaneEffectDef, Keyword, Faction } from './schema';
+export type { CardDef, DeckDef, LaneEffectDef, Keyword, Faction } from './schema';
+export * from './deck';

@@ -1,7 +1,7 @@
 import { Lanes, LaneStrip } from './Board';
 import { DragLayer, Hand } from './Hand';
 import { HeroBar } from './HeroBar';
-import { CardDetail, ErrorToast, MulliganOverlay, RevealBanner, ResultOverlay } from './Overlays';
+import { ErrorToast, MulliganOverlay, RevealBanner, ResultOverlay } from './Overlays';
 import { AI, HUMAN } from './store';
 import { dropClass, useDrag } from './drag';
 
@@ -22,7 +22,6 @@ export function MatchScreen() {
       <DragLayer />
       <MulliganOverlay />
       <ResultOverlay />
-      <CardDetail />
       <ErrorToast />
     </main>
   );
