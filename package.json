@@ -13,6 +13,7 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:sim": "vitest run tests/sim",
     "e2e": "playwright test",
     "sim": "tsx tools/sim/index.ts",
     "sim:run": "tsx tools/sim/runs.ts",

@@ -1,36 +1,42 @@
 name: CI
 
+# PRs are checked once (not again for the branch push); main is checked and deployed.
 on:
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Superseded PR runs are cancelled; a run on main is never cut short mid-deploy.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test
+      # Unit tests with the coverage gate, then the simulation tests (10,000 bot matches, 500 bot runs).
       - run: pnpm coverage
-      - run: pnpm sim 1000
-      - run: pnpm sim:run 500
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:sim
+
+  e2e:
+    runs-on: ubuntu-latest
+    # Browsers and their system libraries come preinstalled. Keep the tag equal to @playwright/test
+    # in package.json (tests/unit/ci.test.ts checks this).
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
       - run: pnpm e2e
       - uses: actions/upload-artifact@v4
         if: always()
@@ -40,7 +46,7 @@ jobs:
           if-no-files-found: ignore
 
   deploy:
-    needs: check
+    needs: [check, e2e]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -51,12 +57,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
       - run: pnpm build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
