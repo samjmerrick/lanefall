@@ -14,6 +14,8 @@ export interface DragState {
   hover: string | null;
   /** Centre of the hovered zone, where a spell's target arrow snaps to. */
   hoverAt: { x: number; y: number } | null;
+  /** True when dragging a unit already on the board (a Shift), not a hand card. */
+  shift?: boolean;
 }
 
 export const useDrag = create<{ drag: DragState | null; set(d: DragState | null): void }>((set) => ({

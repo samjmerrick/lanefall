@@ -6,6 +6,7 @@ import { ErrorToast, MulliganOverlay, RevealBanner, ResultOverlay } from './Over
 import { AI, HUMAN } from './store';
 import { dropClass, useDrag } from './drag';
 import { useCoachKey } from './coach';
+import { ShiftHint } from './ShiftHint';
 import { TutorialCoach } from './TutorialCoach';
 
 export function MatchScreen() {
@@ -24,6 +25,7 @@ export function MatchScreen() {
         <LaneStrip />
         <Lanes side={HUMAN} />
         <RevealBanner />
+        <ShiftHint />
         <TutorialCoach />
       </div>
       <HeroBar side={HUMAN} />

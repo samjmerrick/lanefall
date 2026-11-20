@@ -20,6 +20,8 @@ import type { RngState } from '../engine/rng';
 import type { PlanResult } from './easy';
 
 export const CANDIDATE_LIMIT = 200;
+/** Pruning score for a planned Shift: below any card's value, above a tie. */
+const SHIFT_BONUS = 0.5;
 
 export interface Weights {
   heroHp: number;
@@ -70,7 +72,13 @@ function quickScore(s: GameState, player: PlayerId, plan: PlannedAction[]): numb
   let score = 0;
   const hand = s.players[player].hand;
   for (const a of plan) {
-    if (a.type === 'shift') continue;
+    if (a.type === 'shift') {
+      // A Shift costs nothing, so it would tie with the plan it extends and always lose the pruning
+      // below to plans that spend more. A small bonus keeps shifted variants among the candidates;
+      // the simulation decides whether the move is any good.
+      score += SHIFT_BONUS;
+      continue;
+    }
     const card = getCard(hand.find((h) => h.uid === a.uid)!.cardId);
     score += card.type === 'unit' ? (card.power ?? 0) + (card.health ?? 0) : card.cost * 2.5;
   }
