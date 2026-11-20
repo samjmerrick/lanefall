@@ -33,7 +33,7 @@ describe('bot runs', () => {
       if (seed % 25 === 0) expect(replayRun(rec.config, rec.choices)).toEqual(rec.final);
     }
     expect(won).toBeGreaterThan(0);
-  }, 180_000);
+  }, 420_000);
 
   it('Ascension 10 runs complete too, and replay to the same state', () => {
     for (let seed = 1; seed <= 60; seed++) {

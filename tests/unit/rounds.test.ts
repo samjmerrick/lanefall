@@ -305,13 +305,13 @@ describe('lane combat', () => {
   it('assigns damage in play order, each unit taking up to its remaining Health, overflow to the hero', () => {
     let s = setup({ heroHp: 100 });
     clearHands(s);
-    place(s, 0, 0, 'ember-magma-brute'); // 6/3
+    place(s, 0, 0, 'ember-magma-brute'); // 5/4
     const first = place(s, 1, 0, 'bastion-recruit'); // 1/2
     const second = place(s, 1, 0, 'bastion-recruit');
     s = resolve(s).state;
     expect(byUid(s, first.uid)).toBeUndefined();
     expect(byUid(s, second.uid)).toBeUndefined();
-    expect(s.players[1].hp).toBe(98);
+    expect(s.players[1].hp).toBe(99);
   });
 
   it('stops assigning when power runs out', () => {

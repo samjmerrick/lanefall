@@ -155,7 +155,7 @@ describe('starter card effects', () => {
     s = plan(s, 0, { type: 'playUnit', uid: g, lane: 0, slot: 0 });
     s = resolve(s).state;
     expect(byUid(s, ally.uid)).toMatchObject({ basePower: 2, baseHealth: 3 });
-    expect(byUid(s, g)).toMatchObject({ basePower: 5, baseHealth: 6 });
+    expect(byUid(s, g)).toMatchObject({ basePower: 6, baseHealth: 6 });
   });
 
   it('High Cleric heals friendly units and the hero at End of Round', () => {

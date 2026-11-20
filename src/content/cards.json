@@ -48,7 +48,7 @@
     "type": "unit",
     "cost": 2,
     "power": 3,
-    "health": 2,
+    "health": 1,
     "keywords": [],
     "effects": [],
     "text": "",
@@ -149,7 +149,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 4,
-    "power": 6,
+    "power": 5,
     "health": 4,
     "keywords": [],
     "effects": [],
@@ -188,7 +188,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 5,
-    "power": 6,
+    "power": 5,
     "health": 4,
     "keywords": [],
     "effects": [
@@ -443,7 +443,7 @@
     "type": "unit",
     "cost": 2,
     "power": 2,
-    "health": 2,
+    "health": 3,
     "keywords": ["rally"],
     "effects": [],
     "text": "Rally.",
@@ -583,7 +583,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 5,
-    "power": 3,
+    "power": 4,
     "health": 5,
     "keywords": [],
     "effects": [
@@ -628,7 +628,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 7,
-    "power": 5,
+    "power": 6,
     "health": 6,
     "keywords": [],
     "effects": [
@@ -740,7 +740,7 @@
     "name": "Divine Shield",
     "faction": "bastion",
     "type": "spell",
-    "cost": 3,
+    "cost": 2,
     "targeting": "lane",
     "effects": [
       {
@@ -926,7 +926,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 5,
-    "power": 7,
+    "power": 6,
     "health": 5,
     "keywords": [],
     "effects": [],
@@ -1006,7 +1006,7 @@
           "op": "buff",
           "target": "target",
           "power": 0,
-          "health": 3,
+          "health": 4,
           "duration": "permanent"
         }
       },
@@ -1019,7 +1019,7 @@
         }
       }
     ],
-    "text": "Give a friendly unit +3 Health and give it Guard.",
+    "text": "Give a friendly unit +4 Health and give it Guard.",
     "rarity": "common",
     "unlock": "track"
   },
@@ -1029,7 +1029,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 3,
-    "power": 2,
+    "power": 3,
     "health": 3,
     "keywords": ["guard", "rally"],
     "effects": [],
@@ -1235,7 +1235,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 1,
-    "power": 1,
+    "power": 2,
     "health": 1,
     "keywords": ["shift"],
     "effects": [],
@@ -1304,7 +1304,7 @@
     "type": "unit",
     "cost": 2,
     "power": 2,
-    "health": 2,
+    "health": 3,
     "keywords": ["shift"],
     "effects": [],
     "text": "Shift.",
@@ -1419,7 +1419,7 @@
     "type": "unit",
     "cost": 3,
     "power": 3,
-    "health": 3,
+    "health": 4,
     "keywords": ["shift"],
     "effects": [],
     "text": "Shift.",
@@ -1496,7 +1496,7 @@
     "type": "unit",
     "cost": 3,
     "power": 3,
-    "health": 2,
+    "health": 3,
     "keywords": [],
     "effects": [
       {
@@ -1541,7 +1541,7 @@
         "action": {
           "op": "damage",
           "target": "target",
-          "amount": 3
+          "amount": 4
         }
       },
       {
@@ -1552,7 +1552,7 @@
         }
       }
     ],
-    "text": "Deal 3 damage to an enemy unit and move it to another lane.",
+    "text": "Deal 4 damage to an enemy unit and move it to another lane.",
     "rarity": "common",
     "unlock": "track"
   },
@@ -1562,7 +1562,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 4,
-    "power": 3,
+    "power": 4,
     "health": 4,
     "keywords": [],
     "effects": [
@@ -1673,7 +1673,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 5,
-    "power": 4,
+    "power": 5,
     "health": 5,
     "keywords": [],
     "effects": [
@@ -1695,7 +1695,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 5,
-    "power": 3,
+    "power": 4,
     "health": 5,
     "keywords": ["barrier"],
     "effects": [
@@ -1759,7 +1759,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 6,
-    "power": 4,
+    "power": 5,
     "health": 6,
     "keywords": ["shift", "barrier"],
     "effects": [],
@@ -2356,7 +2356,7 @@
     "type": "unit",
     "cost": 8,
     "power": 8,
-    "health": 7,
+    "health": 6,
     "keywords": [],
     "effects": [],
     "text": "",
