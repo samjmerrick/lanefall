@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { AnimatePresence, motion } from 'motion/react';
 import {
@@ -12,6 +13,7 @@ import {
 import { CardArt } from './CardView';
 import { useCoachKey } from './coach';
 import { dropClass, useDrag } from './drag';
+import { useShiftTargets } from './shift';
 import { AI, HUMAN, useMatch, type Fx } from './store';
 import { useForecast } from './forecast';
 import { FADE_SECONDS, useDurationScale } from './motion';
@@ -118,8 +120,31 @@ export function UnitToken({
   const drag = useDrag((s) => s.drag);
   const reduce = useReduceMotion();
   const scale = useDurationScale();
+  const shiftTargets = useShiftTargets().get(unit.uid);
+  const shiftPlanned = useMatch(
+    (s) =>
+      unit.owner === HUMAN &&
+      (s.game?.players[HUMAN].plan.some((a) => a.type === 'shift' && a.uid === unit.uid) ?? false),
+  );
   const key = `unit:${unit.uid}`;
   const remaining = unit.health - unit.damage;
+  // Drag a unit that can Shift onto an empty slot in another lane (Hand.tsx handles the move and drop).
+  const startShift = (e: React.PointerEvent) => {
+    if (!shiftTargets || e.button !== 0) return;
+    useDrag.getState().set({
+      uid: unit.uid,
+      cardId: unit.cardId,
+      startX: e.clientX,
+      startY: e.clientY,
+      x: e.clientX,
+      y: e.clientY,
+      moved: false,
+      targets: shiftTargets,
+      hover: null,
+      hoverAt: null,
+      shift: true,
+    });
+  };
   return (
     <motion.div
       layout={!reduce}
@@ -129,9 +154,11 @@ export function UnitToken({
       transition={{ duration: (reduce ? FADE_SECONDS : 0.2) * scale }}
       className={`token faction-${card.faction}${unit.barrier ? ' token--barrier' : ''}${
         unit.guard ? ' token--guard' : ''
-      }${dropClass(drag, key)}`}
+      }${shiftTargets ? ' token--shiftable' : ''}${shiftPlanned ? ' token--shifting' : ''}${dropClass(drag, key)}`}
       data-drop={key}
       data-uid={unit.uid}
+      data-shift={shiftPlanned ? 'planned' : shiftTargets ? 'ready' : undefined}
+      onPointerDown={startShift}
       role="button"
       tabIndex={0}
       aria-label={`${card.name}, ${unit.power} power, ${remaining} health${forecastText(forecast)}`}
@@ -141,6 +168,11 @@ export function UnitToken({
       <span className="token__power">{unit.power}</span>
       <span className={`token__health${unit.damage > 0 ? ' token__health--hurt' : ''}`}>{remaining}</span>
       <TokenMarks rank={rank} guard={unit.guard} forecast={forecast} />
+      {shiftPlanned && (
+        <span className="token__shift-mark" aria-hidden="true">
+          ➜
+        </span>
+      )}
       <FxFloat fx={fx} />
     </motion.div>
   );
@@ -180,6 +212,27 @@ function GhostToken({
   );
 }
 
+/** Where a planned Shift will land: the unit, outlined, until End Turn. Tap to take the move back. */
+function ShiftGhost({ unit, laneName, onTap }: { unit: ViewUnit; laneName: string; onTap: () => void }) {
+  const card = getCard(unit.cardId);
+  return (
+    <button
+      type="button"
+      className={`token token--ghost token--shift-ghost faction-${card.faction}`}
+      data-shift-ghost={unit.uid}
+      aria-label={`Planned: ${card.name} shifts to the ${laneName} lane. Tap to take back.`}
+      onClick={onTap}
+    >
+      <CardArt id={card.id} faction={card.faction} />
+      <span className="token__power">{unit.power}</span>
+      <span className="token__health">{unit.health - unit.damage}</span>
+      <span className="token__shift-mark" aria-hidden="true">
+        ➜
+      </span>
+    </button>
+  );
+}
+
 function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
   const view = useMatch((s) => s.view);
   const game = useMatch((s) => s.game);
@@ -202,11 +255,20 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
     const cardId = game.players[HUMAN].hand.find((h) => h.uid === action.uid)?.cardId;
     return cardId ? { index, uid: action.uid, cardId } : null;
   });
+  // Planned Shifts that land in this lane, by slot.
+  const shifts = new Map<number, { index: number; unit: ViewUnit }>();
+  plan.forEach((a, index) => {
+    if (a.type !== 'shift' || a.lane !== lane) return;
+    for (const l of view.lanes)
+      for (const u of l.slots[HUMAN]) if (u?.uid === a.uid) shifts.set(a.slot, { index, unit: u });
+  });
   // Soak order of this side, planned units included. Only worth showing with two or more.
   const entries = units.flatMap((u, slot) => {
     const p = planned[slot];
     if (u) return [{ slot, guard: u.guard }];
     if (p) return [{ slot, guard: getCard(p.cardId).keywords.includes('guard') }];
+    const sh = shifts.get(slot);
+    if (sh) return [{ slot, guard: sh.unit.guard }];
     return [];
   });
   const rankOf = (slot: number): number | null => {
@@ -224,6 +286,7 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
       {units.map((u, slot) => {
         const key = `slot:${lane}:${slot}`;
         const p = planned[slot];
+        const sh = shifts.get(slot);
         return (
           <div
             key={slot}
@@ -241,6 +304,13 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
                 rank={rankOf(slot)}
                 forecast={forecast?.units[p.uid]}
                 onTap={() => unplan(p.index)}
+              />
+            )}
+            {sh && !u && (
+              <ShiftGhost
+                unit={sh.unit}
+                laneName={['left', 'centre', 'right'][lane]!}
+                onTap={() => unplan(sh.index)}
               />
             )}
           </div>

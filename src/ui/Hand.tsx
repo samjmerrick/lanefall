@@ -15,13 +15,14 @@ function laneName(lane: number) {
 }
 
 function describeTarget(a: PlannedAction, unitName: (uid: number) => string): string {
+  if (a.type === 'shift') return ` → ${laneName(a.lane)}`;
   if (a.type !== 'playSpell') return '';
   if (a.target.kind === 'lane') return ` → ${laneName(a.target.lane)}`;
   if (a.target.kind === 'unit') return ` → ${unitName(a.target.uid)}`;
   return '';
 }
 
-/** Spells queued this turn, shown above the hand; tap one to take it back. */
+/** Spells and Shifts queued this turn, shown above the hand; tap one to take it back. */
 function QueuedSpells() {
   const game = useMatch((s) => s.game);
   const view = useMatch((s) => s.view);
@@ -37,15 +38,21 @@ function QueuedSpells() {
   };
   const spells = game.players[HUMAN].plan
     .map((a, index) => ({ a, index }))
-    .filter(({ a }) => a.type === 'playSpell');
+    .filter(({ a }) => a.type !== 'playUnit');
   if (spells.length === 0) return null;
   return (
     <div className="queued" aria-label="Queued spells">
       {spells.map(({ a, index }) => {
         const card = hand.find((h) => h.uid === a.uid);
+        const shift = a.type === 'shift';
         return (
-          <button key={a.uid} type="button" className="queued__chip" onClick={() => unplan(index)}>
-            {card ? getCard(card.cardId).name : '?'}
+          <button
+            key={a.uid}
+            type="button"
+            className={`queued__chip${shift ? ' queued__chip--shift' : ''}`}
+            onClick={() => unplan(index)}
+          >
+            {shift ? `Shift ${unitName(a.uid)}` : card ? getCard(card.cardId).name : '?'}
             {describeTarget(a, unitName)} ✕
           </button>
         );
@@ -165,6 +172,7 @@ export function DragLayer() {
   const drag = useDrag((s) => s.drag);
   if (!drag || !drag.moved) return null;
   const isSpell = getCard(drag.cardId).type === 'spell';
+  const small = isSpell || drag.shift === true;
   // A spell's arrow snaps onto the target it would hit; the card itself shrinks out of the way.
   const tip = (isSpell && drag.hoverAt) || { x: drag.x, y: drag.y - LIFT };
   return (
@@ -176,11 +184,11 @@ export function DragLayer() {
         </svg>
       )}
       <div
-        className={`drag-card${isSpell ? ' drag-card--spell' : ''}`}
+        className={`drag-card${isSpell ? ' drag-card--spell' : ''}${drag.shift ? ' drag-card--shift' : ''}`}
         style={{
           transform: isSpell
             ? `translate(${drag.x}px, ${drag.y}px) translate(-50%, -50%) scale(0.55)`
-            : `translate(${drag.x}px, ${drag.y - LIFT}px) translate(-50%, -50%)`,
+            : `translate(${drag.x}px, ${drag.y - LIFT}px) translate(-50%, -50%)${small ? ' scale(0.55)' : ''}`,
         }}
       >
         <CardView cardId={drag.cardId} />
