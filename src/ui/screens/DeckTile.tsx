@@ -1,5 +1,5 @@
 import { deckFactions, getCard } from '../../engine';
-import { CardEmblem } from '../CardView';
+import { CardArt } from '../CardView';
 import { GLYPHS } from '../factions';
 
 export function DeckTile({
@@ -17,7 +17,7 @@ export function DeckTile({
   return (
     <span className="deck-tile">
       <span className={`deck-tile__cover faction-${card.faction}`}>
-        <CardEmblem id={card.id} faction={card.faction} />
+        <CardArt id={card.id} faction={card.faction} />
       </span>
       <span className="deck-tile__text">
         <span className="deck-tile__name">{name}</span>

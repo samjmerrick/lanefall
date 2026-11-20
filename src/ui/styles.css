@@ -340,9 +340,57 @@ button {
   color: #5ee38a;
 }
 
-.token .emblem {
+.token .emblem,
+.token .card-art {
   width: 70%;
   height: 70%;
+}
+
+/* Per-card illustration: fills the same box as the emblem; the glyph badge keeps factions distinguishable
+   without colour and sits top-right, clear of cost gem, stat corners and token marks. */
+.card-art {
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.card-art__glyph {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 2px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--text);
+  background: color-mix(in srgb, var(--faction) 70%, #000);
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.card--large .card-art__glyph {
+  top: 4px;
+  right: 4px;
+  min-width: 22px;
+  height: 22px;
+  font-size: 14px;
+  border-radius: 7px;
+}
+
+.deck-tile__cover .card-art,
+.deck-list__cover .card-art {
+  width: 100%;
+  height: 100%;
+}
+
+.deck-tile__cover .card-art__glyph,
+.deck-list__cover .card-art__glyph {
+  display: none;
 }
 
 .token__power,
@@ -454,7 +502,12 @@ button {
   min-height: 0;
 }
 
-.card__art .emblem {
+.card__art {
+  position: relative;
+}
+
+.card__art .emblem,
+.card__art .card-art {
   width: 64px;
   height: 64px;
 }
@@ -758,7 +811,8 @@ button {
   padding: 10px;
 }
 
-.card--large .card__art .emblem {
+.card--large .card__art .emblem,
+.card--large .card__art .card-art {
   width: 120px;
   height: 120px;
 }
