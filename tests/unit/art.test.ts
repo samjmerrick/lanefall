@@ -12,7 +12,7 @@ import events from '../../src/content/events.json';
 const REQUIRE_FULL_COVERAGE = true;
 
 /** Same for run content (heroes, enemies, relics, lane effects, events). Warns only while false. */
-const REQUIRE_RUN_ART = false;
+const REQUIRE_RUN_ART = true;
 
 const ART_DIR = join(__dirname, '../../src/content/art');
 const MAX_BYTES = 2048;
