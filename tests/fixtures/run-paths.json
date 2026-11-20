@@ -63,6 +63,37 @@
       "tide-storm-petrel",
       "tide-tidal-knight",
       "tide-tidecaller"
+    ],
+    "ascension": 0,
+    "relics": [
+      "relic-ember-coal",
+      "relic-iron-heart",
+      "relic-scout-map",
+      "relic-whetstone",
+      "relic-thorn-charm",
+      "relic-healing-salve",
+      "relic-war-banner",
+      "relic-merchant-purse",
+      "relic-silver-tongue",
+      "relic-keen-eye",
+      "relic-lucky-coin",
+      "relic-golden-idol",
+      "relic-ledger",
+      "relic-gold-tooth",
+      "relic-heart-locket",
+      "relic-tome",
+      "relic-seer-orb",
+      "relic-amber",
+      "relic-cinder-charm",
+      "relic-pocket-watch",
+      "relic-sun-medallion",
+      "relic-thorn-crown",
+      "relic-frost-sigil",
+      "relic-war-drum",
+      "relic-oak-charm",
+      "relic-ironwood-totem",
+      "relic-quiver",
+      "relic-moonstone"
     ]
   },
   "paths": {
@@ -150,10 +181,14 @@
       { "t": "move", "col": 0 },
       { "t": "matchEnd", "won": true },
       { "t": "nextAct", "faction": 0 },
-      { "t": "move", "col": 0 },
+      { "t": "move", "col": 1 },
       { "t": "matchEnd", "won": true },
       { "t": "pick", "index": null },
-      { "t": "move", "col": 0 }
+      { "t": "move", "col": 1 },
+      { "t": "leave" },
+      { "t": "move", "col": 1 },
+      { "t": "leave" },
+      { "t": "move", "col": 1 }
     ]
   }
 }

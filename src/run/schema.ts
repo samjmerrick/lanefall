@@ -6,6 +6,10 @@ export const RunConfigSchema = z.object({
   heroId: z.string(),
   /** Card ids the player owned at run start; card rewards and shops draw from these. */
   pool: z.array(z.string()),
+  /** Ascension level 0..10; rules 1..n are in force (see `src/content/ascension.json`). */
+  ascension: z.number().int().min(0).max(10),
+  /** Relic ids that can appear in this run: the profile's relic pool at run start. */
+  relics: z.array(z.string()),
 });
 
 const index = z.number().int().min(0);

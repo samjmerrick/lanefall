@@ -22,6 +22,8 @@ export function RunSummaryScreen() {
       <dl className="summary">
         <dt>Hero</dt>
         <dd>{getHero(run.config.heroId).name}</dd>
+        <dt>Ascension</dt>
+        <dd>{run.config.ascension > 0 ? run.config.ascension : 'None'}</dd>
         <dt>Nodes cleared</dt>
         <dd>{run.nodesCleared}</dd>
         <dt>Bosses beaten</dt>

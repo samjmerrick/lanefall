@@ -2,7 +2,16 @@
 // choice); this store keeps the replayed RunState for rendering and hands matches to the match store.
 import { create } from 'zustand';
 import type { GameState } from '../engine';
-import { applyChoice, replayRun, runMatch, runXp, type RunChoice, type RunState } from '../run';
+import {
+  applyChoice,
+  recordRunResult,
+  relicPool,
+  replayRun,
+  runMatch,
+  runXp,
+  type RunChoice,
+  type RunState,
+} from '../run';
 import { ownedCards, useApp } from './app';
 import { randomSeed, urlSeed } from './settings';
 import { useMatch } from './store';
@@ -13,7 +22,7 @@ interface RunStore {
   summary: RunState | null;
   error: string | null;
 
-  begin(heroId: string): void;
+  begin(heroId: string, ascension?: number): void;
   /** Rebuilds the active run from the profile and opens it (or its match). */
   resume(): void;
   choose(choice: RunChoice): void;
@@ -27,21 +36,10 @@ interface RunStore {
 export const useRun = create<RunStore>((set, get) => {
   function finish(run: RunState) {
     const won = run.phase.kind === 'over' && run.phase.won;
-    useApp.getState().update((p) => {
-      const prev = p.stats.runs[run.config.heroId] ?? { played: 0, won: 0 };
-      return {
-        ...p,
-        xp: p.xp + runXp(run),
-        activeRun: null,
-        stats: {
-          ...p.stats,
-          runs: {
-            ...p.stats.runs,
-            [run.config.heroId]: { played: prev.played + 1, won: prev.won + (won ? 1 : 0) },
-          },
-        },
-      };
-    });
+    useApp.getState().awardXp(runXp(run), (p) => ({
+      ...recordRunResult(p, run.config.heroId, run.config.ascension, won),
+      activeRun: null,
+    }));
     set({ run: null, summary: run });
     useApp.getState().go('runSummary');
   }
@@ -51,9 +49,16 @@ export const useRun = create<RunStore>((set, get) => {
     summary: null,
     error: null,
 
-    begin(heroId) {
+    begin(heroId, ascension = 0) {
       const profile = useApp.getState().profile;
-      const config = { seed: urlSeed() ?? randomSeed(), heroId, pool: [...ownedCards(profile)].sort() };
+      const config = {
+        seed: urlSeed() ?? randomSeed(),
+        heroId,
+        pool: [...ownedCards(profile)].sort(),
+        // Only levels the profile has opened can be played.
+        ascension: Math.min(ascension, profile.ascension.unlocked),
+        relics: relicPool(profile),
+      };
       useApp.getState().update((p) => ({ ...p, activeRun: { config, choices: [], match: null } }));
       set({ run: replayRun(config, []), error: null });
       useApp.getState().go('run');

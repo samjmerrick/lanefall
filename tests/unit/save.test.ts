@@ -3,6 +3,7 @@ import fixtureV1 from '../fixtures/save-v1.json';
 import fixtureV2 from '../fixtures/save-v2.json';
 import fixtureV3 from '../fixtures/save-v3.json';
 import {
+  CURRENT_SCHEMA,
   exportSaveCode,
   importSaveCode,
   loadProfile,
@@ -13,6 +14,7 @@ import {
   SLOT_KEYS,
   type Profile,
 } from '../../src/save';
+import { RELICS, replayRun, unlockedIds } from '../../src/run';
 
 function sample(): Profile {
   const p = newProfile();
@@ -32,7 +34,7 @@ function sample(): Profile {
 describe('schema and migrations', () => {
   it('migrates the stored v1 sample save to the current schema', () => {
     const p = migrate(fixtureV1);
-    expect(p.schemaVersion).toBe(3);
+    expect(p.schemaVersion).toBe(CURRENT_SCHEMA);
     expect(p.activeRun).toBeNull();
     expect(p.stats.runs).toEqual({});
     expect(p.decks[0]!.name).toBe('Fixture Deck');
@@ -41,15 +43,45 @@ describe('schema and migrations', () => {
 
   it('migrates the stored v2 sample save to v3, dropping its run in progress', () => {
     const p = migrate(fixtureV2);
-    expect(p.schemaVersion).toBe(3);
+    expect(p.schemaVersion).toBe(CURRENT_SCHEMA);
     expect(p.stats.runs['hero-pyra']).toEqual({ played: 2, won: 1 });
     expect(p.activeRun).toBeNull();
   });
 
-  it('loads the stored v3 sample save with a run in progress', () => {
+  it('migrates the stored v3 sample save to v4: level and unlocks from XP, Ascension, run config', () => {
     const p = migrate(fixtureV3);
-    expect(p.schemaVersion).toBe(3);
-    expect(p.activeRun!.choices).toEqual([{ t: 'move', col: 1 }]);
+    expect(p.schemaVersion).toBe(CURRENT_SCHEMA);
+    // 120 XP is below the 150 needed for level 2 (the old save had a stale level).
+    expect(p.level).toBe(1);
+    expect(p.unlocks).toEqual([]);
+    // It had a run win, so Ascension 1 opens.
+    expect(p.ascension).toEqual({ best: 0, unlocked: 1 });
+    const run = p.activeRun!;
+    expect(run.choices).toEqual([{ t: 'move', col: 1 }]);
+    expect(run.config.ascension).toBe(0);
+    expect(run.config.relics).toEqual(RELICS.map((r) => r.id));
+    // The run still replays, with every relic in its pool as before.
+    expect(replayRun(run.config, run.choices).step).toBe(1);
+    expect(() =>
+      migrate({ ...fixtureV3, activeRun: { ...fixtureV3.activeRun, choices: [{ t: 'fly' }] } }),
+    ).toThrow();
+  });
+
+  it('the v3 migration keeps unlocks consistent with a high XP total and no runs won', () => {
+    const p = migrate({ ...fixtureV3, xp: 100000, stats: { quickPlay: {}, runs: {} }, activeRun: null });
+    expect(p.level).toBe(30);
+    expect(p.unlocks).toEqual(unlockedIds(30));
+    expect(p.ascension).toEqual({ best: 0, unlocked: 0 });
+    expect(p.activeRun).toBeNull();
+    expect(migrate({ ...fixtureV3, ascension: { best: 10 } }).ascension).toEqual({ best: 10, unlocked: 10 });
+  });
+
+  it('save codes round-trip a v4 profile', async () => {
+    const p = migrate(fixtureV3);
+    expect(await importSaveCode(await exportSaveCode(p))).toEqual(p);
+    expect(() =>
+      migrate({ ...fixtureV3, activeRun: { ...fixtureV3.activeRun, choices: [{ t: 'fly' }] } }),
+    ).toThrow();
     expect(() =>
       migrate({ ...fixtureV3, activeRun: { ...fixtureV3.activeRun, choices: [{ t: 'fly' }] } }),
     ).toThrow();

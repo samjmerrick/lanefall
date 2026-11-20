@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { GameState } from '../engine';
 import { RunChoiceSchema, RunConfigSchema } from '../run/schema';
 
-export const CURRENT_SCHEMA = 3;
+export const CURRENT_SCHEMA = 4;
 export const MAX_SAVED_DECKS = 20;
 export const MAX_DECK_NAME = 24;
 
@@ -49,7 +49,12 @@ export const ProfileSchema = z.object({
     /** Run results per hero id. */
     runs: z.record(z.string(), RecordSchema),
   }),
-  ascension: z.object({ best: z.number().int().min(0) }),
+  ascension: z.object({
+    /** The highest Ascension level won. */
+    best: z.number().int().min(0).max(10),
+    /** The highest level that can be picked: 0 until the first full run win. */
+    unlocked: z.number().int().min(0).max(10),
+  }),
   activeRun: ActiveRunSchema.nullable(),
 });
 
@@ -67,7 +72,7 @@ export function newProfile(): Profile {
     nextDeckId: 1,
     settings: { fastAnimations: false, reduceMotion: false },
     stats: { quickPlay: {}, runs: {} },
-    ascension: { best: 0 },
+    ascension: { best: 0, unlocked: 0 },
     activeRun: null,
   };
 }

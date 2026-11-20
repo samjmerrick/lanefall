@@ -1,7 +1,7 @@
 // The damage counter that travels through a lane's combat. Pure presentation: the store decides where
 // each counter is and what it shows, driven by the engine's events; this only draws it there.
 import { AnimatePresence, motion } from 'motion/react';
-import { useApp } from './app';
+import { useReduceMotion } from './useReduceMotion';
 import { animationScale } from './settings';
 import { useMatch, type CombatCounter, type CounterTarget } from './store';
 
@@ -21,17 +21,6 @@ function centreOf(t: CounterTarget): { x: number; y: number } | null {
   if (!el) return null;
   const r = el.getBoundingClientRect();
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-}
-
-function useReduceMotion(): boolean {
-  const setting = useApp((s) => s.profile.settings.reduceMotion);
-  let system = false;
-  try {
-    system = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  } catch {
-    // no matchMedia: treat as no preference
-  }
-  return setting || system;
 }
 
 function Counter({ c, sibling, reduce }: { c: CombatCounter; sibling: boolean; reduce: boolean }) {

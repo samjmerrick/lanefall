@@ -12,7 +12,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine`, `src/run` and `src/save`
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
-- `pnpm sim:run [n] [easy|normal|hard]` — bot roguelike runs per starter hero (win rate, nodes cleared)
+- `pnpm sim:run [n] [easy|normal|hard] [ascension]` — bot roguelike runs per hero, fully unlocked profile (win rate, nodes cleared)
 - `pnpm content:text` — rewrite every card's `text` in `cards.json` from its data (`src/engine/text.ts`)
 - `pnpm content:paths` — regenerate `tests/fixtures/run-paths.json` (e2e run paths) after run or content changes
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)
@@ -45,6 +45,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
   `<id>+` (`upgradeCard` in `src/engine/content.ts`). `tests/unit/cards.test.ts` plays every card and its upgrade.
 - Append new cards to the end of `cards.json`: deck share codes index the collectible list by position.
 - AI difficulties: Easy, Normal, Hard (`src/ai/hard.ts`). Hard is deterministic unless given a clock (the UI passes one, 500 ms).
+- Meta progression is `src/run/meta.ts` (levels, `unlocks.json`, `ascension.json`, `grantXp`, `recordRunResult`, `statsSummary`). `RunConfig` holds the Ascension level and the relic pool.
 - Run content also includes `events.json`; run phases are map, match, reward, shop, rest, treasure, event, actCleared, over.
 - Tests build boards with `tests/unit/helpers.ts` (`setup`, `place`, `give`, `plan`, `resolve`).
 

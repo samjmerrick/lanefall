@@ -1,0 +1,12 @@
+[
+  { "id": "ascension-1", "level": 1, "text": "Elites have +2 HP." },
+  { "id": "ascension-2", "level": 2, "text": "Shops cost 25% more." },
+  { "id": "ascension-3", "level": 3, "text": "Start with 15 less gold." },
+  { "id": "ascension-4", "level": 4, "text": "Normal fight enemies have +3 HP." },
+  { "id": "ascension-5", "level": 5, "text": "Fights give 25% less gold." },
+  { "id": "ascension-6", "level": 6, "text": "Bosses have +5 HP." },
+  { "id": "ascension-7", "level": 7, "text": "Act 1 fights use Normal AI." },
+  { "id": "ascension-8", "level": 8, "text": "Rests can no longer restore a Heart." },
+  { "id": "ascension-9", "level": 9, "text": "Card rewards offer 2 cards." },
+  { "id": "ascension-10", "level": 10, "text": "Start with 2 Hearts." }
+]

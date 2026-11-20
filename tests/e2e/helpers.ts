@@ -1,4 +1,6 @@
 import { expect, type Page } from '@playwright/test';
+import { deflateRawSync } from 'node:zlib';
+import type { Profile } from '../../src/save';
 
 /** Collects console errors and page errors for the test to assert on. */
 export function watchErrors(page: Page): string[] {
@@ -69,4 +71,38 @@ export async function savedJson(page: Page): Promise<string> {
         };
       }),
   );
+}
+
+/** A new-game profile (src/save/profile.ts newProfile; not imported because that module needs a bundler for its JSON). */
+export const newProfile = (): Profile => ({
+  schemaVersion: 4,
+  xp: 0,
+  level: 1,
+  unlocks: [],
+  decks: [],
+  nextDeckId: 1,
+  settings: { fastAnimations: false, reduceMotion: false },
+  stats: { quickPlay: {}, runs: {} },
+  ascension: { best: 0, unlocked: 0 },
+  activeRun: null,
+});
+
+/** A save code for `profile` (format in src/save/code.ts; built here because that module needs a bundler). */
+export function saveCode(profile: Profile): string {
+  const json = JSON.stringify(profile);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < json.length; i++) h = Math.imul(h ^ json.charCodeAt(i), 0x01000193);
+  const sum = (h >>> 0).toString(16).padStart(8, '0');
+  return `LS1.${deflateRawSync(Buffer.from(json)).toString('base64url')}.${sum}`;
+}
+
+/** Replaces the saved profile by pasting a save code in Settings (the app's own import path). */
+export async function loadProfile(page: Page, profile: Profile, query = '?seed=7&speed=0.05') {
+  const code = saveCode(profile);
+  await openMenu(page, query);
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Paste save code' }).fill(code);
+  await page.getByRole('button', { name: 'Paste save code' }).click();
+  await page.getByRole('button', { name: 'Replace my save with this code' }).click();
+  await expect(page.getByRole('main', { name: 'Main menu' })).toBeVisible();
 }

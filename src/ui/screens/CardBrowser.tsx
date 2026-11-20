@@ -4,6 +4,7 @@ import { CardView } from '../CardView';
 import { GLYPHS } from '../factions';
 import { KEYWORD_NAMES } from '../glossary';
 import { useMatch } from '../store';
+import { unlockLevel } from '../../run';
 import { useLongPress } from '../useLongPress';
 
 export interface Filters {
@@ -130,16 +131,18 @@ function GridCard({
   const showDetail = useMatch((s) => s.showDetail);
   const press = useLongPress(onTap, () => showDetail(id));
   const name = getCard(id).name;
+  const level = unlockLevel(id);
+  const lockText = level ? `Unlocks at level ${level}` : 'Locked';
   return (
     <button
       type="button"
       className={`grid-card${locked ? ' grid-card--locked' : ''}${count ? ' grid-card--in-deck' : ''}`}
-      aria-label={`${name}${locked ? ' (locked)' : ''}${count !== undefined ? `, ${count} in deck` : ''}`}
+      aria-label={`${name}${locked ? ` (locked, ${lockText.toLowerCase()})` : ''}${count !== undefined ? `, ${count} in deck` : ''}`}
       data-card-id={id}
       {...press}
     >
       <CardView cardId={id} />
-      {locked && <span className="grid-card__lock">Locked · unlock track</span>}
+      {locked && <span className="grid-card__lock">{lockText}</span>}
       {count !== undefined && count > 0 && (
         <span className="grid-card__count">
           {count}/{limit}

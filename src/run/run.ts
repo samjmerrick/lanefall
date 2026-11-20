@@ -4,9 +4,10 @@ import { getCard, isUpgraded, UPGRADED, type Faction, type MatchConfig } from '.
 import { FACTIONS } from '../engine/schema';
 import { nextInt, seedRng, shuffle, type RngState } from '../engine/rng';
 import type { AiHooks, Difficulty } from '../ai';
-import { ENEMIES, EVENTS, RELICS, getEnemy, getEvent, getHero, getRelic, type EventOutcome } from './content';
+import { ENEMIES, EVENTS, getEnemy, getEvent, getHero, getRelic, type EventOutcome } from './content';
 import type { RunChoice, RunConfig } from './schema';
 import { MAP_ROWS, generateMap, type MapNode, type RunMap } from './map';
+import { ascensionEnemyModifiers } from './meta';
 
 export const START_HEARTS = 3;
 export const START_GOLD = 30;
@@ -21,6 +22,8 @@ export const SHOP_RELICS = 2;
 /** Gold for an empty treasure chest (every relic already owned). */
 export const TREASURE_GOLD = 50;
 export const ACTS = 3;
+/** Ascension 3: gold lost at the start of a run. */
+export const ASCENSION_GOLD_PENALTY = 15;
 const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, legendary: 3 } as const;
 
 export type { RunConfig, RunChoice };
@@ -82,8 +85,9 @@ export function startRun(config: RunConfig): RunState {
     map,
     row: -1,
     col: 0,
-    hearts: START_HEARTS,
-    gold: START_GOLD,
+    // Ascension 10 starts with 2 Hearts; the limit stays 3.
+    hearts: config.ascension >= 10 ? START_HEARTS - 1 : START_HEARTS,
+    gold: config.ascension >= 3 ? START_GOLD - ASCENSION_GOLD_PENALTY : START_GOLD,
     deck: [...hero.starterDeck],
     relics: [],
     secondFaction: null,
@@ -140,12 +144,29 @@ function roll(r: RunState, min: number, max: number): number {
   return v;
 }
 
+/** A shop price: relic discounts first (rounded), then Ascension 2's 25% markup (rounded up). */
 function price(r: RunState, base: number): number {
-  return Math.round((base * (100 - Math.min(90, runBonus(r, 'shopDiscount')))) / 100);
+  const discounted = Math.round((base * (100 - Math.min(90, runBonus(r, 'shopDiscount')))) / 100);
+  return r.config.ascension >= 2 ? Math.ceil((discounted * 125) / 100) : discounted;
+}
+
+/** What removing a card costs in a shop. */
+export function removePrice(r: RunState): number {
+  return price(r, REMOVE_PRICE);
+}
+
+/** Gold from a fight reward; Ascension 5 takes 25% off (rounded down). */
+function fightGold(r: RunState, gold: number): number {
+  return r.config.ascension >= 5 ? Math.floor((gold * 75) / 100) : gold;
+}
+
+/** Cards offered after a fight: 3 (2 from Ascension 9), plus relic bonuses. */
+export function cardChoices(r: RunState): number {
+  return (r.config.ascension >= 9 ? CARD_CHOICES - 1 : CARD_CHOICES) + runBonus(r, 'cardChoices');
 }
 
 function unownedRelics(r: RunState): string[] {
-  return RELICS.map((x) => x.id).filter((id) => !r.relics.includes(id));
+  return r.config.relics.filter((id) => !r.relics.includes(id));
 }
 
 function grantRelic(r: RunState, id: string): void {
@@ -295,7 +316,7 @@ function matchEnded(r: RunState, won: boolean): void {
       r.phase = { kind: 'over', won: true, abandoned: false };
       return;
     }
-    const gold = roll(r, 40, 60) + runBonus(r, 'fightGold');
+    const gold = fightGold(r, roll(r, 40, 60) + runBonus(r, 'fightGold'));
     r.gold += gold;
     const relicId = randomRelic(r);
     const hero = getHero(r.config.heroId).faction;
@@ -304,8 +325,8 @@ function matchEnded(r: RunState, won: boolean): void {
     return;
   }
   const relicId = node.type === 'elite' ? randomRelic(r) : null;
-  const cards = draw(r, cardPool(r), CARD_CHOICES + runBonus(r, 'cardChoices'));
-  const gold = roll(r, 15, 25) + (node.type === 'elite' ? 15 : 0) + runBonus(r, 'fightGold');
+  const cards = draw(r, cardPool(r), cardChoices(r));
+  const gold = fightGold(r, roll(r, 15, 25) + (node.type === 'elite' ? 15 : 0) + runBonus(r, 'fightGold'));
   r.gold += gold;
   r.phase = { kind: 'reward', cards, gold, relicId };
 }
@@ -346,15 +367,16 @@ export function applyChoice(state: RunState, choice: RunChoice): RunState {
       else grantRelic(r, item.id);
     } else if (choice.t === 'removeCard') {
       if (phase.removed) fail('Only one card can be removed per shop');
-      if (REMOVE_PRICE > r.gold) fail('Not enough gold');
+      if (removePrice(r) > r.gold) fail('Not enough gold');
       if (r.deck.length <= 1) fail('Your deck needs at least one card');
       if (!r.deck[choice.index]) fail('No such card');
       r.deck.splice(choice.index, 1);
-      r.gold -= REMOVE_PRICE;
+      r.gold -= removePrice(r);
       phase.removed = true;
     } else fail(`Cannot ${choice.t} in a shop`);
   } else if (phase.kind === 'rest') {
     if (choice.t === 'rest') {
+      if (r.config.ascension >= 8) fail('Rests can only upgrade a card at this Ascension');
       if (r.hearts >= maxHearts(r)) fail('Hearts are already full');
       r.hearts++;
     } else if (choice.t === 'upgrade') {
@@ -417,10 +439,15 @@ export function runMatch(r: RunState): RunMatch {
   return {
     config: {
       decks: [r.deck, enemy.deck],
-      modifiers: [[...hero.modifiers, ...r.relics.flatMap((id) => getRelic(id).modifiers)], enemy.modifiers],
+      modifiers: [
+        [...hero.modifiers, ...r.relics.flatMap((id) => getRelic(id).modifiers)],
+        [...enemy.modifiers, ...ascensionEnemyModifiers(r.config.ascension, enemy)],
+      ],
     },
     seed: r.phase.seed,
-    difficulty: enemy.difficulty,
+    // Ascension 7: act 1 enemies never use Easy AI.
+    difficulty:
+      r.config.ascension >= 7 && enemy.act === 1 && enemy.difficulty === 'easy' ? 'normal' : enemy.difficulty,
     hooks: enemy.ai,
     enemyId: enemy.id,
   };

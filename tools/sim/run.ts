@@ -3,7 +3,7 @@ import type { Difficulty } from '../../src/ai';
 import { nextInt, seedRng, type RngState } from '../../src/engine/rng';
 import { getEvent } from '../../src/run/content';
 import {
-  REMOVE_PRICE,
+  removePrice,
   applyChoice,
   canChoose,
   maxHearts,
@@ -38,12 +38,13 @@ export function botChoice(r: RunState, rng: RngState): [RunChoice, RngState] {
     case 'shop': {
       const i = p.stock.findIndex((s) => !s.sold && s.price <= r.gold);
       if (i >= 0) return [{ t: 'buy', index: i }, rng];
-      if (!p.removed && r.gold >= REMOVE_PRICE && r.deck.length > 8)
+      if (!p.removed && r.gold >= removePrice(r) && r.deck.length > 8)
         return [{ t: 'removeCard', index: 0 }, rng];
       return [{ t: 'leave' }, rng];
     }
     case 'rest': {
-      if (r.hearts < maxHearts(r)) return [{ t: 'rest' }, rng];
+      // Ascension 8 and up: a rest can only upgrade.
+      if (r.hearts < maxHearts(r) && r.config.ascension < 8) return [{ t: 'rest' }, rng];
       const up = upgradable(r);
       return [up.length > 0 ? { t: 'upgrade', index: up[0]! } : { t: 'leave' }, rng];
     }
