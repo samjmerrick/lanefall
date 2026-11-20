@@ -64,7 +64,12 @@ function spellAction(card: CardDef, uid: number, b: Board): PlannedAction {
 }
 
 /** Uids a selector may pick on the standard board; `random` selectors pick exactly one of them. */
-function expectedUnits(sel: string, card: CardDef, b: Board, self: number): { uids: number[]; random: boolean } {
+function expectedUnits(
+  sel: string,
+  card: CardDef,
+  b: Board,
+  self: number,
+): { uids: number[]; random: boolean } {
   const friendlyInLane = [b.ally.uid, ...(card.type === 'unit' ? [self] : [])];
   const enemies = [b.foe.uid, b.farFoe.uid];
   const sets: Record<string, number[]> = {
@@ -89,7 +94,11 @@ function expectedUnits(sel: string, card: CardDef, b: Board, self: number): { ui
 /** Checks one primitive against the events of its trigger window. */
 function checkPrimitive(a: Primitive, events: GameEvent[], card: CardDef, b: Board, self: number) {
   const where = `${card.id} ${a.op}`;
-  const unitsHit = (match: (e: GameEvent, uid: number) => boolean, sel: string, opts: { damaged?: boolean } = {}) => {
+  const unitsHit = (
+    match: (e: GameEvent, uid: number) => boolean,
+    sel: string,
+    opts: { damaged?: boolean } = {},
+  ) => {
     const { uids, random } = expectedUnits(sel, card, b, self);
     // Heals only show on units that were damaged (the card's own new unit is not).
     const candidates = opts.damaged ? uids.filter((u) => u !== self || card.type !== 'unit') : uids;
@@ -202,7 +211,8 @@ function testCard(id: string) {
       (e) => e.type === 'UnitDied' && e.uid === unit.uid,
       (e) => e.type === 'LaneCombat' || e.type === 'RoundEnded',
     );
-    for (const e of card.effects) if (e.trigger === 'lastBreath') checkPrimitive(e.action, window, card, b, unit.uid);
+    for (const e of card.effects)
+      if (e.trigger === 'lastBreath') checkPrimitive(e.action, window, card, b, unit.uid);
     return;
   }
 

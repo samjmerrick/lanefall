@@ -73,7 +73,10 @@ export const EventSchema = z.object({
         result: z.string().min(1),
         /** Paid up front; a Heart cost can never end the run (the choice needs Hearts left over). */
         cost: z
-          .object({ gold: z.number().int().positive().optional(), hearts: z.number().int().positive().optional() })
+          .object({
+            gold: z.number().int().positive().optional(),
+            hearts: z.number().int().positive().optional(),
+          })
           .default({}),
         outcomes: z.array(EventOutcomeSchema),
       }),

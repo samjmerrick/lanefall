@@ -1,5 +1,7 @@
 import type { NodeType } from '../run';
 
+export type { NodeType };
+
 export const NODE_LABEL: Record<NodeType, string> = {
   fight: 'Fight',
   elite: 'Elite',

@@ -39,7 +39,9 @@ describe('Hard AI', () => {
     times.sort((x, y) => x - y);
     const median = times[Math.floor(times.length / 2)]!;
     const p90 = times[Math.floor(times.length * 0.9)]!;
-    console.log(`Hard AI full search: median ${median.toFixed(0)} ms, p90 ${p90.toFixed(0)} ms, worst ${times.at(-1)!.toFixed(0)} ms`);
+    console.log(
+      `Hard AI full search: median ${median.toFixed(0)} ms, p90 ${p90.toFixed(0)} ms, worst ${times.at(-1)!.toFixed(0)} ms`,
+    );
     expect(times.at(-1)!).toBeLessThan(HARD_BUDGET_MS);
   });
 
@@ -64,9 +66,13 @@ describe('Hard AI', () => {
     let wins = 0;
     let losses = 0;
     for (let seed = 1; seed <= 40; seed++) {
-      const decks: [string[], string[]] = [factionDeck(FACTIONS[seed % 5]!), factionDeck(FACTIONS[(seed + 2) % 5]!)];
+      const decks: [string[], string[]] = [
+        factionDeck(FACTIONS[seed % 5]!),
+        factionDeck(FACTIONS[(seed + 2) % 5]!),
+      ];
       const hardSeat = seed % 2;
-      const order: ['hard', 'normal'] | ['normal', 'hard'] = hardSeat === 0 ? ['hard', 'normal'] : ['normal', 'hard'];
+      const order: ['hard', 'normal'] | ['normal', 'hard'] =
+        hardSeat === 0 ? ['hard', 'normal'] : ['normal', 'hard'];
       const { final } = playBotMatch({ decks }, seed, order);
       if (final.result?.winner === hardSeat) wins++;
       else if (final.result?.winner !== null) losses++;

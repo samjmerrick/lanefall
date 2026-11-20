@@ -210,7 +210,9 @@ function applyOutcome(r: RunState, o: EventOutcome): string {
     }
     case 'upgrade': {
       const picks = draw(r, upgradable(r), o.count);
-      return picks.length === 0 ? 'Nothing to upgrade' : picks.map((i) => `Upgraded ${getCard(upgradeAt(r, i)).name}`).join(', ');
+      return picks.length === 0
+        ? 'Nothing to upgrade'
+        : picks.map((i) => `Upgraded ${getCard(upgradeAt(r, i)).name}`).join(', ');
     }
     case 'remove': {
       const picks = draw(

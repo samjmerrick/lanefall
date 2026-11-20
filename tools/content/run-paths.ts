@@ -16,7 +16,8 @@ const goals: Record<string, Goal> = {
   treasure: (r) => r.phase.kind === 'treasure',
   event: (r) => r.phase.kind === 'event' && r.phase.chosen === null,
   actCleared: (r) => r.phase.kind === 'actCleared',
-  restAfterLoss: (r, c) => r.phase.kind === 'rest' && r.hearts === 2 && c.some((x) => x.t === 'matchEnd' && !x.won),
+  restAfterLoss: (r, c) =>
+    r.phase.kind === 'rest' && r.hearts === 2 && c.some((x) => x.t === 'matchEnd' && !x.won),
 };
 
 /** Choices the search tries from each phase; `lose` makes the first match a loss. */
@@ -31,7 +32,9 @@ function options(r: RunState, lose: boolean): RunChoice[] {
       return [{ t: 'pick', index: null }];
     case 'event': {
       if (p.chosen !== null) return [{ t: 'leave' }];
-      const i = getEvent(p.eventId).choices.findIndex((c) => !c.cost.gold && !c.cost.hearts && canChoose(r, c.cost));
+      const i = getEvent(p.eventId).choices.findIndex(
+        (c) => !c.cost.gold && !c.cost.hearts && canChoose(r, c.cost),
+      );
       return [{ t: 'event', index: i }];
     }
     case 'actCleared':

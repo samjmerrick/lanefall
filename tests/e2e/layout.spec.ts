@@ -39,9 +39,9 @@ for (const vp of VIEWPORTS) {
           await page.getByRole('button', { name: /Show deck list/ }).click();
           await noOverflow();
           await page.screenshot({ path: `test-results/screens/builder-list-${vp.width}x${vp.height}.png` });
-          await page.getByRole('button', { name: 'Back' }).click();
+          await page.getByRole('button', { name: 'Back', exact: true }).click();
         }
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Back', exact: true }).click();
       }
 
       await startMatch(page, { seed: 7 });

@@ -15,10 +15,16 @@ describe('content', () => {
     const cards = collectibleCards();
     expect(cards).toHaveLength(150);
     for (const f of FACTIONS) {
-      expect(cards.filter((c) => c.faction === f), f).toHaveLength(30);
+      expect(
+        cards.filter((c) => c.faction === f),
+        f,
+      ).toHaveLength(30);
       const starters = cards.filter((c) => c.faction === f && c.unlock === 'starter');
       expect(starters, f).toHaveLength(12);
-      expect(starters.every((c) => c.rarity === 'common'), f).toBe(true);
+      expect(
+        starters.every((c) => c.rarity === 'common'),
+        f,
+      ).toBe(true);
     }
     expect(starterCollection().size).toBe(60);
   });
@@ -120,7 +126,8 @@ describe('content', () => {
     ).toBe(true);
     const laneDmg = { op: 'damage', target: 'enemyUnitsInLane', amount: 1 };
     expect(
-      CardSchema.safeParse({ ...base, type: 'spell', effects: [{ trigger: 'spell', action: laneDmg }] }).success,
+      CardSchema.safeParse({ ...base, type: 'spell', effects: [{ trigger: 'spell', action: laneDmg }] })
+        .success,
     ).toBe(false);
     expect(
       CardSchema.safeParse({

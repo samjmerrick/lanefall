@@ -29,7 +29,9 @@ function QueuedSpells() {
   const unitName = (uid: number) => {
     for (const lane of view.lanes)
       for (const side of lane.slots) for (const u of side) if (u?.uid === uid) return getCard(u.cardId).name;
-    return 'unit';
+    // A unit planned this turn is still a hand card.
+    const planned = hand.find((h) => h.uid === uid);
+    return planned ? getCard(planned.cardId).name : 'unit';
   };
   const spells = game.players[HUMAN].plan
     .map((a, index) => ({ a, index }))

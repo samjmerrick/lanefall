@@ -58,7 +58,10 @@ export function cardText(card: CardDef, ctx: TextContext): string {
       case 'target': {
         if (targetNamed) return 'it';
         targetNamed = true;
-        return { enemyUnit: 'an enemy unit', friendlyUnit: 'a friendly unit' }[card.targeting as string] ?? 'a unit';
+        return (
+          { enemyUnit: 'an enemy unit', friendlyUnit: 'a friendly unit' }[card.targeting as string] ??
+          'a unit'
+        );
       }
       case 'friendlyUnitsInLane':
         return `friendly units in ${where}`;
@@ -93,7 +96,9 @@ export function cardText(card: CardDef, ctx: TextContext): string {
       case 'damage':
         return `deal ${a.amount} damage to ${target(a.target)}`;
       case 'heal':
-        return a.amount === 'full' ? `fully heal ${target(a.target)}` : `heal ${target(a.target)} by ${a.amount}`;
+        return a.amount === 'full'
+          ? `fully heal ${target(a.target)}`
+          : `heal ${target(a.target)} by ${a.amount}`;
       case 'buff':
         if (trigger === 'ongoing') return `${target(a.target)} have ${stats(a.power, a.health)}`;
         return `give ${target(a.target)} ${stats(a.power, a.health)}${a.duration === 'round' ? ' this round' : ''}`;

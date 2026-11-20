@@ -33,16 +33,19 @@ async function noOverflow(page: Page) {
 
 const NODES = [
   ['reward', 'Reward'],
+  ['eliteReward', 'Reward'],
   ['shop', 'Shop'],
   ['rest', 'Rest'],
   ['treasure', 'Treasure'],
+  ['event', 'Event'],
+  ['actCleared', 'Act cleared'],
 ] as const;
 
 for (const vp of VIEWPORTS) {
   test.describe(`${vp.width}x${vp.height}`, () => {
     test.use({ viewport: vp, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
 
-    test('reward, shop, rest and treasure screens fit', async ({ page }) => {
+    test('every run node screen fits', async ({ page }) => {
       const errors = watchErrors(page);
       for (const [kind, region] of NODES) {
         await loadRun(page, paths[kind]);
@@ -101,5 +104,47 @@ test.describe('nodes', () => {
     await expect(page.getByLabel('Hearts 2 of 3')).toBeVisible();
     await page.getByRole('region', { name: 'Rest' }).getByRole('button', { name: 'Restore 1 Heart' }).click();
     await expect(page.getByLabel('Hearts 3 of 3')).toBeVisible();
+  });
+
+  test('an elite reward shows its relic', async ({ page }) => {
+    await loadRun(page, paths.eliteReward);
+    const reward = page.getByRole('region', { name: 'Reward' });
+    await expect(reward.locator('.relic')).toHaveCount(1);
+    await expect(page.getByRole('button', { name: /^Relics, [1-9]/ })).toBeVisible();
+  });
+
+  test('an event choice shows its outcome, then returns to the map', async ({ page }) => {
+    await loadRun(page, paths.event);
+    const event = page.getByRole('region', { name: 'Event' });
+    await event.getByRole('button', { disabled: false }).first().click();
+    await expect(event.getByRole('list', { name: 'Outcome' })).toBeVisible();
+    await event.getByRole('button', { name: 'Continue' }).click();
+    await expect(page.getByLabel('Map')).toBeVisible();
+  });
+
+  test('resting can upgrade a card instead', async ({ page }) => {
+    await loadRun(page, paths.rest);
+    await page.getByRole('region', { name: 'Rest' }).getByRole('button', { name: 'Upgrade a card' }).click();
+    const sheet = page.getByRole('dialog', { name: 'Upgrade a card' });
+    await sheet
+      .getByRole('button', { name: /^Upgrade / })
+      .first()
+      .click();
+    await expect(page.getByLabel('Map')).toBeVisible();
+    await page.getByRole('button', { name: /^Deck,/ }).click();
+    await expect(
+      page.getByRole('dialog', { name: /^Deck/ }).getByRole('button', { name: /\+$/ }),
+    ).toHaveCount(1);
+  });
+
+  test('beating the act 1 boss adds a second faction and starts act 2', async ({ page }) => {
+    await loadRun(page, paths.actCleared);
+    const panel = page.getByRole('region', { name: 'Act cleared' });
+    const start = panel.getByRole('button', { name: 'Start act 2' });
+    await expect(start).toBeDisabled();
+    await panel.getByRole('radio', { name: 'Dusk' }).click();
+    await start.click();
+    await expect(page.getByRole('heading', { name: /Act 2/ })).toBeVisible();
+    await expect(page.getByLabel('Map')).toBeVisible();
   });
 });

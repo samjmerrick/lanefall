@@ -1,9 +1,9 @@
-import { getCard, type Faction } from '../engine';
+import { baseId, getCard, type Faction } from '../engine';
 import { GLYPHS } from './factions';
 import { emblemFor, polygonPoints } from './emblem';
 
 export function CardEmblem({ id, faction }: { id: string; faction: Faction }) {
-  const e = emblemFor(id);
+  const e = emblemFor(baseId(id));
   return (
     <svg className="emblem" viewBox="0 0 100 100" aria-hidden="true">
       {Array.from({ length: e.rings }, (_, i) => (
