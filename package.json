@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "sim": "tsx tools/sim/index.ts"
+    "sim": "tsx tools/sim/index.ts",
+    "coverage": "vitest run tests/unit --coverage"
   },
   "dependencies": {
     "idb-keyval": "^6.3.0",

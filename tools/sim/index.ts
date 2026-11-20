@@ -1,2 +1,23 @@
-// Bot-vs-bot balance simulator. Implemented from M1 onwards (see docs/spec.md).
-console.log('Simulator not implemented yet: arrives with the rules engine in M1.');
+// Bot-vs-bot simulator: pnpm sim [matches=1000]
+import { factionDeck } from './decks';
+import { playBotMatch } from './runner';
+
+const n = Number(process.argv[2] ?? 1000);
+const decks: [string[], string[]] = [factionDeck('ember'), factionDeck('bastion')];
+const wins = [0, 0];
+let draws = 0;
+let rounds = 0;
+let byRounds = 0;
+const start = performance.now();
+for (let seed = 1; seed <= n; seed++) {
+  const { final } = playBotMatch({ decks }, seed);
+  rounds += final.round;
+  if (final.result?.reason === 'rounds') byRounds++;
+  if (final.result?.winner === null) draws++;
+  else wins[final.result!.winner]!++;
+}
+const ms = performance.now() - start;
+console.log(`${n} matches, Ember (P1) vs Bastion (P2), Easy vs Easy`);
+console.log(`P1 wins ${wins[0]}, P2 wins ${wins[1]}, draws ${draws}`);
+console.log(`average length ${(rounds / n).toFixed(2)} rounds; ${byRounds} went the full 8 rounds`);
+console.log(`${(ms / n).toFixed(2)} ms per match`);

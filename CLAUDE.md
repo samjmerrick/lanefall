@@ -7,9 +7,10 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm dev` — dev server
 - `pnpm lint` — ESLint + Prettier check (`pnpm format` to fix)
 - `pnpm typecheck` — `tsc -b`
-- `pnpm test` — Vitest unit and simulation tests
+- `pnpm test` — Vitest unit and simulation tests (includes 10,000 bot matches, ~15 s)
+- `pnpm coverage` — unit tests with the engine coverage gate (≥90%)
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
-- `pnpm sim` — bot-vs-bot balance simulator (from M1)
+- `pnpm sim [n]` — bot-vs-bot simulator (Easy vs Easy, Ember vs Bastion)
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)
 
 ## Folder rules
@@ -20,6 +21,13 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `src/run/`, `src/ai/`, `src/save/` — roguelike run, opponent planners, persistence.
 - `src/ui/` — React screens. Only sends actions to the engine and animates returned events; never computes results.
 - `tools/sim/` — CLI simulator. `tests/unit`, `tests/e2e` — tests.
+
+## Engine notes
+
+- Public API is `src/engine/index.ts`: `initMatch`, `legalActions`, `applyAction`, `resolveRound`.
+- Card and lane-effect behaviour is data (`src/content/*.json`, validated by `src/engine/schema.ts`). Add a primitive
+  in `src/engine/effects.ts` only when no combination of existing ones can express a card.
+- Tests build boards with `tests/unit/helpers.ts` (`setup`, `place`, `give`, `plan`, `resolve`).
 
 ## Working rules
 
