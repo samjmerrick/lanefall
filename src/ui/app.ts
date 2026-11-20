@@ -26,6 +26,7 @@ export type Screen =
   | 'builder'
   | 'collection'
   | 'settings'
+  | 'stats'
   | 'match'
   | 'runStart'
   | 'run'

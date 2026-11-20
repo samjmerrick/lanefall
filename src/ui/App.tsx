@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useApp } from './app';
+import { LevelUpOverlay } from './LevelUpOverlay';
 import { MatchScreen } from './MatchScreen';
 import { CardDetail } from './Overlays';
 import { RotateNotice } from './RotateNotice';
@@ -13,6 +14,7 @@ import { RunScreen } from './screens/RunScreen';
 import { RunStartScreen } from './screens/RunStartScreen';
 import { RunSummaryScreen } from './screens/RunSummaryScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { StatsScreen } from './screens/StatsScreen';
 
 function CurrentScreen() {
   const screen = useApp((s) => s.screen);
@@ -33,6 +35,8 @@ function CurrentScreen() {
       return <CollectionScreen />;
     case 'settings':
       return <SettingsScreen />;
+    case 'stats':
+      return <StatsScreen />;
     case 'match':
       return <MatchScreen />;
     case 'runStart':
@@ -52,6 +56,7 @@ export function App() {
   return (
     <>
       <CurrentScreen />
+      <LevelUpOverlay />
       <CardDetail />
       <RotateNotice />
     </>

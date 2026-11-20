@@ -1,6 +1,7 @@
 import { getHero } from '../../run';
 import { useApp } from '../app';
 import { useRun } from '../runStore';
+import { XpBar } from './XpBar';
 
 export function MenuScreen() {
   const go = useApp((s) => s.go);
@@ -14,9 +15,7 @@ export function MenuScreen() {
       <header className="menu__header">
         <h1>Lanefall</h1>
         <p>Three lanes. Hidden plans. Overflow wins.</p>
-        <p className="menu__xp">
-          Level {profile.level} · {profile.xp} XP
-        </p>
+        <XpBar xp={profile.xp} className="menu__xp" />
       </header>
       {fellBack && (
         <p className="notice" role="status">
@@ -46,6 +45,9 @@ export function MenuScreen() {
         </button>
         <button type="button" className="secondary" onClick={() => go('collection')}>
           Collection
+        </button>
+        <button type="button" className="secondary" onClick={() => go('stats')}>
+          Stats
         </button>
         <button type="button" className="secondary" onClick={() => go('settings')}>
           Settings

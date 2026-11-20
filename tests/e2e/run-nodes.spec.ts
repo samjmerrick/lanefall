@@ -1,9 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { RunChoice } from '../../src/run/schema';
-import { exportSaveCode } from '../../src/save/code';
-import { newProfile } from '../../src/save/profile';
 import fixture from '../fixtures/run-paths.json' with { type: 'json' };
-import { openMenu, watchErrors } from './helpers';
+import { newProfile, openMenu, saveCode, watchErrors } from './helpers';
 import { VIEWPORTS } from './viewports';
 
 /** Choice lists that walk seed 7 to each node type (checked by tests/unit/run-paths.test.ts). */
@@ -13,7 +11,7 @@ const paths = fixture.paths as Record<keyof typeof fixture.paths, RunChoice[]>;
 async function loadRun(page: Page, choices: RunChoice[]) {
   const profile = newProfile();
   profile.activeRun = { config, choices, match: null };
-  const code = await exportSaveCode(profile);
+  const code = saveCode(profile);
   await openMenu(page, '?speed=0.05');
   await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('textbox', { name: 'Paste save code' }).fill(code);
