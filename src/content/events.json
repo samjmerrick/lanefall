@@ -1,0 +1,564 @@
+[
+  {
+    "id": "event-wishing-well",
+    "name": "Wishing Well",
+    "text": "A mossy well hums with old magic. Coins glint far below.",
+    "choices": [
+      {
+        "label": "Toss in 20 gold",
+        "result": "Something rises from the water.",
+        "outcomes": [
+          {
+            "kind": "card",
+            "rarity": "uncommon"
+          }
+        ],
+        "cost": {
+          "gold": 20
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-wandering-smith",
+    "name": "Wandering Smith",
+    "text": "A smith with a cart-forge offers to sharpen your arsenal.",
+    "choices": [
+      {
+        "label": "Pay 30 gold",
+        "result": "The smith hammers two of your cards into better shape.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 2
+          }
+        ],
+        "cost": {
+          "gold": 30
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-old-shrine",
+    "name": "Old Shrine",
+    "text": "A forgotten shrine, its offering bowl still full of coins.",
+    "choices": [
+      {
+        "label": "Pray",
+        "result": "A warm light settles on one of your cards.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "label": "Take the offerings",
+        "result": "The coins burn in your hand.",
+        "outcomes": [
+          {
+            "kind": "gold",
+            "min": 40,
+            "max": 40
+          }
+        ],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-lost-merchant",
+    "name": "Lost Merchant",
+    "text": "A merchant has lost his way, and his guards.",
+    "choices": [
+      {
+        "label": "Buy a trinket for 60 gold",
+        "result": "He hands over a curious relic.",
+        "outcomes": [
+          {
+            "kind": "relic"
+          }
+        ],
+        "cost": {
+          "gold": 60
+        }
+      },
+      {
+        "label": "Rob him",
+        "result": "You take a relic, but his dog bites hard.",
+        "outcomes": [
+          {
+            "kind": "relic"
+          }
+        ],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-training-yard",
+    "name": "Training Yard",
+    "text": "Recruits drill in a dusty yard. The sergeant waves you over.",
+    "choices": [
+      {
+        "label": "Drill with them",
+        "result": "One of your cards improves.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "label": "Recruit one",
+        "result": "A recruit joins your deck.",
+        "outcomes": [
+          {
+            "kind": "card"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-ruined-library",
+    "name": "Ruined Library",
+    "text": "Wind turns the pages of a thousand rotting books.",
+    "choices": [
+      {
+        "label": "Burn old notes",
+        "result": "Two cards leave your deck at random.",
+        "outcomes": [
+          {
+            "kind": "remove",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "label": "Take a book",
+        "result": "You find a rare technique.",
+        "outcomes": [
+          {
+            "kind": "card",
+            "rarity": "uncommon"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-fountain",
+    "name": "Mysterious Fountain",
+    "text": "Clear water bubbles up from a cracked stone basin.",
+    "choices": [
+      {
+        "label": "Drink",
+        "result": "You feel restored.",
+        "outcomes": [
+          {
+            "kind": "hearts",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "label": "Fill your flasks",
+        "result": "Travellers will pay for this.",
+        "outcomes": [
+          {
+            "kind": "gold",
+            "min": 25,
+            "max": 25
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-gambler",
+    "name": "The Gambler",
+    "text": "\"Double or nothing, friend?\" The dice are almost certainly loaded.",
+    "choices": [
+      {
+        "label": "Bet 25 gold",
+        "result": "The dice roll\u2026",
+        "outcomes": [
+          {
+            "kind": "gold",
+            "min": 0,
+            "max": 70
+          }
+        ],
+        "cost": {
+          "gold": 25
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You keep your coin.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-abandoned-camp",
+    "name": "Abandoned Camp",
+    "text": "A cold campfire and packs left in a hurry.",
+    "choices": [
+      {
+        "label": "Search the packs",
+        "result": "You find some coins.",
+        "outcomes": [
+          {
+            "kind": "gold",
+            "min": 20,
+            "max": 40
+          }
+        ]
+      },
+      {
+        "label": "Rest by the fire",
+        "result": "You feel restored.",
+        "outcomes": [
+          {
+            "kind": "hearts",
+            "amount": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-cursed-idol",
+    "name": "Cursed Idol",
+    "text": "A golden idol sits on a pedestal. The floor around it is scorched.",
+    "choices": [
+      {
+        "label": "Take the idol",
+        "result": "You grab it and run, singed.",
+        "outcomes": [
+          {
+            "kind": "relic"
+          }
+        ],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-travelling-bard",
+    "name": "Travelling Bard",
+    "text": "A bard sings of your deeds, and offers to teach you a verse.",
+    "choices": [
+      {
+        "label": "Pay 15 gold",
+        "result": "You learn a new trick.",
+        "outcomes": [
+          {
+            "kind": "card"
+          }
+        ],
+        "cost": {
+          "gold": 15
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-envoy",
+    "name": "Faction Envoy",
+    "text": "An envoy offers a gift, for a donation to the cause.",
+    "choices": [
+      {
+        "label": "Donate 40 gold",
+        "result": "The envoy hands you a rare card.",
+        "outcomes": [
+          {
+            "kind": "card",
+            "rarity": "rare"
+          }
+        ],
+        "cost": {
+          "gold": 40
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-hermit",
+    "name": "The Hermit",
+    "text": "A hermit offers wisdom, or a trade.",
+    "choices": [
+      {
+        "label": "Listen to his stories",
+        "result": "One of your cards improves.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "label": "Trade with him",
+        "result": "He takes a card at random and pays you for it.",
+        "outcomes": [
+          {
+            "kind": "remove",
+            "count": 1
+          },
+          {
+            "kind": "gold",
+            "min": 30,
+            "max": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-battlefield",
+    "name": "Old Battlefield",
+    "text": "Rusted blades and broken banners litter the field.",
+    "choices": [
+      {
+        "label": "Scavenge",
+        "result": "You pick up two cards.",
+        "outcomes": [
+          {
+            "kind": "card"
+          },
+          {
+            "kind": "card"
+          }
+        ]
+      },
+      {
+        "label": "Bury the dead",
+        "result": "A quiet blessing restores you.",
+        "outcomes": [
+          {
+            "kind": "hearts",
+            "amount": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-arena",
+    "name": "The Arena",
+    "text": "The crowd roars for a challenger.",
+    "choices": [
+      {
+        "label": "Fight for glory",
+        "result": "You win, bloodied, to a prize and a purse.",
+        "outcomes": [
+          {
+            "kind": "relic"
+          },
+          {
+            "kind": "gold",
+            "min": 30,
+            "max": 30
+          }
+        ],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Watch from the stands",
+        "result": "You win a small bet.",
+        "outcomes": [
+          {
+            "kind": "gold",
+            "min": 10,
+            "max": 10
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-alchemist",
+    "name": "The Alchemist",
+    "text": "Bubbling flasks promise to make anything stronger.",
+    "choices": [
+      {
+        "label": "Pay 40 gold",
+        "result": "Three of your cards are transmuted.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 3
+          }
+        ],
+        "cost": {
+          "gold": 40
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-bridge-troll",
+    "name": "Bridge Troll",
+    "text": "A troll blocks the only bridge. \"Toll!\"",
+    "choices": [
+      {
+        "label": "Pay 30 gold",
+        "result": "The troll grunts and steps aside.",
+        "outcomes": [],
+        "cost": {
+          "gold": 30
+        }
+      },
+      {
+        "label": "Fight past",
+        "result": "You get across, battered.",
+        "outcomes": [],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Swim the river",
+        "result": "You make it, but lose a card to the current.",
+        "outcomes": [
+          {
+            "kind": "remove",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "event-star-altar",
+    "name": "Star Altar",
+    "text": "Starlight pools on an altar that asks for a sacrifice.",
+    "choices": [
+      {
+        "label": "Offer a Heart",
+        "result": "Three of your cards glow with starlight.",
+        "outcomes": [
+          {
+            "kind": "upgrade",
+            "count": 3
+          }
+        ],
+        "cost": {
+          "hearts": 1
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-mercenaries",
+    "name": "Mercenary Camp",
+    "text": "Sellswords offer their services.",
+    "choices": [
+      {
+        "label": "Hire two for 50 gold",
+        "result": "Two mercenaries join your deck.",
+        "outcomes": [
+          {
+            "kind": "card",
+            "rarity": "uncommon"
+          },
+          {
+            "kind": "card",
+            "rarity": "uncommon"
+          }
+        ],
+        "cost": {
+          "gold": 50
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  },
+  {
+    "id": "event-fortune-teller",
+    "name": "Fortune Teller",
+    "text": "\"I see a great treasure in your future\u2026 for a price.\"",
+    "choices": [
+      {
+        "label": "Pay 45 gold",
+        "result": "She presses a relic into your hand.",
+        "outcomes": [
+          {
+            "kind": "relic"
+          }
+        ],
+        "cost": {
+          "gold": 45
+        }
+      },
+      {
+        "label": "Leave",
+        "result": "You move on.",
+        "outcomes": []
+      }
+    ]
+  }
+]

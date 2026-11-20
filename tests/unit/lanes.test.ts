@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lanePower } from '../../src/engine';
+import { getLaneEffect, LANE_EFFECTS, lanePower, unitMaxHealth, unitPower } from '../../src/engine';
 import { byUid, clearHands, give, place, plan, resolve, setup } from './helpers';
 
 function withLeft(effect: string) {
@@ -75,5 +75,74 @@ describe('lane effects', () => {
     a.basePower = 0;
     s = resolve(s).state;
     expect(byUid(s, a.uid)!.damage).toBe(1);
+  });
+
+  it('ships 20 lane effects', () => {
+    expect(LANE_EFFECTS).toHaveLength(20);
+  });
+
+  it.each(LANE_EFFECTS.filter((l) => l.powerBonus || l.healthBonus).map((l) => l.id))(
+    '%s: stat bonuses apply to units here only',
+    (id) => {
+      const s = withLeft(id);
+      const fx = getLaneEffect(id);
+      const here = place(s, 0, 0, 'bastion-militia'); // 2/3
+      const there = place(s, 0, 1, 'bastion-militia');
+      expect(unitPower(s, { unit: here, lane: 0, slot: 0 })).toBe(Math.max(0, 2 + fx.powerBonus));
+      expect(unitMaxHealth(s, { unit: here, lane: 0, slot: 0 })).toBe(3 + fx.healthBonus);
+      expect(unitPower(s, { unit: there, lane: 1, slot: 0 })).toBe(2);
+    },
+  );
+
+  it.each(LANE_EFFECTS.filter((l) => l.maxUnits < 4).map((l) => l.id))('%s: caps units per side', (id) => {
+    let s = withLeft(id);
+    const max = getLaneEffect(id).maxUnits;
+    const uids = Array.from({ length: max + 1 }, () => give(s, 0, 'bastion-recruit'));
+    for (let i = 0; i < max; i++) s = plan(s, 0, { type: 'playUnit', uid: uids[i]!, lane: 0, slot: i });
+    expect(() => plan(s, 0, { type: 'playUnit', uid: uids[max]!, lane: 0, slot: max })).toThrow(/slot/);
+  });
+
+  it('Gorge: overflow damage here is tripled', () => {
+    let s = withLeft('lane-gorge');
+    place(s, 0, 0, 'ember-spark-imp');
+    s = resolve(s).state;
+    expect(s.players[1].hp).toBe(100 - 6);
+  });
+
+  it('Shrine: End of Round, fully heal each unit here', () => {
+    let s = withLeft('lane-shrine');
+    const a = place(s, 0, 0, 'bastion-cathedral-guard', { damage: 4 });
+    a.basePower = 0;
+    s = resolve(s).state;
+    expect(byUid(s, a.uid)!.damage).toBe(0);
+  });
+
+  it('Stormfront: End of Round, 2 damage to each unit here', () => {
+    let s = withLeft('lane-storm');
+    const a = place(s, 0, 0, 'bastion-cathedral-guard');
+    const b = place(s, 1, 0, 'bastion-cathedral-guard');
+    a.basePower = 0;
+    b.basePower = 0;
+    s = resolve(s).state;
+    expect(byUid(s, a.uid)!.damage).toBe(2);
+    expect(byUid(s, b.uid)!.damage).toBe(2);
+  });
+
+  it('Oasis and Cursed Ground: End of Round, heal or damage both heroes', () => {
+    let s = withLeft('lane-oasis');
+    s.players[0].hp = 90;
+    s.players[1].hp = 99;
+    s = resolve(s).state;
+    expect([s.players[0].hp, s.players[1].hp]).toEqual([92, 100]);
+    let c = withLeft('lane-cursed');
+    c = resolve(c).state;
+    expect([c.players[0].hp, c.players[1].hp]).toEqual([99, 99]);
+  });
+
+  it('Barracks: End of Round, each unit here gains +1 Power for good', () => {
+    let s = withLeft('lane-barracks');
+    const a = place(s, 0, 0, 'bastion-cathedral-guard');
+    s = resolve(s).state;
+    expect(byUid(s, a.uid)!.basePower).toBe(5);
   });
 });

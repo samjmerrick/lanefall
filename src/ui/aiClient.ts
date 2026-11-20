@@ -29,7 +29,7 @@ export function runAi(
   hooks: AiHooks = {},
 ): Promise<PlanResult> {
   const w = getWorker();
-  if (!w) return Promise.resolve(plan(difficulty, state, player, rng, hooks));
+  if (!w) return Promise.resolve(plan(difficulty, state, player, rng, hooks, { now: () => performance.now() }));
   const id = nextId++;
   const req: AiRequest = { id, difficulty, state, player, rng, hooks };
   return new Promise((resolve) => {

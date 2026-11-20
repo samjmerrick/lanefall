@@ -13,5 +13,5 @@ export interface AiRequest {
 
 self.onmessage = (e: MessageEvent<AiRequest>) => {
   const { id, difficulty, state, player, rng, hooks } = e.data;
-  self.postMessage({ id, result: plan(difficulty, state, player, rng, hooks) });
+  self.postMessage({ id, result: plan(difficulty, state, player, rng, hooks, { now: () => performance.now() }) });
 };

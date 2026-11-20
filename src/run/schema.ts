@@ -17,6 +17,11 @@ export const RunChoiceSchema = z.discriminatedUnion('t', [
   z.object({ t: z.literal('buy'), index }),
   z.object({ t: z.literal('removeCard'), index }),
   z.object({ t: z.literal('rest') }),
+  /** At a rest: upgrade the deck card at this index instead of restoring a Heart. */
+  z.object({ t: z.literal('upgrade'), index }),
+  z.object({ t: z.literal('event'), index }),
+  /** After an act's boss: the index of the second faction to add (act 1 only), or null. */
+  z.object({ t: z.literal('nextAct'), faction: index.nullable() }),
   z.object({ t: z.literal('leave') }),
   z.object({ t: z.literal('abandon') }),
 ]);

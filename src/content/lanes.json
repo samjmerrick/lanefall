@@ -57,5 +57,120 @@
         "amount": 2
       }
     ]
+  },
+  {
+    "id": "lane-lowlands",
+    "name": "Lowlands",
+    "text": "Units here have -1 Power.",
+    "powerBonus": -1
+  },
+  {
+    "id": "lane-fortress",
+    "name": "Fortress",
+    "text": "Units here have +2 Health.",
+    "healthBonus": 2
+  },
+  {
+    "id": "lane-crucible",
+    "name": "Crucible",
+    "text": "Units here have +2 Power.",
+    "powerBonus": 2
+  },
+  {
+    "id": "lane-bridge",
+    "name": "Rope Bridge",
+    "text": "Only 1 unit per side.",
+    "maxUnits": 1
+  },
+  {
+    "id": "lane-pass",
+    "name": "Mountain Pass",
+    "text": "Only 3 units per side.",
+    "maxUnits": 3
+  },
+  {
+    "id": "lane-gorge",
+    "name": "Gorge",
+    "text": "Overflow damage here is tripled.",
+    "overflowMultiplier": 3
+  },
+  {
+    "id": "lane-shrine",
+    "name": "Shrine",
+    "text": "End of Round: fully heal each unit here.",
+    "endOfRound": [
+      {
+        "op": "heal",
+        "target": "allUnitsInLane",
+        "amount": "full"
+      }
+    ]
+  },
+  {
+    "id": "lane-storm",
+    "name": "Stormfront",
+    "text": "End of Round: deal 2 damage to each unit here.",
+    "endOfRound": [
+      {
+        "op": "damage",
+        "target": "allUnitsInLane",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "lane-oasis",
+    "name": "Oasis",
+    "text": "End of Round: heal both heroes by 2.",
+    "endOfRound": [
+      {
+        "op": "heal",
+        "target": "friendlyHero",
+        "amount": 2
+      },
+      {
+        "op": "heal",
+        "target": "enemyHero",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "lane-cursed",
+    "name": "Cursed Ground",
+    "text": "End of Round: deal 1 damage to both heroes.",
+    "endOfRound": [
+      {
+        "op": "damage",
+        "target": "friendlyHero",
+        "amount": 1
+      },
+      {
+        "op": "damage",
+        "target": "enemyHero",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-barracks",
+    "name": "Barracks",
+    "text": "End of Round: give each unit here +1 Power.",
+    "endOfRound": [
+      {
+        "op": "buff",
+        "target": "allUnitsInLane",
+        "power": 1,
+        "health": 0,
+        "duration": "permanent"
+      }
+    ]
+  },
+  {
+    "id": "lane-glacier",
+    "name": "Glacier",
+    "text": "Units here have -1 Power and +2 Health.",
+    "powerBonus": -1,
+    "healthBonus": 2
   }
 ]

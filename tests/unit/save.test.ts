@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fixtureV1 from '../fixtures/save-v1.json';
 import fixtureV2 from '../fixtures/save-v2.json';
+import fixtureV3 from '../fixtures/save-v3.json';
 import {
   exportSaveCode,
   importSaveCode,
@@ -29,22 +30,28 @@ function sample(): Profile {
 }
 
 describe('schema and migrations', () => {
-  it('migrates the stored v1 sample save to v2', () => {
+  it('migrates the stored v1 sample save to the current schema', () => {
     const p = migrate(fixtureV1);
-    expect(p.schemaVersion).toBe(2);
+    expect(p.schemaVersion).toBe(3);
     expect(p.activeRun).toBeNull();
     expect(p.stats.runs).toEqual({});
     expect(p.decks[0]!.name).toBe('Fixture Deck');
     expect(p.stats.quickPlay.d1).toEqual({ played: 3, won: 2 });
   });
 
-  it('loads the stored v2 sample save with a run in progress', () => {
+  it('migrates the stored v2 sample save to v3, dropping its run in progress', () => {
     const p = migrate(fixtureV2);
-    expect(p.schemaVersion).toBe(2);
+    expect(p.schemaVersion).toBe(3);
     expect(p.stats.runs['hero-pyra']).toEqual({ played: 2, won: 1 });
+    expect(p.activeRun).toBeNull();
+  });
+
+  it('loads the stored v3 sample save with a run in progress', () => {
+    const p = migrate(fixtureV3);
+    expect(p.schemaVersion).toBe(3);
     expect(p.activeRun!.choices).toEqual([{ t: 'move', col: 1 }]);
     expect(() =>
-      migrate({ ...fixtureV2, activeRun: { ...fixtureV2.activeRun, choices: [{ t: 'fly' }] } }),
+      migrate({ ...fixtureV3, activeRun: { ...fixtureV3.activeRun, choices: [{ t: 'fly' }] } }),
     ).toThrow();
   });
 

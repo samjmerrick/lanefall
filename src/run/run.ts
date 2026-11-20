@@ -1,9 +1,10 @@
 // Roguelike run state. A run is its config (seed, hero, card pool) plus the list of choices made;
 // `replayRun` rebuilds the state from those, so saves stay small and every bug is reproducible.
-import { getCard, type MatchConfig } from '../engine';
+import { getCard, isUpgraded, UPGRADED, type Faction, type MatchConfig } from '../engine';
+import { FACTIONS } from '../engine/schema';
 import { nextInt, seedRng, shuffle, type RngState } from '../engine/rng';
 import type { AiHooks, Difficulty } from '../ai';
-import { ENEMIES, RELICS, getEnemy, getHero, getRelic } from './content';
+import { ENEMIES, EVENTS, RELICS, getEnemy, getEvent, getHero, getRelic, type EventOutcome } from './content';
 import type { RunChoice, RunConfig } from './schema';
 import { MAP_ROWS, generateMap, type MapNode, type RunMap } from './map';
 
@@ -19,6 +20,8 @@ export const SHOP_CARDS = 4;
 export const SHOP_RELICS = 2;
 /** Gold for an empty treasure chest (every relic already owned). */
 export const TREASURE_GOLD = 50;
+export const ACTS = 3;
+const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, legendary: 3 } as const;
 
 export type { RunConfig, RunChoice };
 
@@ -32,7 +35,11 @@ export interface ShopItem {
 export type RunPhase =
   | { kind: 'map' }
   | { kind: 'match'; enemyId: string; seed: number }
-  | { kind: 'reward'; cards: string[]; gold: number }
+  /** After a won fight or elite: pick a card. An elite's relic (or gold, if none are left) is already given. */
+  | { kind: 'reward'; cards: string[]; gold: number; relicId: string | null }
+  | { kind: 'event'; eventId: string; chosen: number | null; result: string[] }
+  /** An act's boss is beaten: a relic is given; after act 1 a second faction may be picked. */
+  | { kind: 'actCleared'; act: number; relicId: string | null; gold: number; factions: Faction[] }
   | { kind: 'shop'; stock: ShopItem[]; removed: boolean }
   | { kind: 'rest' }
   | { kind: 'treasure'; relicId: string | null; gold: number }
@@ -50,6 +57,8 @@ export interface RunState {
   gold: number;
   deck: string[];
   relics: string[];
+  /** Added after the act 1 boss; its cards then appear in rewards and shops too. */
+  secondFaction: Faction | null;
   phase: RunPhase;
   nodesCleared: number;
   bossesBeaten: number;
@@ -77,6 +86,7 @@ export function startRun(config: RunConfig): RunState {
     gold: START_GOLD,
     deck: [...hero.starterDeck],
     relics: [],
+    secondFaction: null,
     phase: { kind: 'map' },
     nodesCleared: 0,
     bossesBeaten: 0,
@@ -95,17 +105,27 @@ export function nextCols(r: RunState): number[] {
   return currentNode(r)!.next;
 }
 
-function runBonus(r: RunState, key: 'fightGold' | 'shopDiscount' | 'cardChoices'): number {
+function runBonus(r: RunState, key: 'fightGold' | 'shopDiscount' | 'cardChoices' | 'hearts'): number {
   return r.relics.reduce((n, id) => n + (getRelic(id).run[key] ?? 0), 0);
 }
 
-/** Cards that can appear in rewards and shops: owned cards of the hero's faction. */
+/** The most Hearts the run can hold: 3, plus any from relics. */
+export function maxHearts(r: RunState): number {
+  return START_HEARTS + runBonus(r, 'hearts');
+}
+
+/** Cards that can appear in rewards and shops: owned cards of the hero's faction and the second faction. */
 export function cardPool(r: RunState): string[] {
-  const faction = getHero(r.config.heroId).faction;
+  const factions = [getHero(r.config.heroId).faction, r.secondFaction];
   return r.config.pool.filter((id) => {
     const c = getCard(id);
-    return !c.token && c.faction === faction;
+    return !c.token && factions.includes(c.faction);
   });
+}
+
+/** Deck indexes of cards that can still be upgraded. */
+export function upgradable(r: RunState): number[] {
+  return r.deck.flatMap((id, i) => (isUpgraded(id) ? [] : [i]));
 }
 
 function draw<T>(r: RunState, list: readonly T[], n: number): T[] {
@@ -128,10 +148,92 @@ function unownedRelics(r: RunState): string[] {
   return RELICS.map((x) => x.id).filter((id) => !r.relics.includes(id));
 }
 
+function grantRelic(r: RunState, id: string): void {
+  r.relics.push(id);
+  r.hearts += getRelic(id).run.hearts ?? 0;
+}
+
+/** Gives a random unowned relic; returns its id, or null (and gives gold) when every relic is owned. */
+function randomRelic(r: RunState): string | null {
+  const id = draw(r, unownedRelics(r), 1)[0] ?? null;
+  if (id) grantRelic(r, id);
+  else r.gold += TREASURE_GOLD;
+  return id;
+}
+
+function randomCard(r: RunState, rarity?: keyof typeof RARITY_RANK): string | null {
+  const pool = cardPool(r);
+  const good = rarity ? pool.filter((id) => RARITY_RANK[getCard(id).rarity] >= RARITY_RANK[rarity]) : pool;
+  return draw(r, good.length > 0 ? good : pool, 1)[0] ?? null;
+}
+
+function upgradeAt(r: RunState, index: number): string {
+  const id = r.deck[index]!;
+  r.deck[index] = id + UPGRADED;
+  return r.deck[index]!;
+}
+
+function startAct(r: RunState, act: number): void {
+  r.act = act;
+  const [map, rng] = generateMap(r.rng);
+  r.map = map;
+  r.rng = rng;
+  r.row = -1;
+  r.col = 0;
+  // A new act restores 1 Heart.
+  r.hearts = Math.min(maxHearts(r), r.hearts + 1);
+  r.phase = { kind: 'map' };
+}
+
+/** Applies an event outcome and returns a line describing what happened. */
+function applyOutcome(r: RunState, o: EventOutcome): string {
+  switch (o.kind) {
+    case 'gold': {
+      const n = roll(r, o.min, o.max);
+      r.gold += n;
+      return `+${n} gold`;
+    }
+    case 'hearts': {
+      const before = r.hearts;
+      r.hearts = Math.min(maxHearts(r), r.hearts + o.amount);
+      return r.hearts > before ? `+${r.hearts - before} Heart` : 'Hearts already full';
+    }
+    case 'card': {
+      const id = randomCard(r, o.rarity);
+      if (!id) return 'No card found';
+      r.deck.push(id);
+      return `Added ${getCard(id).name}`;
+    }
+    case 'relic': {
+      const id = randomRelic(r);
+      return id ? `Relic: ${getRelic(id).name}` : `+${TREASURE_GOLD} gold`;
+    }
+    case 'upgrade': {
+      const picks = draw(r, upgradable(r), o.count);
+      return picks.length === 0 ? 'Nothing to upgrade' : picks.map((i) => `Upgraded ${getCard(upgradeAt(r, i)).name}`).join(', ');
+    }
+    case 'remove': {
+      const picks = draw(
+        r,
+        r.deck.map((_, i) => i),
+        Math.min(o.count, r.deck.length - 1),
+      ).sort((a, b) => b - a);
+      const names = picks.map((i) => getCard(r.deck.splice(i, 1)[0]!).name);
+      return names.length === 0 ? 'Nothing removed' : `Removed ${names.join(', ')}`;
+    }
+  }
+}
+
+/** Whether an event choice can be taken: its gold is affordable and Hearts would be left over. */
+export function canChoose(r: RunState, cost: { gold?: number; hearts?: number }): boolean {
+  return (cost.gold ?? 0) <= r.gold && (cost.hearts ?? 0) < r.hearts;
+}
+
 function enterNode(r: RunState): void {
   const node = currentNode(r)!;
   switch (node.type) {
     case 'fight':
+    case 'elite':
     case 'boss': {
       const pool = ENEMIES.filter((e) => e.act === r.act && e.kind === node.type);
       const enemy = draw(r, pool, 1)[0]!;
@@ -161,10 +263,14 @@ function enterNode(r: RunState): void {
     }
     case 'treasure': {
       r.nodesCleared++;
-      const relicId = draw(r, unownedRelics(r), 1)[0] ?? null;
-      if (relicId) r.relics.push(relicId);
-      else r.gold += TREASURE_GOLD;
+      const relicId = randomRelic(r);
       r.phase = { kind: 'treasure', relicId, gold: relicId ? 0 : TREASURE_GOLD };
+      return;
+    }
+    case 'event': {
+      r.nodesCleared++;
+      const event = draw(r, EVENTS, 1)[0]!;
+      r.phase = { kind: 'event', eventId: event.id, chosen: null, result: [] };
       return;
     }
   }
@@ -183,13 +289,23 @@ function matchEnded(r: RunState, won: boolean): void {
   r.nodesCleared++;
   if (node.type === 'boss') {
     r.bossesBeaten++;
-    r.phase = { kind: 'over', won: true, abandoned: false };
+    if (r.act >= ACTS) {
+      r.phase = { kind: 'over', won: true, abandoned: false };
+      return;
+    }
+    const gold = roll(r, 40, 60) + runBonus(r, 'fightGold');
+    r.gold += gold;
+    const relicId = randomRelic(r);
+    const hero = getHero(r.config.heroId).faction;
+    const factions = r.act === 1 ? FACTIONS.filter((f) => f !== hero) : [];
+    r.phase = { kind: 'actCleared', act: r.act, relicId, gold, factions };
     return;
   }
+  const relicId = node.type === 'elite' ? randomRelic(r) : null;
   const cards = draw(r, cardPool(r), CARD_CHOICES + runBonus(r, 'cardChoices'));
-  const gold = roll(r, 15, 25) + runBonus(r, 'fightGold');
+  const gold = roll(r, 15, 25) + (node.type === 'elite' ? 15 : 0) + runBonus(r, 'fightGold');
   r.gold += gold;
-  r.phase = { kind: 'reward', cards, gold };
+  r.phase = { kind: 'reward', cards, gold, relicId };
 }
 
 /** Applies one choice. Pure: returns a new state, or throws IllegalChoiceError. */
@@ -225,7 +341,7 @@ export function applyChoice(state: RunState, choice: RunChoice): RunState {
       r.gold -= item.price;
       item.sold = true;
       if (item.kind === 'card') r.deck.push(item.id);
-      else r.relics.push(item.id);
+      else grantRelic(r, item.id);
     } else if (choice.t === 'removeCard') {
       if (phase.removed) fail('Only one card can be removed per shop');
       if (REMOVE_PRICE > r.gold) fail('Not enough gold');
@@ -237,10 +353,34 @@ export function applyChoice(state: RunState, choice: RunChoice): RunState {
     } else fail(`Cannot ${choice.t} in a shop`);
   } else if (phase.kind === 'rest') {
     if (choice.t === 'rest') {
-      if (r.hearts >= START_HEARTS) fail('Hearts are already full');
+      if (r.hearts >= maxHearts(r)) fail('Hearts are already full');
       r.hearts++;
+    } else if (choice.t === 'upgrade') {
+      if (!upgradable(r).includes(choice.index)) fail('That card cannot be upgraded');
+      upgradeAt(r, choice.index);
     } else if (choice.t !== 'leave') fail(`Cannot ${choice.t} at a rest`);
     r.phase = { kind: 'map' };
+  } else if (phase.kind === 'event') {
+    if (phase.chosen === null) {
+      if (choice.t !== 'event') fail('Make a choice');
+      const option = getEvent(phase.eventId).choices[choice.index] ?? fail('No such choice');
+      if (!canChoose(r, option.cost)) fail('You cannot pay for that');
+      r.gold -= option.cost.gold ?? 0;
+      r.hearts -= option.cost.hearts ?? 0;
+      const lines = [
+        ...(option.cost.gold ? [`-${option.cost.gold} gold`] : []),
+        ...(option.cost.hearts ? [`-${option.cost.hearts} Heart`] : []),
+        ...option.outcomes.map((o) => applyOutcome(r, o)),
+      ];
+      r.phase = { kind: 'event', eventId: phase.eventId, chosen: choice.index, result: lines };
+    } else if (choice.t === 'leave') r.phase = { kind: 'map' };
+    else fail('Leave the event');
+  } else if (phase.kind === 'actCleared') {
+    if (choice.t !== 'nextAct') fail('Continue to the next act');
+    if (choice.faction !== null) {
+      r.secondFaction = phase.factions[choice.faction] ?? fail('No such faction');
+    }
+    startAct(r, phase.act + 1);
   } else if (phase.kind === 'treasure') {
     if (choice.t !== 'leave') fail('Take the treasure and leave');
     r.phase = { kind: 'map' };

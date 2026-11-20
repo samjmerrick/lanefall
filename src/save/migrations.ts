@@ -10,6 +10,8 @@ export const migrations: Record<number, (old: Record<string, unknown>) => Record
     const stats = (old.stats ?? {}) as Record<string, unknown>;
     return { ...old, stats: { ...stats, runs: {} }, activeRun: null };
   },
+  // v3 (M5): runs gained acts, elites and events, so a v2 run's choices no longer replay. It is dropped.
+  2: (old) => ({ ...old, activeRun: null }),
 };
 
 /** Runs migrations in order up to the current schema, then validates. Throws if the save is invalid. */

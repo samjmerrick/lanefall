@@ -2,7 +2,7 @@
 import { nextInt, type RngState } from '../engine/rng';
 
 export const MAP_ROWS = 7;
-export type NodeType = 'fight' | 'rest' | 'shop' | 'treasure' | 'boss';
+export type NodeType = 'fight' | 'elite' | 'event' | 'rest' | 'shop' | 'treasure' | 'boss';
 
 export interface MapNode {
   row: number;
@@ -18,11 +18,16 @@ export interface RunMap {
 }
 
 const WEIGHTS: [NodeType, number][] = [
-  ['fight', 55],
-  ['rest', 15],
-  ['shop', 15],
-  ['treasure', 15],
+  ['fight', 40],
+  ['elite', 12],
+  ['event', 20],
+  ['rest', 10],
+  ['shop', 10],
+  ['treasure', 8],
 ];
+
+/** Elites never appear in the first rows of an act. */
+export const FIRST_ELITE_ROW = 2;
 
 function rollType(rng: RngState): [NodeType, RngState] {
   const total = WEIGHTS.reduce((n, [, w]) => n + w, 0);
@@ -79,7 +84,10 @@ export function generateMap(rng: RngState): [RunMap, RngState] {
       let type: NodeType;
       if (row === 0) type = 'fight';
       else if (row === MAP_ROWS - 1) type = 'rest';
-      else [type, rng] = rollType(rng);
+      else {
+        [type, rng] = rollType(rng);
+        if (type === 'elite' && row < FIRST_ELITE_ROW) type = 'fight';
+      }
       nodes.push({ row, col, type, next: [] });
     }
     rows.push(nodes);
