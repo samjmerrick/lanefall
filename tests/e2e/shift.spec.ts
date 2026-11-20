@@ -5,7 +5,7 @@ import { VIEWPORTS } from './viewports';
 const LIFT = 70; // the drop point is this far above the finger (src/ui/Hand.tsx)
 
 // A Tide/Grove deck with three Mist Sprites (Shift, cost 1), so a Shift unit is on the board by round 2.
-// With seed 3 the opening hand holds one and it survives round 1.
+// With seed 129 (lanes Bulwark, Fortress, Open Field) the opening hand holds one and it survives round 1.
 const SHIFT_DECK = [
   ...Array(3).fill('tide-tidecaller'),
   ...Array(3).fill('tide-pearl-diver'),
@@ -58,8 +58,8 @@ async function endTurn(page: Page) {
 async function sproutShifter(page: Page) {
   const profile = newProfile();
   profile.decks = [{ id: 'd1', name: 'Shifters', cover: 'tide-mist-sprite', cards: SHIFT_DECK }];
-  await loadProfile(page, profile, '?seed=3&speed=0.05');
-  await startMatch(page, { seed: 3, deck: 'Shifters' });
+  await loadProfile(page, profile, '?seed=129&speed=0.05');
+  await startMatch(page, { seed: 129, deck: 'Shifters' });
   await keepHand(page);
   const c = await centre(page, 1, 0);
   await dragCard(page, 'Mist Sprite', c.x, c.y);
@@ -100,7 +100,7 @@ for (const vp of VIEWPORTS) {
       await expect(page.locator('.token--shiftable')).toHaveCount(0);
 
       await endTurn(page);
-      // (Lane 0 is empty on the other side, so the Sprite survives the round; lane 2 holds an enemy unit.)
+      // (With this seed the Sprite survives the round in lane 0.)
       await expect(slotOf(page, 0, 0).locator('.token[data-uid]')).toHaveCount(1);
       await expect(slotOf(page, 1, 0).locator('.token[data-uid]')).toHaveCount(0);
       // Once per match: the unit is no longer draggable.
