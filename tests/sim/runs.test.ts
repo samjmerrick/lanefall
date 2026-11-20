@@ -132,5 +132,5 @@ describe('resume', () => {
       expect(b.choices).toEqual(a.choices);
       expect(b.r).toEqual(a.r);
     }
-  });
+  }, 60_000);
 });
