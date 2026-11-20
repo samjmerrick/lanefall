@@ -92,6 +92,23 @@ export function beginRound(ctx: Ctx, round: number): void {
     s.lanes[lane].revealed = true;
     ctx.events.push({ type: 'LaneRevealed', lane, effectId: s.lanes[lane].effectId });
   }
+  roundStartModifiers(ctx, round);
+}
+
+/** Runs each player's round-start modifiers, initiative player first. May end the match. */
+function roundStartModifiers(ctx: Ctx, round: number): void {
+  const s = ctx.s;
+  let ran = false;
+  for (const player of [s.initiative, other(s.initiative)]) {
+    for (const m of s.modifiers[player]) {
+      if (m.kind !== 'roundStart' || (m.rounds && !m.rounds.includes(round))) continue;
+      runPrimitive(ctx, m.action, { owner: player, lane: null, unitUid: null, targetUid: null });
+      ran = true;
+    }
+  }
+  if (!ran) return;
+  processDeaths(ctx);
+  checkHp(ctx);
 }
 
 function takeFromHand(s: GameState, player: PlayerId, uid: number) {

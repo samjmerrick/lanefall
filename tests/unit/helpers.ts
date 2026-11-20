@@ -5,6 +5,7 @@ import {
   type GameState,
   type Keyword,
   type LaneIndex,
+  type MatchConfig,
   type PlannedAction,
   type PlayerId,
   type Unit,
@@ -15,7 +16,13 @@ export const FILLER = 'bastion-recruit';
 
 /** A match past the mulligan, in round 1 planning, all lanes plain unless given. */
 export function setup(
-  opts: { lanes?: [string, string, string]; seed?: number; deck?: string[]; heroHp?: number } = {},
+  opts: {
+    lanes?: [string, string, string];
+    seed?: number;
+    deck?: string[];
+    heroHp?: number;
+    modifiers?: MatchConfig['modifiers'];
+  } = {},
 ): GameState {
   const deck = opts.deck ?? Array.from({ length: 30 }, () => FILLER);
   let s = initMatch(
@@ -23,6 +30,7 @@ export function setup(
       decks: [deck, deck],
       laneEffects: opts.lanes ?? ['lane-plain', 'lane-plain', 'lane-plain'],
       heroHp: opts.heroHp,
+      modifiers: opts.modifiers,
     },
     opts.seed ?? 1,
   );

@@ -1,5 +1,5 @@
 // Plays bot-vs-bot matches through the public engine API.
-import { plan, type Difficulty } from '../../src/ai';
+import { plan, type AiHooks, type Difficulty } from '../../src/ai';
 import {
   applyAction,
   initMatch,
@@ -26,6 +26,7 @@ export function playBotMatch(
   config: MatchConfig,
   seed: number,
   difficulty: [Difficulty, Difficulty] = ['easy', 'easy'],
+  hooks: [AiHooks, AiHooks] = [{}, {}],
 ): MatchRecord {
   let s = initMatch(config, seed);
   const rngs: [RngState, RngState] = [aiSeed(seed, 0), aiSeed(seed, 1)];
@@ -38,7 +39,7 @@ export function playBotMatch(
   for (let guard = 0; s.phase === 'plan'; guard++) {
     if (guard > 20) throw new Error(`Match ${seed} did not end`);
     for (const p of [0, 1] as const) {
-      const { actions, rng } = plan(difficulty[p], s, p, rngs[p]);
+      const { actions, rng } = plan(difficulty[p], s, p, rngs[p], hooks[p]);
       rngs[p] = rng;
       for (const a of actions) s = applyAction(s, a);
     }

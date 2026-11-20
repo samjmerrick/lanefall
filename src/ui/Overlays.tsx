@@ -3,6 +3,7 @@ import { getCard } from '../engine';
 import { CardView } from './CardView';
 import { glossaryFor, KEYWORD_NAMES } from './glossary';
 import { XP_LOSS, XP_WIN } from './app';
+import { useRun } from './runStore';
 import { AI, HUMAN, useMatch } from './store';
 
 export function MulliganOverlay() {
@@ -41,6 +42,8 @@ export function ResultOverlay() {
   const busy = useMatch((s) => s.busy);
   const start = useMatch((s) => s.startMatch);
   const back = useMatch((s) => s.leave);
+  const mode = useMatch((s) => s.mode);
+  const finishMatch = useRun((s) => s.finishMatch);
   if (!game || game.phase !== 'over' || busy || !game.result) return null;
   const { winner, reason } = game.result;
   const title = winner === null ? 'Draw' : winner === HUMAN ? 'Victory' : 'Defeat';
@@ -59,13 +62,24 @@ export function ResultOverlay() {
       <p className="result__hp">
         You ♥ {Math.max(0, game.players[HUMAN].hp)} · Opponent ♥ {Math.max(0, game.players[AI].hp)}
       </p>
-      <p className="result__xp">+{winner === HUMAN ? XP_WIN : XP_LOSS} XP</p>
-      <button type="button" className="primary" onClick={() => void start()}>
-        Play again
-      </button>
-      <button type="button" className="secondary" onClick={back}>
-        Change deck
-      </button>
+      {mode === 'run' ? (
+        <>
+          <p className="result__xp">{winner === HUMAN ? 'The way ahead is clear' : 'You lose 1 Heart'}</p>
+          <button type="button" className="primary" onClick={() => finishMatch(winner === HUMAN)}>
+            Continue
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="result__xp">+{winner === HUMAN ? XP_WIN : XP_LOSS} XP</p>
+          <button type="button" className="primary" onClick={() => void start()}>
+            Play again
+          </button>
+          <button type="button" className="secondary" onClick={back}>
+            Change deck
+          </button>
+        </>
+      )}
     </motion.div>
   );
 }

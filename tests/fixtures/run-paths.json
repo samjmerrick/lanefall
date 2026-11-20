@@ -1,0 +1,92 @@
+{
+  "config": {
+    "seed": 7,
+    "heroId": "hero-pyra",
+    "pool": [
+      "bastion-banner-knight",
+      "bastion-blessing",
+      "bastion-field-medic",
+      "bastion-mend",
+      "bastion-militia",
+      "bastion-muster-captain",
+      "bastion-rally-cry",
+      "bastion-recruit",
+      "bastion-shield-sergeant",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "bastion-wall-warden",
+      "ember-ash-raider",
+      "ember-blaze-runner",
+      "ember-cinder-bolt",
+      "ember-cinder-scout",
+      "ember-ember-hound",
+      "ember-fireball",
+      "ember-flame-dancer",
+      "ember-kindle",
+      "ember-magma-brute",
+      "ember-skyfire-archer",
+      "ember-spark-imp",
+      "ember-torchbearer"
+    ]
+  },
+  "paths": {
+    "reward": [
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true }
+    ],
+    "shop": [
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "leave" },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 }
+    ],
+    "rest": [
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "leave" },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "leave" },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 }
+    ],
+    "treasure": [
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 }
+    ],
+    "restAfterLoss": [
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": false },
+      { "t": "move", "col": 0 },
+      { "t": "leave" },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "leave" },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 },
+      { "t": "matchEnd", "won": true },
+      { "t": "pick", "index": null },
+      { "t": "move", "col": 0 }
+    ]
+  }
+}

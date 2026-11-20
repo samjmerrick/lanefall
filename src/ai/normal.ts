@@ -42,6 +42,11 @@ function withPlan(s: GameState, player: PlayerId, plan: PlannedAction[]): GameSt
  * Removes what the planner must not see: the opponent's planned (face-down) cards.
  * The opponent's hand is left in place because nothing the planner does reads it.
  */
+/** Boss overrides for planning (see `ai` in enemies.json). */
+export interface AiHooks {
+  seesPlan?: boolean;
+}
+
 export function hideOpponent(s: GameState, player: PlayerId): GameState {
   const opp = other(player);
   const players = [...s.players] as GameState['players'];
@@ -152,13 +157,20 @@ export function toActions(player: PlayerId, plan: PlannedAction[]): Action[] {
   return [...plan.map((action): Action => ({ type: 'plan', player, action })), { type: 'endTurn', player }];
 }
 
-export function planNormal(state: GameState, player: PlayerId, rng: RngState): PlanResult {
+export function planNormal(
+  state: GameState,
+  player: PlayerId,
+  rng: RngState,
+  hooks: AiHooks = {},
+): PlanResult {
   if (state.phase === 'mulligan') return { actions: [mulliganChoice(state, player)], rng };
   const base = hideOpponent(state, player);
+  // Boss hook: plan against the opponent's real planned cards instead of an empty plan.
+  const oppPlan = hooks.seesPlan ? state.players[other(player)].plan : [];
   let best: PlannedAction[] = [];
   let bestScore = -Infinity;
   for (const plan of enumeratePlans(base, player)) {
-    const score = evaluate(simulate(base, player, plan), player);
+    const score = evaluate(simulate(base, player, plan, oppPlan), player);
     if (score > bestScore) {
       bestScore = score;
       best = plan;

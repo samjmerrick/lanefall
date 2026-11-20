@@ -1,0 +1,125 @@
+// Roguelike run UI state. The run itself lives in the profile as seed + choices (autosaved on every
+// choice); this store keeps the replayed RunState for rendering and hands matches to the match store.
+import { create } from 'zustand';
+import type { GameState } from '../engine';
+import { applyChoice, replayRun, runMatch, runXp, type RunChoice, type RunState } from '../run';
+import { ownedCards, useApp } from './app';
+import { randomSeed, urlSeed } from './settings';
+import { useMatch } from './store';
+
+interface RunStore {
+  run: RunState | null;
+  /** The finished run, for the summary screen. */
+  summary: RunState | null;
+  error: string | null;
+
+  begin(heroId: string): void;
+  /** Rebuilds the active run from the profile and opens it (or its match). */
+  resume(): void;
+  choose(choice: RunChoice): void;
+  /** Starts the current node's match, or resumes the saved one. */
+  playMatch(): void;
+  saveMatch(game: GameState, aiRng: number): void;
+  finishMatch(won: boolean): void;
+  closeSummary(): void;
+}
+
+export const useRun = create<RunStore>((set, get) => {
+  function finish(run: RunState) {
+    const won = run.phase.kind === 'over' && run.phase.won;
+    useApp.getState().update((p) => {
+      const prev = p.stats.runs[run.config.heroId] ?? { played: 0, won: 0 };
+      return {
+        ...p,
+        xp: p.xp + runXp(run),
+        activeRun: null,
+        stats: {
+          ...p.stats,
+          runs: {
+            ...p.stats.runs,
+            [run.config.heroId]: { played: prev.played + 1, won: prev.won + (won ? 1 : 0) },
+          },
+        },
+      };
+    });
+    set({ run: null, summary: run });
+    useApp.getState().go('runSummary');
+  }
+
+  return {
+    run: null,
+    summary: null,
+    error: null,
+
+    begin(heroId) {
+      const profile = useApp.getState().profile;
+      const config = { seed: urlSeed() ?? randomSeed(), heroId, pool: [...ownedCards(profile)].sort() };
+      useApp.getState().update((p) => ({ ...p, activeRun: { config, choices: [], match: null } }));
+      set({ run: replayRun(config, []), error: null });
+      useApp.getState().go('run');
+    },
+
+    resume() {
+      const active = useApp.getState().profile.activeRun;
+      if (!active) return;
+      try {
+        const run = replayRun(active.config, active.choices);
+        set({ run, error: null });
+        if (run.phase.kind === 'match' && active.match?.step === run.step) get().playMatch();
+        else useApp.getState().go('run');
+      } catch (err) {
+        // A save that no longer replays (e.g. content changed): end it rather than lock the player out.
+        console.warn('Run could not be replayed', err);
+        useApp.getState().update((p) => ({ ...p, activeRun: null }));
+        set({ run: null, error: 'Your saved run could not be loaded, so it was ended.' });
+      }
+    },
+
+    choose(choice) {
+      const { run } = get();
+      const active = useApp.getState().profile.activeRun;
+      if (!run || !active) return;
+      let next: RunState;
+      try {
+        next = applyChoice(run, choice);
+      } catch (err) {
+        set({ error: err instanceof Error ? err.message : String(err) });
+        return;
+      }
+      if (next.phase.kind === 'over') return finish(next);
+      useApp.getState().update((p) => ({
+        ...p,
+        activeRun: { ...active, choices: [...active.choices, choice], match: null },
+      }));
+      set({ run: next, error: null });
+    },
+
+    playMatch() {
+      const { run } = get();
+      const active = useApp.getState().profile.activeRun;
+      if (!run || run.phase.kind !== 'match' || !active) return;
+      const saved = active.match?.step === run.step ? active.match : null;
+      void useMatch.getState().startRunMatch(runMatch(run), saved);
+    },
+
+    saveMatch(game, aiRng) {
+      const { run } = get();
+      if (!run) return;
+      useApp
+        .getState()
+        .update((p) =>
+          p.activeRun ? { ...p, activeRun: { ...p.activeRun, match: { step: run.step, game, aiRng } } } : p,
+        );
+    },
+
+    finishMatch(won) {
+      get().choose({ t: 'matchEnd', won });
+      if (get().run) useApp.getState().go('run');
+    },
+
+    closeSummary() {
+      set({ summary: null });
+      useApp.getState().go('menu');
+    },
+  };
+});

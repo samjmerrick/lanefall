@@ -8,9 +8,10 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm lint` — ESLint + Prettier check (`pnpm format` to fix)
 - `pnpm typecheck` — `tsc -b`
 - `pnpm test` — Vitest unit and simulation tests (includes 10,000 bot matches, ~15 s)
-- `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine` and `src/save`
+- `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine`, `src/run` and `src/save`
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
+- `pnpm sim:run [n] [easy|normal]` — bot roguelike runs per starter hero (win rate, nodes cleared)
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)
 
 ## Folder rules
@@ -34,6 +35,9 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
   URL params `?seed=N&speed=0.05` make matches deterministic and fast for Playwright.
 - UI screens: `src/ui/app.ts` (navigation + profile + autosave) and `src/ui/store.ts` (the match). Bump
   `CURRENT_SCHEMA` and add a migration + fixture whenever the profile shape changes.
+- Runs (`src/run/`) are config (seed, hero, card pool) + a list of choices; `replayRun` rebuilds the state, and
+  `applyChoice` is the only way to change it. Hero passives, relics and boss rules become `MatchConfig.modifiers`.
+  Run content is `heroes.json`, `relics.json`, `enemies.json` (schemas in `src/run/content.ts`).
 - Tests build boards with `tests/unit/helpers.ts` (`setup`, `place`, `give`, `plan`, `resolve`).
 
 ## Working rules

@@ -1,9 +1,14 @@
+import { getHero } from '../../run';
 import { useApp } from '../app';
+import { useRun } from '../runStore';
 
 export function MenuScreen() {
   const go = useApp((s) => s.go);
   const profile = useApp((s) => s.profile);
   const fellBack = useApp((s) => s.fellBack);
+  const active = profile.activeRun;
+  const resume = useRun((s) => s.resume);
+  const runError = useRun((s) => s.error);
   return (
     <main className="menu" aria-label="Main menu">
       <header className="menu__header">
@@ -18,8 +23,22 @@ export function MenuScreen() {
           Your latest save was damaged, so the previous one was loaded.
         </p>
       )}
+      {runError && !active && (
+        <p className="notice" role="status">
+          {runError}
+        </p>
+      )}
       <nav className="menu__nav">
-        <button type="button" className="primary" onClick={() => go('quickplay')}>
+        {active ? (
+          <button type="button" className="primary" onClick={resume}>
+            Continue run · {getHero(active.config.heroId).name}
+          </button>
+        ) : (
+          <button type="button" className="primary" onClick={() => go('runStart')}>
+            New run
+          </button>
+        )}
+        <button type="button" className={active ? 'secondary' : 'primary'} onClick={() => go('quickplay')}>
           Quick Play
         </button>
         <button type="button" className="secondary" onClick={() => go('decks')}>

@@ -1,0 +1,81 @@
+[
+  {
+    "id": "relic-ember-coal",
+    "name": "Ember Coal",
+    "text": "Start each match with 1 Reserve mana.",
+    "modifiers": [{ "kind": "startReserve", "amount": 1 }]
+  },
+  {
+    "id": "relic-iron-heart",
+    "name": "Iron Heart",
+    "text": "Your hero has +5 HP.",
+    "modifiers": [{ "kind": "heroHp", "amount": 5 }]
+  },
+  {
+    "id": "relic-scout-map",
+    "name": "Scout's Map",
+    "text": "Draw 1 extra card at the start of each match.",
+    "modifiers": [{ "kind": "startHand", "amount": 1 }]
+  },
+  {
+    "id": "relic-whetstone",
+    "name": "Whetstone",
+    "text": "At the start of each round, give a random friendly unit +1 Power.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 1,
+          "health": 0,
+          "duration": "permanent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "relic-thorn-charm",
+    "name": "Thorn Charm",
+    "text": "At the start of each round, deal 1 damage to a random enemy unit.",
+    "modifiers": [
+      { "kind": "roundStart", "action": { "op": "damage", "target": "randomEnemyUnit", "amount": 1 } }
+    ]
+  },
+  {
+    "id": "relic-healing-salve",
+    "name": "Healing Salve",
+    "text": "At the start of each round, heal your hero by 1.",
+    "modifiers": [{ "kind": "roundStart", "action": { "op": "heal", "target": "friendlyHero", "amount": 1 } }]
+  },
+  {
+    "id": "relic-war-banner",
+    "name": "War Banner",
+    "text": "At the start of round 4, give your units Barrier.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [4],
+        "action": { "op": "grantKeyword", "target": "allFriendlyUnits", "keyword": "barrier" }
+      }
+    ]
+  },
+  {
+    "id": "relic-merchant-purse",
+    "name": "Merchant's Purse",
+    "text": "Gain 10 more gold from each fight.",
+    "run": { "fightGold": 10 }
+  },
+  {
+    "id": "relic-silver-tongue",
+    "name": "Silver Tongue",
+    "text": "Shop prices are 25% lower.",
+    "run": { "shopDiscount": 25 }
+  },
+  {
+    "id": "relic-keen-eye",
+    "name": "Keen Eye",
+    "text": "Card rewards offer 4 cards instead of 3.",
+    "run": { "cardChoices": 1 }
+  }
+]

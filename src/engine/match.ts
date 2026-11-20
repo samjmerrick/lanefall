@@ -3,11 +3,13 @@ import { canPlaceAt, findUnit, hasKeyword, unitsOf, activeLaneEffect } from './b
 import { getCard, LANE_EFFECTS } from './content';
 import { drawCard, randomInt, type Ctx } from './effects';
 import { seedRng, shuffle } from './rng';
+import { MatchModifierSchema, type MatchModifier } from './schema';
 import { beginRound, isAffordable } from './round';
 import {
   DEFAULT_HERO_HP,
   IllegalActionError,
   LANES,
+  RESERVE_CAP,
   SLOTS_PER_SIDE,
   STARTING_HAND,
   type Action,
@@ -20,12 +22,16 @@ import {
   type SpellTarget,
 } from './types';
 
-function newPlayer(hp: number, deck: string[]): PlayerState {
+function newPlayer(hp: number, deck: string[], mods: readonly MatchModifier[]): PlayerState {
+  for (const m of mods) if (m.kind === 'heroHp') hp += m.amount;
+  hp = Math.max(1, hp);
+  let reserve = 0;
+  for (const m of mods) if (m.kind === 'startReserve') reserve += m.amount;
   return {
     hp,
     maxHp: hp,
     mana: 0,
-    reserve: 0,
+    reserve: Math.min(RESERVE_CAP, reserve),
     bonusMana: 0,
     deck,
     hand: [],
@@ -41,6 +47,10 @@ const emptySide = () => Array.from({ length: SLOTS_PER_SIDE }, () => null);
 /** Creates a match in the mulligan phase: decks shuffled, lane effects chosen, 4 cards drawn each. */
 export function initMatch(config: MatchConfig, seed: number): GameState {
   for (const deck of config.decks) for (const id of deck) getCard(id);
+  const modifiers: [MatchModifier[], MatchModifier[]] = [
+    (config.modifiers?.[0] ?? []).map((m) => MatchModifierSchema.parse(m)),
+    (config.modifiers?.[1] ?? []).map((m) => MatchModifierSchema.parse(m)),
+  ];
   const hp = config.heroHp ?? DEFAULT_HERO_HP;
   let rng = seedRng(seed);
   const [deck0, r1] = shuffle(rng, config.decks[0]);
@@ -61,7 +71,7 @@ export function initMatch(config: MatchConfig, seed: number): GameState {
     phase: 'mulligan',
     rng,
     initiative: 0,
-    players: [newPlayer(hp, deck0), newPlayer(hp, deck1)],
+    players: [newPlayer(hp, deck0, modifiers[0]), newPlayer(hp, deck1, modifiers[1])],
     lanes: [0, 1, 2].map((i) => ({
       effectId: laneIds[i]!,
       revealed: false,
@@ -70,10 +80,15 @@ export function initMatch(config: MatchConfig, seed: number): GameState {
     nextUid: 1,
     nextPlayOrder: 1,
     result: null,
+    modifiers,
   };
   const ctx: Ctx = { s, events: [] };
   s.initiative = randomInt(ctx, 0, 1) as PlayerId;
-  for (let i = 0; i < STARTING_HAND; i++) for (const p of [0, 1] as const) drawCard(ctx, p);
+  const handSize = modifiers.map(
+    (mods) => STARTING_HAND + mods.reduce((n, m) => n + (m.kind === 'startHand' ? m.amount : 0), 0),
+  );
+  for (let i = 0; i < Math.max(...handSize); i++)
+    for (const p of [0, 1] as const) if (i < handSize[p]!) drawCard(ctx, p);
   return s;
 }
 

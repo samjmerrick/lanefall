@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "sim": "tsx tools/sim/index.ts",
+    "sim:run": "tsx tools/sim/runs.ts",
     "coverage": "vitest run tests/unit --coverage"
   },
   "dependencies": {
