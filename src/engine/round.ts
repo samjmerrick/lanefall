@@ -1,10 +1,19 @@
 // Round flow: start of round, reveal, lane combat, end of round and win checks.
-import { allUnits, canPlaceAt, findUnit, firstFreeSlot, hasKeyword, unitsOf } from './board';
+import {
+  activeLaneEffect,
+  allUnits,
+  canPlaceAt,
+  findUnit,
+  firstFreeSlot,
+  hasKeyword,
+  unitsOf,
+} from './board';
 import { assignLaneDamage, lanePowers } from './combat';
 import { getCard } from './content';
 import {
   createUnit,
   damageHero,
+  enterLane,
   damageUnit,
   drawCard,
   healHero,
@@ -131,6 +140,7 @@ function revealUnit(ctx: Ctx, player: PlayerId, a: Extract<PlannedAction, { type
       src,
     );
   }
+  enterLane(ctx, unit, a.lane);
   runTrigger(ctx, { unit, lane: a.lane }, 'onReveal');
 }
 
@@ -149,6 +159,8 @@ function revealSpell(ctx: Ctx, player: PlayerId, a: Extract<PlannedAction, { typ
         (def.targeting === 'enemyUnit' && loc.unit.owner !== player) ||
         (def.targeting === 'friendlyUnit' && loc.unit.owner === player));
     if (!ok) return fizzle(ctx, player, card.uid, card.cardId, 'target gone');
+    if (loc.unit.owner !== player && activeLaneEffect(ctx.s, loc.lane).spellShield)
+      return fizzle(ctx, player, card.uid, card.cardId, 'target shrouded');
     lane = loc.lane;
     targetUid = loc.unit.uid;
   } else if (a.target.kind === 'lane') {

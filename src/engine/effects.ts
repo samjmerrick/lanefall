@@ -6,6 +6,7 @@ import {
   findUnit,
   firstFreeSlot,
   isRandomSelector,
+  lanePower,
   selectorMatches,
   unitMaxHealth,
   type SelectorSource,
@@ -129,6 +130,7 @@ function summon(ctx: Ctx, cardId: string, owner: PlayerId, lane: LaneIndex): voi
   const unit = createUnit(ctx, cardId, owner);
   ctx.s.lanes[lane].slots[owner][slot] = unit;
   ctx.events.push({ type: 'UnitSummoned', player: owner, uid: unit.uid, cardId, lane, slot });
+  enterLane(ctx, unit, lane);
 }
 
 export function moveUnit(ctx: Ctx, loc: UnitLocation, to: LaneIndex, slot: number): void {
@@ -136,6 +138,13 @@ export function moveUnit(ctx: Ctx, loc: UnitLocation, to: LaneIndex, slot: numbe
   ctx.s.lanes[loc.lane].slots[owner][loc.slot] = null;
   ctx.s.lanes[to].slots[owner][slot] = loc.unit;
   ctx.events.push({ type: 'UnitMoved', uid: loc.unit.uid, from: loc.lane, to, slot });
+  enterLane(ctx, loc.unit, to);
+}
+
+/** Runs the lane effect's onEnter primitives for a unit that has just arrived (played, summoned or moved). */
+export function enterLane(ctx: Ctx, unit: Unit, lane: LaneIndex): void {
+  const src: Source = { owner: unit.owner, lane, unitUid: unit.uid, targetUid: null };
+  for (const action of activeLaneEffect(ctx.s, lane).onEnter) runPrimitive(ctx, action, src);
 }
 
 // ---------- Primitive dispatch ----------
@@ -232,7 +241,14 @@ export function processDeaths(ctx: Ctx): void {
     for (const l of dying) {
       ctx.s.lanes[l.lane].slots[l.unit.owner][l.slot] = null;
       const card = getCard(l.unit.cardId);
-      if (!card.token) ctx.s.players[l.unit.owner].discard.push(l.unit.cardId);
+      if (!card.token) {
+        const owner = ctx.s.players[l.unit.owner];
+        if (activeLaneEffect(ctx.s, l.lane).returnOnDeath && owner.hand.length < HAND_LIMIT) {
+          const uid = ctx.s.nextUid++;
+          owner.hand.push({ uid, cardId: l.unit.cardId });
+          ctx.events.push({ type: 'CardDrawn', player: l.unit.owner, uid, cardId: l.unit.cardId });
+        } else owner.discard.push(l.unit.cardId);
+      }
       ctx.events.push({
         type: 'UnitDied',
         uid: l.unit.uid,
@@ -241,7 +257,11 @@ export function processDeaths(ctx: Ctx): void {
         lane: l.lane,
       });
     }
-    for (const l of dying) runTrigger(ctx, l, 'lastBreath');
+    for (const l of dying) {
+      runTrigger(ctx, l, 'lastBreath');
+      const src: Source = { owner: l.unit.owner, lane: l.lane, unitUid: null, targetUid: null };
+      for (const action of activeLaneEffect(ctx.s, l.lane).onDeath) runPrimitive(ctx, action, src);
+    }
   }
   throw new Error('processDeaths did not settle');
 }
@@ -251,6 +271,13 @@ export function laneEffectEndOfRound(ctx: Ctx, lane: LaneIndex): void {
   // Lane effects have no owner; the initiative player is used only so "friendly"/"enemy" are defined.
   const src: Source = { owner: ctx.s.initiative, lane, unitUid: null, targetUid: null };
   for (const action of effect.endOfRound) runPrimitive(ctx, action, src);
+  if (effect.winnerEndOfRound.length === 0) return;
+  const [a, b] = [lanePower(ctx.s, lane, 0), lanePower(ctx.s, lane, 1)];
+  if (a === b) return;
+  const winner: PlayerId = a > b ? 0 : 1;
+  for (const action of effect.winnerEndOfRound) {
+    runPrimitive(ctx, action, { owner: winner, lane, unitUid: null, targetUid: null });
+  }
 }
 
 export { findUnit };
