@@ -8,6 +8,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm lint` — ESLint + Prettier check (`pnpm format` to fix)
 - `pnpm typecheck` — `tsc -b`
 - `pnpm test` — Vitest unit and simulation tests (includes 10,000 bot matches, ~15 s)
+- `pnpm test:sim` — only the simulation tests (CI runs `coverage` + `test:sim` instead of `test`)
 - `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine`, `src/run` and `src/save`
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
@@ -42,7 +43,8 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 
 ## Working rules
 
-- One milestone (M0–M8, see spec) per branch and PR; don't start the next until CI is green.
+- One milestone (M0–M8, see spec) per branch and PR; don't start the next until CI is green. CI runs on PRs and
+  `main` (jobs `check` and `e2e` in parallel; `deploy` to Pages after both, on `main` only).
 - Spec silent on something? Pick the simplest option and log it in `docs/decisions.md` (date, question, decision).
 - Any game-rule change updates `docs/spec.md` in the same PR.
 - After UI changes, run `pnpm e2e` and look at `test-results/screens/*.png` before committing.
