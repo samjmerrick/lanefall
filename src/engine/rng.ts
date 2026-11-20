@@ -23,3 +23,15 @@ export function nextInt(state: RngState, min: number, max: number): [value: numb
   const [f, next] = nextFloat(state);
   return [min + Math.floor(f * (max - min + 1)), next];
 }
+
+/** Fisher–Yates shuffle; returns a new array and the next state. */
+export function shuffle<T>(state: RngState, items: readonly T[]): [result: T[], next: RngState] {
+  const out = [...items];
+  let s = state;
+  for (let i = out.length - 1; i > 0; i--) {
+    const [j, n] = nextInt(s, 0, i);
+    s = n;
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return [out, s];
+}

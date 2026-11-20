@@ -1,0 +1,61 @@
+[
+  {
+    "id": "lane-plain",
+    "name": "Open Field",
+    "text": "No effect."
+  },
+  {
+    "id": "lane-forge",
+    "name": "Forge",
+    "text": "Units here have +1 Power.",
+    "powerBonus": 1
+  },
+  {
+    "id": "lane-chasm",
+    "name": "Chasm",
+    "text": "Overflow damage here is doubled.",
+    "overflowMultiplier": 2
+  },
+  {
+    "id": "lane-narrows",
+    "name": "Narrows",
+    "text": "Only 2 units per side.",
+    "maxUnits": 2
+  },
+  {
+    "id": "lane-bulwark",
+    "name": "Bulwark",
+    "text": "Units here have +1 Health.",
+    "healthBonus": 1
+  },
+  {
+    "id": "lane-sanctuary",
+    "name": "Sanctuary",
+    "text": "Heroes take no damage from this lane.",
+    "heroDamage": false
+  },
+  {
+    "id": "lane-ashfield",
+    "name": "Ashfield",
+    "text": "End of Round: deal 1 damage to each unit here.",
+    "endOfRound": [
+      {
+        "op": "damage",
+        "target": "allUnitsInLane",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-spring",
+    "name": "Spring",
+    "text": "End of Round: heal each unit here by 2.",
+    "endOfRound": [
+      {
+        "op": "heal",
+        "target": "allUnitsInLane",
+        "amount": 2
+      }
+    ]
+  }
+]

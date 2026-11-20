@@ -33,11 +33,12 @@ export default defineConfig({
     }),
   ],
   test: {
-    include: ['tests/unit/**/*.test.ts', 'src/**/*.test.ts'],
+    include: ['tests/unit/**/*.test.ts', 'tests/sim/**/*.test.ts'],
     environment: 'node',
     coverage: {
       provider: 'v8',
       include: ['src/engine/**'],
+      thresholds: { statements: 90, lines: 90, functions: 90, branches: 90 },
     },
   },
 });
