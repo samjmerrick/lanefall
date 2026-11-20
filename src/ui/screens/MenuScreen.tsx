@@ -1,8 +1,21 @@
 import { getHero } from '../../run';
+import type { Profile } from '../../save';
 import { useApp } from '../app';
 import { currentIosEnv, shouldShowIosTip } from '../ios';
 import { useRun } from '../runStore';
+import { useMatch } from '../store';
 import { XpBar } from './XpBar';
+
+/** A fresh profile: the tutorial has not been played or skipped and nothing else has either. */
+function isNewPlayer(p: Profile): boolean {
+  return (
+    !p.tutorialDone &&
+    p.xp === 0 &&
+    !p.activeRun &&
+    Object.keys(p.stats.quickPlay).length === 0 &&
+    Object.keys(p.stats.runs).length === 0
+  );
+}
 
 export function MenuScreen() {
   const go = useApp((s) => s.go);
@@ -12,6 +25,10 @@ export function MenuScreen() {
   const resume = useRun((s) => s.resume);
   const runError = useRun((s) => s.error);
   const dismissIosTip = useApp((s) => s.dismissIosTip);
+  const completeTutorial = useApp((s) => s.completeTutorial);
+  const startTutorial = useMatch((s) => s.startTutorial);
+  // A new player gets the prompt in place of the Tutorial button.
+  const newPlayer = isNewPlayer(profile);
   const showTip = shouldShowIosTip(currentIosEnv(), profile.iosTipSeen);
   return (
     <main className={`menu${showTip ? ' menu--tip' : ''}`} aria-label="Main menu">
@@ -29,6 +46,17 @@ export function MenuScreen() {
         <p className="notice" role="status">
           {runError}
         </p>
+      )}
+      {newPlayer && (
+        <aside className="menu__prompt" data-testid="tutorial-prompt" aria-label="Tutorial">
+          <p>New here? Play the tutorial.</p>
+          <button type="button" className="primary" onClick={startTutorial}>
+            Play
+          </button>
+          <button type="button" className="secondary" onClick={completeTutorial}>
+            Skip
+          </button>
+        </aside>
       )}
       <nav className="menu__nav">
         {active ? (
@@ -52,6 +80,11 @@ export function MenuScreen() {
         <button type="button" className="secondary" onClick={() => go('stats')}>
           Stats
         </button>
+        {!newPlayer && (
+          <button type="button" className="secondary" onClick={startTutorial}>
+            Tutorial
+          </button>
+        )}
         <button type="button" className="secondary" onClick={() => go('settings')}>
           Settings
         </button>

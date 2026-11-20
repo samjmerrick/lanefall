@@ -45,11 +45,20 @@ export function ResultOverlay() {
   const start = useMatch((s) => s.startMatch);
   const back = useMatch((s) => s.leave);
   const mode = useMatch((s) => s.mode);
+  const startTutorial = useMatch((s) => s.startTutorial);
+  const finishTutorial = useMatch((s) => s.finishTutorial);
   const finishMatch = useRun((s) => s.finishMatch);
   const scale = useDurationScale();
   if (!game || game.phase !== 'over' || busy || !game.result) return null;
   const { winner, reason } = game.result;
-  const title = winner === null ? 'Draw' : winner === HUMAN ? 'Victory' : 'Defeat';
+  const tutorialWon = mode === 'tutorial' && winner === HUMAN;
+  const title = tutorialWon
+    ? 'Tutorial complete'
+    : winner === null
+      ? 'Draw'
+      : winner === HUMAN
+        ? 'Victory'
+        : 'Defeat';
   return (
     <motion.div
       className={`overlay overlay--result result--${title.toLowerCase()}`}
@@ -66,7 +75,29 @@ export function ResultOverlay() {
       <p className="result__hp">
         You ♥ {Math.max(0, game.players[HUMAN].hp)} · Opponent ♥ {Math.max(0, game.players[AI].hp)}
       </p>
-      {mode === 'run' ? (
+      {mode === 'tutorial' ? (
+        <>
+          <p className="result__xp">
+            {tutorialWon
+              ? 'You know the basics. Good luck out there!'
+              : 'That is not how it was meant to go.'}
+          </p>
+          {tutorialWon ? (
+            <button type="button" className="primary" onClick={finishTutorial}>
+              Back to menu
+            </button>
+          ) : (
+            <>
+              <button type="button" className="primary" onClick={startTutorial}>
+                Try again
+              </button>
+              <button type="button" className="secondary" onClick={back}>
+                Back to menu
+              </button>
+            </>
+          )}
+        </>
+      ) : mode === 'run' ? (
         <>
           <p className="result__xp">{winner === HUMAN ? 'The way ahead is clear' : 'You lose 1 Heart'}</p>
           <button type="button" className="primary" onClick={() => finishMatch(winner === HUMAN)}>

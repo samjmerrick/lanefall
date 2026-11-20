@@ -375,6 +375,7 @@ XP, levels, the unlock track, 10 heroes, Ascension 1–10 and the stats screen.
 Animation tuning, Fast animations and Reduce motion settings, haptics, simple sound effects, a tutorial match, and the iOS home-screen tip.
 
 - A committed set of screenshots of every screen at all 3 viewports, with no overflow.
+- The tutorial is a scripted 3-round match with a coach banner (no XP). It is offered on the menu to a new profile (Play or Skip) and stays available as a Tutorial button; finishing or skipping it sets `tutorialDone`.
 - A Playwright script completes the tutorial.
 
 ### M8: Balance and 1.0

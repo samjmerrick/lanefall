@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { AiHooks, Difficulty } from '../ai';
-import { matchAiRng, type RunMatch } from '../run';
+import { matchAiRng, opponentPlan, stepAllows, TUTORIAL, tutorialConfig, type RunMatch } from '../run';
 import {
   applyAction,
   initMatch,
@@ -69,8 +69,8 @@ export interface Revealing {
 }
 
 interface MatchStore {
-  /** Quick Play, or a run node's match (autosaved after every End Turn). */
-  mode: 'quick' | 'run';
+  /** Quick Play, a run node's match (autosaved after every End Turn), or the scripted tutorial. */
+  mode: 'quick' | 'run' | 'tutorial';
   deck: DeckChoice | null;
   difficulty: Difficulty;
   hooks: AiHooks;
@@ -90,9 +90,16 @@ interface MatchStore {
   activeLane: LaneIndex | null;
   counters: CombatCounter[];
   error: string | null;
+  /** Tutorial mode: the index of the coach step in `TUTORIAL.steps`. */
+  tutorialStep: number;
 
   startMatch(deck?: DeckChoice, difficulty?: Difficulty): Promise<void>;
   startRunMatch(m: RunMatch, saved: { game: GameState; aiRng: number } | null): Promise<void>;
+  startTutorial(): void;
+  /** Tutorial: moves past an info step. */
+  tutorialNext(): void;
+  /** Tutorial: records it as done and returns to the menu. */
+  finishTutorial(): void;
   toggleMulligan(uid: number): void;
   confirmMulligan(): void;
   play(action: PlannedAction): void;
@@ -241,6 +248,13 @@ export const useMatch = create<MatchStore>((set, get) => {
     }
   }
 
+  /** The tutorial's opponent plays its scripted units instead of asking the AI. */
+  function scriptedTurn(state: GameState): GameState {
+    let s = state;
+    for (const action of opponentPlan(s)) s = applyAction(s, { type: 'plan', player: AI, action });
+    return applyAction(s, { type: 'endTurn', player: AI });
+  }
+
   /** Run mode autosave: the match state after the AI has acted. */
   function autosave() {
     const { mode, game, aiRng } = get();
@@ -266,6 +280,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     activeLane: null,
     counters: [],
     error: null,
+    tutorialStep: 0,
 
     async startMatch(deckArg, difficultyArg) {
       const deck = deckArg ?? get().deck;
@@ -322,6 +337,43 @@ export const useMatch = create<MatchStore>((set, get) => {
       autosave();
     },
 
+    startTutorial() {
+      // No mulligan: both hands are kept so the script's cards are the ones dealt.
+      let game = initMatch(tutorialConfig(), TUTORIAL.seed);
+      for (const player of [HUMAN, AI] as const)
+        game = applyAction(game, { type: 'mulligan', player, uids: [] });
+      useApp.getState().go('match');
+      set({
+        mode: 'tutorial',
+        deck: null,
+        difficulty: 'easy',
+        hooks: {},
+        enemyId: null,
+        opponentDeck: null,
+        seed: TUTORIAL.seed,
+        game,
+        view: viewFromState(game),
+        busy: false,
+        aiRng: 0,
+        mulligan: [],
+        fx: [],
+        counters: [],
+        error: null,
+        tutorialStep: 0,
+      });
+    },
+
+    tutorialNext() {
+      const { mode, tutorialStep, busy } = get();
+      if (mode !== 'tutorial' || busy || TUTORIAL.steps[tutorialStep]?.kind !== 'info') return;
+      set({ tutorialStep: tutorialStep + 1 });
+    },
+
+    finishTutorial() {
+      useApp.getState().completeTutorial();
+      get().leave();
+    },
+
     toggleMulligan(uid) {
       set((st) => ({
         mulligan: st.mulligan.includes(uid) ? st.mulligan.filter((u) => u !== uid) : [...st.mulligan, uid],
@@ -341,9 +393,11 @@ export const useMatch = create<MatchStore>((set, get) => {
     play(action) {
       const { game, busy } = get();
       if (!game || busy) return;
+      const { mode, tutorialStep } = get();
+      if (mode === 'tutorial' && !stepAllows(TUTORIAL.steps[tutorialStep], game, action)) return;
       const next = guard(() => applyAction(game, { type: 'plan', player: HUMAN, action }));
       if (next) {
-        set({ game: next });
+        set({ game: next, ...(mode === 'tutorial' ? { tutorialStep: tutorialStep + 1 } : {}) });
         sfx('play');
         haptic('play');
       }
@@ -351,7 +405,8 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     unplan(index) {
       const { game, busy } = get();
-      if (!game || busy) return;
+      // The tutorial script has no way back: a step's play stays played.
+      if (!game || busy || get().mode === 'tutorial') return;
       const next = guard(() => applyAction(game, { type: 'unplan', player: HUMAN, index }));
       if (next) set({ game: next });
     },
@@ -359,15 +414,19 @@ export const useMatch = create<MatchStore>((set, get) => {
     async endTurn() {
       const { game, busy } = get();
       if (!game || busy || game.phase !== 'plan') return;
+      const tutorial = get().mode === 'tutorial';
+      if (tutorial && TUTORIAL.steps[get().tutorialStep]?.kind !== 'endTurn') return;
       sfx('tap');
       haptic('tap');
-      set({ busy: true });
+      set({ busy: true, ...(tutorial ? { tutorialStep: get().tutorialStep + 1 } : {}) });
       let s = applyAction(game, { type: 'endTurn', player: HUMAN });
-      s = await aiTurn(s);
+      s = tutorial ? scriptedTurn(s) : await aiTurn(s);
       const { state, events } = resolveRound(s);
       set({ view: viewFromState(s) });
       await playback(events);
       set({ game: state, view: viewFromState(state), busy: false });
+      // The watch step ends with the playback; the next step (or the result) shows.
+      if (tutorial) set({ tutorialStep: get().tutorialStep + 1 });
       autosave();
       if (state.result) {
         const won = state.result.winner === HUMAN;
@@ -385,10 +444,11 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     showDetail: (detail) => set({ detail }),
     leave() {
-      const run = get().mode === 'run';
+      const { mode } = get();
       set({ game: null, view: null, busy: false });
-      // A run match stays saved; the run screen offers to resume it.
-      useApp.getState().go(run ? 'run' : 'quickplay');
+      // A run match stays saved; the run screen offers to resume it. Leaving the tutorial early
+      // does not mark it done.
+      useApp.getState().go(mode === 'run' ? 'run' : mode === 'tutorial' ? 'menu' : 'quickplay');
     },
   };
 });

@@ -2,6 +2,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { AnimatePresence, motion } from 'motion/react';
 import { manaLeft, MAX_ROUNDS, RESERVE_CAP, type PlayerId } from '../engine';
 import { FADE_SECONDS, useDurationScale } from './motion';
+import { useCoachStep } from './coach';
 import { HUMAN, useMatch } from './store';
 import { useReduceMotion } from './useReduceMotion';
 
@@ -12,13 +13,17 @@ export function HeroBar({ side }: { side: PlayerId }) {
   const endTurn = useMatch((s) => s.endTurn);
   const leave = useMatch((s) => s.leave);
   const fx = useMatch(useShallow((s) => s.fx.filter((f) => 'hero' in f.target && f.target.hero === side)));
+  const coach = useCoachStep();
+  const tutorial = useMatch((s) => s.mode === 'tutorial');
   const reduce = useReduceMotion();
   const scale = useDurationScale();
   if (!game || !view) return null;
   const p = game.players[side];
   const isPlayer = side === HUMAN;
   const left = isPlayer ? manaLeft(game, side) : { mana: p.mana, reserve: p.reserve };
-  const canEnd = isPlayer && game.phase === 'plan' && !busy && !p.ready;
+  // In the tutorial, End Turn only works on the step that asks for it.
+  const coachAllows = !tutorial || coach?.kind === 'endTurn';
+  const canEnd = isPlayer && game.phase === 'plan' && !busy && !p.ready && coachAllows;
   return (
     <div
       className={`hero-bar hero-bar--${isPlayer ? 'player' : 'opponent'}`}

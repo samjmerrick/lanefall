@@ -10,6 +10,7 @@ import {
   type UnitForecast,
 } from '../engine';
 import { CardEmblem } from './CardView';
+import { useCoachKey } from './coach';
 import { dropClass, useDrag } from './drag';
 import { AI, HUMAN, useMatch, type Fx } from './store';
 import { useForecast } from './forecast';
@@ -162,11 +163,12 @@ function GhostToken({
   const drag = useDrag((s) => s.drag);
   // A planned unit can be the target of a friendly spell queued after it.
   const key = `unit:${uid}`;
+  const coach = useCoachKey() === key;
   return (
     <button
       type="button"
       data-drop={key}
-      className={`token token--ghost faction-${card.faction}${drag?.targets.has(key) ? dropClass(drag, key) : ''}`}
+      className={`token token--ghost faction-${card.faction}${drag?.targets.has(key) ? dropClass(drag, key) : ''}${coach ? ' coach-target' : ''}`}
       aria-label={`Planned: ${card.name}${forecastText(forecast)}. Tap to take back.`}
       onClick={onTap}
     >
@@ -185,6 +187,7 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
   const active = useMatch((s) => s.activeLane === lane);
   const drag = useDrag((s) => s.drag);
   const forecast = useForecast();
+  const coachKey = useCoachKey();
   if (!view || !game) return null;
   const units = view.lanes[lane].slots[side];
   const plan = side === HUMAN ? game.players[HUMAN].plan : [];
@@ -224,7 +227,7 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
         return (
           <div
             key={slot}
-            className={`slot slot--${side === HUMAN ? 'player' : 'opponent'}${slot < 2 ? ' slot--front' : ''}${side === HUMAN ? dropClass(drag, key) : ''}`}
+            className={`slot slot--${side === HUMAN ? 'player' : 'opponent'}${slot < 2 ? ' slot--front' : ''}${side === HUMAN ? dropClass(drag, key) : ''}${side === HUMAN && coachKey === key ? ' coach-target' : ''}`}
             data-drop={side === HUMAN ? key : undefined}
             data-slot={slot}
           >
