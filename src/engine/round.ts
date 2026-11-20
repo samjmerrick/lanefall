@@ -1,16 +1,6 @@
 // Round flow: start of round, reveal, lane combat, end of round and win checks.
-import {
-  activeLaneEffect,
-  allUnits,
-  canPlaceAt,
-  findUnit,
-  firstFreeSlot,
-  hasKeyword,
-  unitPower,
-  unitRemainingHealth,
-  unitsOf,
-  type UnitLocation,
-} from './board';
+import { allUnits, canPlaceAt, findUnit, firstFreeSlot, hasKeyword, unitsOf } from './board';
+import { assignLaneDamage, lanePowers } from './combat';
 import { getCard } from './content';
 import {
   createUnit,
@@ -199,73 +189,26 @@ function reveal(ctx: Ctx): void {
   }
 }
 
-/** Order in which a side's units soak damage: Guard first, then by play order. */
-function damageOrder(units: UnitLocation[]): UnitLocation[] {
-  return [...units].sort((a, b) => {
-    const g = Number(hasKeyword(b.unit, 'guard')) - Number(hasKeyword(a.unit, 'guard'));
-    return g !== 0 ? g : a.unit.playOrder - b.unit.playOrder;
-  });
-}
-
-function locationsOf(s: GameState, lane: LaneIndex, player: PlayerId): UnitLocation[] {
-  const out: UnitLocation[] = [];
-  s.lanes[lane].slots[player].forEach((unit, slot) => unit && out.push({ unit, lane, slot }));
-  return out;
-}
-
 function laneCombat(ctx: Ctx, lane: LaneIndex): void {
   const s = ctx.s;
-  const effect = activeLaneEffect(s, lane);
-  const sides = [0, 1].map((player) => {
-    const units = locationsOf(s, lane, player as PlayerId);
-    let normal = 0;
-    let pierce = 0;
-    let lifesteal = 0;
-    for (const l of units) {
-      const p = unitPower(s, l);
-      if (hasKeyword(l.unit, 'pierce')) pierce += p;
-      else normal += p;
-      if (hasKeyword(l.unit, 'lifesteal')) lifesteal += p;
+  // Assignments come from the pre-combat board; each side's strike is then applied in turn,
+  // the player with initiative first. The order is presentational: nothing reads the other
+  // side's results before deaths are processed.
+  const hits = assignLaneDamage(s, lane);
+  const first = s.initiative;
+  const order: [PlayerId, PlayerId] = [first, other(first)];
+  ctx.events.push({ type: 'LaneCombat', lane, power: lanePowers(s, lane), order, hits });
+  for (const attacker of order) {
+    const side = hits[attacker];
+    const enemy = other(attacker);
+    for (const hit of side.units) {
+      const loc = findUnit(s, hit.uid);
+      if (loc) damageUnit(ctx, loc.unit, hit.amount);
     }
-    return { units, normal, pierce, lifesteal };
-  }) as [Side, Side];
-  ctx.events.push({
-    type: 'LaneCombat',
-    lane,
-    power: [sides[0].normal + sides[0].pierce, sides[1].normal + sides[1].pierce],
-  });
-
-  // Work out both sides' assignments from the pre-combat board, then apply them together.
-  const unitHits: [UnitLocation, number][] = [];
-  const heroHits: [PlayerId, number][] = [];
-  for (const player of [0, 1] as const) {
-    const me = sides[player];
-    const enemy = other(player);
-    let left = me.normal;
-    for (const target of damageOrder(sides[enemy].units)) {
-      if (left <= 0) break;
-      const take = Math.min(left, unitRemainingHealth(s, target));
-      if (take <= 0) continue;
-      unitHits.push([target, take]);
-      left -= take;
-    }
-    const toHero = effect.heroDamage ? left * effect.overflowMultiplier + me.pierce : 0;
-    heroHits.push([enemy, toHero]);
-  }
-  for (const [loc, amount] of unitHits) damageUnit(ctx, loc.unit, amount);
-  for (const [player, amount] of heroHits) {
-    damageHero(ctx, player, amount, lane);
-    const attacker = other(player);
-    if (amount > 0 && sides[attacker].lifesteal > 0) healHero(ctx, attacker, sides[attacker].lifesteal);
+    damageHero(ctx, enemy, side.hero, lane);
+    if (side.hero > 0 && side.lifesteal > 0) healHero(ctx, attacker, side.lifesteal);
   }
   processDeaths(ctx);
-}
-
-interface Side {
-  units: UnitLocation[];
-  normal: number;
-  pierce: number;
-  lifesteal: number;
 }
 
 function endOfRound(ctx: Ctx): void {

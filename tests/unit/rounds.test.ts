@@ -299,7 +299,7 @@ describe('lane combat', () => {
     const { state, events } = resolve(s);
     expect(byUid(state, a.uid)).toBeUndefined();
     expect(byUid(state, b.uid)).toBeUndefined();
-    expect(events).toContainEqual({ type: 'LaneCombat', lane: 0, power: [2, 2] });
+    expect(events).toContainEqual(expect.objectContaining({ type: 'LaneCombat', lane: 0, power: [2, 2] }));
   });
 
   it('assigns damage in play order, each unit taking up to its remaining Health, overflow to the hero', () => {

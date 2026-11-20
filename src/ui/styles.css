@@ -187,13 +187,35 @@ button {
   background: rgb(255 255 255 / 0.02);
 }
 
+/* Front row (slots 0 and 1) faces the lane strip on both sides. */
+.slot--front {
+  border-color: #566083;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.slot--player.slot--front {
+  box-shadow: inset 0 2px 0 rgb(245 184 61 / 0.45);
+}
+
+.slot--opponent.slot--front {
+  box-shadow: inset 0 -2px 0 rgb(245 184 61 / 0.45);
+}
+
+/* Opponent grid mirrored top to bottom: the front row sits nearest the strip. Left and right stay. */
+.lane-grid--opponent .slot[data-slot='2'],
+.lane-grid--opponent .slot[data-slot='3'] {
+  order: -1;
+}
+
 .lane-strip {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--gutter);
 }
 
 .lane-info {
+  position: relative;
   display: grid;
   grid-template-columns: 22px 1fr;
   align-items: center;
@@ -201,7 +223,6 @@ button {
   border-radius: 8px;
   background: var(--surface-2);
   padding: 2px 4px 2px 2px;
-  overflow: hidden;
 }
 
 .lane-info__powers {
@@ -287,7 +308,7 @@ button {
 }
 
 .token--ghost {
-  opacity: 0.55;
+  background: color-mix(in srgb, var(--faction) 10%, transparent);
   border-style: dashed;
   padding: 0;
   cursor: pointer;
@@ -1695,4 +1716,173 @@ textarea {
   color: var(--faction);
   border: 1px solid var(--line);
   background: var(--surface-2);
+}
+
+/* ---------- Soak badges, forecast, damage counter ---------- */
+
+.token--ghost > :not(.badge, .loss) {
+  opacity: 0.6;
+}
+
+.badge {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgb(15 17 23 / 0.88);
+  border: 1px solid rgb(255 255 255 / 0.35);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge--guard {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.badge__shield {
+  width: 7px;
+  height: 8px;
+}
+
+.loss {
+  position: absolute;
+  right: 1px;
+  bottom: 23px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: rgb(15 17 23 / 0.9);
+  border: 1px solid #ff6b6b;
+  color: #ff8c8c;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.loss--dies {
+  background: #b0303a;
+  border-color: #ffb3b3;
+  color: #fff;
+}
+
+.loss--barrier {
+  border-color: #9fe7ff;
+  color: #9fe7ff;
+  padding: 0 2px;
+}
+
+.loss__barrier {
+  width: 12px;
+  height: 12px;
+}
+
+.forecast-label {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 3;
+  padding: 0 7px;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.lane-info__hero {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-hit {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: rgb(15 17 23 / 0.9);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-hit {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+/* Arrows sit on the strip edge nearest the hero they point at. */
+.hero-hit--opponent {
+  top: -9px;
+  color: #5ee38a;
+}
+
+.hero-hit--player {
+  bottom: -9px;
+  color: #ff8c8c;
+}
+
+.combat-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.combat-counter {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 5px;
+  border-radius: 15px;
+  border: 2px solid #fff;
+  background: var(--mana);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.7);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.55);
+}
+
+.combat-counter--opponent {
+  background: #c23a43;
+}
+
+.combat-counter--pierce {
+  border-radius: 6px;
+  border-style: dashed;
+  min-width: 34px;
+}
+
+.combat-counter--spent {
+  opacity: 0.55 !important;
 }

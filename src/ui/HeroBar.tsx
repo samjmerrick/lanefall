@@ -25,7 +25,11 @@ export function HeroBar({ side }: { side: PlayerId }) {
           ✕
         </button>
       )}
-      <span className="hero-bar__hp" aria-label={`${isPlayer ? 'Your' : 'Opponent'} HP ${view.hp[side]}`}>
+      <span
+        className="hero-bar__hp"
+        data-hero={side}
+        aria-label={`${isPlayer ? 'Your' : 'Opponent'} HP ${view.hp[side]}`}
+      >
         ♥ {view.hp[side]}
         <AnimatePresence>
           {fx.map((f) => (

@@ -1,3 +1,4 @@
+import type { SideHits } from './combat';
 import type { Keyword, MatchModifier } from './schema';
 
 export type PlayerId = 0 | 1;
@@ -28,7 +29,7 @@ export interface Unit {
   shiftUsed: boolean;
   /** Set by destroy effects and Ephemeral; the unit dies at the next death check. */
   doomed: boolean;
-  /** Global play order, used for damage assignment and trigger order. */
+  /** Global play order, used for reveal and end-of-round trigger order (not damage). */
   playOrder: number;
 }
 
@@ -120,7 +121,13 @@ export type GameEvent =
   | { type: 'BarrierBroken'; uid: number }
   | { type: 'UnitHealed'; uid: number; amount: number }
   | { type: 'UnitDied'; uid: number; cardId: string; owner: PlayerId; lane: LaneIndex }
-  | { type: 'LaneCombat'; lane: LaneIndex; power: [number, number] }
+  | {
+      type: 'LaneCombat';
+      lane: LaneIndex;
+      power: [number, number];
+      order: [PlayerId, PlayerId];
+      hits: [SideHits, SideHits];
+    }
   | { type: 'HeroDamaged'; player: PlayerId; amount: number; lane: LaneIndex | null }
   | { type: 'HeroHealed'; player: PlayerId; amount: number }
   | { type: 'ManaGained'; player: PlayerId; amount: number }
