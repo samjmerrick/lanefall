@@ -23,7 +23,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 
 **Setup**
 
-- Each hero starts on 20 HP (tune with simulations; see M8).
+- Each hero starts on 20 HP (kept at 20 after the M8 simulations).
 - Decks are 30 cards in Quick Play; run decks start at 12 and grow.
 - Draw 4 to start. One mulligan: replace any number of those cards once.
 - Hand limit is 8; a draw past 8 is discarded.
@@ -50,7 +50,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 
 **Winning**
 
-- A hero on 0 HP or less after combat loses. Both at 0 or less = draw.
+- A hero on 0 HP or less after combat loses. If both are at 0 or less, the one with more HP left wins; equal HP = draw.
 - After round 8, the higher HP wins; equal HP = draw.
 - In a run, a draw counts as a loss.
 
@@ -382,7 +382,7 @@ Animation tuning, Fast animations and Reduce motion settings, haptics, simple so
 
 Run the simulator at scale and tune cards, hero HP and AI weights; tag version 1.0.
 
-- The simulator writes a Markdown report: win rate per faction pair, and win rate when played per card.
+- The simulator writes a Markdown report (`pnpm sim:balance`, `docs/balance.md`): win rate per faction pair, and win rate when played per card. A draw counts as a loss.
 - Targets: every faction wins 45–55% of Normal-vs-Normal matches; no card's win rate when played is above 60%. Any exception is listed in the report with a reason.
 
 ## Working rules for Claude Code

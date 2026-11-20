@@ -19,7 +19,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 1,
-    "power": 1,
+    "power": 2,
     "health": 1,
     "keywords": ["pierce", "ephemeral"],
     "effects": [],
@@ -61,7 +61,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 2,
-    "power": 1,
+    "power": 2,
     "health": 2,
     "keywords": ["pierce"],
     "effects": [],
@@ -135,7 +135,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 3,
-    "power": 2,
+    "power": 3,
     "health": 3,
     "keywords": ["pierce"],
     "effects": [],
@@ -150,7 +150,7 @@
     "type": "unit",
     "cost": 4,
     "power": 6,
-    "health": 3,
+    "health": 4,
     "keywords": [],
     "effects": [],
     "text": "",
@@ -164,7 +164,7 @@
     "type": "unit",
     "cost": 4,
     "power": 3,
-    "health": 3,
+    "health": 4,
     "keywords": [],
     "effects": [
       {
@@ -189,7 +189,7 @@
     "type": "unit",
     "cost": 5,
     "power": 6,
-    "health": 3,
+    "health": 4,
     "keywords": [],
     "effects": [
       {
@@ -299,11 +299,11 @@
         "action": {
           "op": "damage",
           "target": "enemyHero",
-          "amount": 3
+          "amount": 4
         }
       }
     ],
-    "text": "Deal 3 damage to the enemy hero.",
+    "text": "Deal 4 damage to the enemy hero.",
     "rarity": "common",
     "unlock": "starter"
   },
@@ -343,11 +343,11 @@
         "action": {
           "op": "damage",
           "target": "enemyUnitsInLane",
-          "amount": 2
+          "amount": 3
         }
       }
     ],
-    "text": "Deal 2 damage to each enemy unit in a lane.",
+    "text": "Deal 3 damage to each enemy unit in a lane.",
     "rarity": "uncommon",
     "unlock": "track"
   },
@@ -356,7 +356,7 @@
     "name": "Meteor",
     "faction": "ember",
     "type": "spell",
-    "cost": 5,
+    "cost": 4,
     "targeting": "enemyUnit",
     "effects": [
       {
@@ -456,7 +456,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 2,
-    "power": 1,
+    "power": 2,
     "health": 3,
     "keywords": [],
     "effects": [
@@ -516,7 +516,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 3,
-    "power": 3,
+    "power": 2,
     "health": 3,
     "keywords": ["barrier"],
     "effects": [],
@@ -683,11 +683,11 @@
         "action": {
           "op": "heal",
           "target": "friendlyHero",
-          "amount": 3
+          "amount": 4
         }
       }
     ],
-    "text": "Heal your hero by 3.",
+    "text": "Heal your hero by 4.",
     "rarity": "common",
     "unlock": "starter"
   },
@@ -883,7 +883,7 @@
     "faction": "ember",
     "type": "unit",
     "cost": 4,
-    "power": 3,
+    "power": 4,
     "health": 3,
     "keywords": ["pierce"],
     "effects": [],
@@ -896,7 +896,7 @@
     "name": "Wildfire",
     "faction": "ember",
     "type": "spell",
-    "cost": 4,
+    "cost": 3,
     "targeting": "none",
     "effects": [
       {
@@ -927,7 +927,7 @@
     "type": "unit",
     "cost": 5,
     "power": 7,
-    "health": 4,
+    "health": 5,
     "keywords": [],
     "effects": [],
     "text": "",
@@ -941,7 +941,7 @@
     "type": "unit",
     "cost": 5,
     "power": 4,
-    "health": 4,
+    "health": 5,
     "keywords": [],
     "effects": [
       {
@@ -970,11 +970,11 @@
         "action": {
           "op": "damage",
           "target": "allEnemyUnits",
-          "amount": 3
+          "amount": 4
         }
       }
     ],
-    "text": "Deal 3 damage to all enemy units.",
+    "text": "Deal 4 damage to all enemy units.",
     "rarity": "rare",
     "unlock": "track"
   },
@@ -984,8 +984,8 @@
     "faction": "ember",
     "type": "unit",
     "cost": 8,
-    "power": 8,
-    "health": 7,
+    "power": 7,
+    "health": 6,
     "keywords": ["pierce"],
     "effects": [],
     "text": "Pierce.",
@@ -1107,7 +1107,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 4,
-    "power": 3,
+    "power": 4,
     "health": 4,
     "keywords": [],
     "effects": [
@@ -1153,7 +1153,7 @@
     "faction": "bastion",
     "type": "unit",
     "cost": 5,
-    "power": 5,
+    "power": 4,
     "health": 5,
     "keywords": ["barrier"],
     "effects": [],
@@ -1318,7 +1318,7 @@
     "type": "unit",
     "cost": 2,
     "power": 1,
-    "health": 2,
+    "health": 3,
     "keywords": [],
     "effects": [
       {
@@ -1366,7 +1366,7 @@
     "name": "Frost Snap",
     "faction": "tide",
     "type": "spell",
-    "cost": 2,
+    "cost": 1,
     "targeting": "enemyUnit",
     "effects": [
       {
@@ -1451,7 +1451,7 @@
     "name": "Insight",
     "faction": "tide",
     "type": "spell",
-    "cost": 3,
+    "cost": 2,
     "targeting": "none",
     "effects": [
       {
@@ -1495,7 +1495,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 3,
-    "power": 2,
+    "power": 3,
     "health": 2,
     "keywords": [],
     "effects": [
@@ -1541,7 +1541,7 @@
         "action": {
           "op": "damage",
           "target": "target",
-          "amount": 2
+          "amount": 3
         }
       },
       {
@@ -1552,7 +1552,7 @@
         }
       }
     ],
-    "text": "Deal 2 damage to an enemy unit and move it to another lane.",
+    "text": "Deal 3 damage to an enemy unit and move it to another lane.",
     "rarity": "common",
     "unlock": "track"
   },
@@ -1562,7 +1562,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 4,
-    "power": 2,
+    "power": 3,
     "health": 4,
     "keywords": [],
     "effects": [
@@ -1629,7 +1629,7 @@
     "faction": "tide",
     "type": "unit",
     "cost": 5,
-    "power": 4,
+    "power": 5,
     "health": 6,
     "keywords": ["shift"],
     "effects": [],
@@ -1788,7 +1788,7 @@
     "type": "unit",
     "cost": 8,
     "power": 5,
-    "health": 8,
+    "health": 7,
     "keywords": ["shift", "barrier"],
     "effects": [
       {
@@ -1984,11 +1984,11 @@
         "action": {
           "op": "damage",
           "target": "target",
-          "amount": 1
+          "amount": 2
         }
       }
     ],
-    "text": "Give an enemy unit -2 Power this round and deal 1 damage to it.",
+    "text": "Give an enemy unit -2 Power this round and deal 2 damage to it.",
     "rarity": "common",
     "unlock": "track"
   },
@@ -2261,7 +2261,7 @@
     "type": "unit",
     "cost": 5,
     "power": 4,
-    "health": 5,
+    "health": 4,
     "keywords": [],
     "effects": [
       {
@@ -2355,8 +2355,8 @@
     "faction": "grove",
     "type": "unit",
     "cost": 8,
-    "power": 9,
-    "health": 8,
+    "power": 8,
+    "health": 7,
     "keywords": [],
     "effects": [],
     "text": "",
@@ -2369,7 +2369,7 @@
     "faction": "grove",
     "type": "unit",
     "cost": 7,
-    "power": 5,
+    "power": 6,
     "health": 7,
     "keywords": ["growth", "regenerate"],
     "effects": [
@@ -2627,7 +2627,7 @@
     "type": "unit",
     "cost": 3,
     "power": 3,
-    "health": 4,
+    "health": 3,
     "keywords": [],
     "effects": [],
     "text": "",
@@ -2741,7 +2741,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 4,
-    "power": 4,
+    "power": 3,
     "health": 3,
     "keywords": ["lifesteal"],
     "effects": [],
@@ -2755,7 +2755,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 4,
-    "power": 4,
+    "power": 3,
     "health": 4,
     "keywords": [],
     "effects": [
@@ -2798,7 +2798,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 4,
-    "power": 3,
+    "power": 2,
     "health": 5,
     "keywords": [],
     "effects": [
@@ -2850,7 +2850,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 5,
-    "power": 4,
+    "power": 3,
     "health": 5,
     "keywords": [],
     "effects": [
@@ -2873,7 +2873,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 5,
-    "power": 6,
+    "power": 5,
     "health": 5,
     "keywords": [],
     "effects": [
@@ -2931,7 +2931,7 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 6,
-    "power": 6,
+    "power": 5,
     "health": 6,
     "keywords": [],
     "effects": [
@@ -2969,11 +2969,11 @@
         "action": {
           "op": "heal",
           "target": "friendlyHero",
-          "amount": 3
+          "amount": 1
         }
       }
     ],
-    "text": "Deal 3 damage to all enemy units and heal your hero by 3.",
+    "text": "Deal 3 damage to all enemy units and heal your hero by 1.",
     "rarity": "rare",
     "unlock": "track"
   },
@@ -2997,8 +2997,8 @@
     "faction": "dusk",
     "type": "unit",
     "cost": 7,
-    "power": 6,
-    "health": 7,
+    "power": 5,
+    "health": 6,
     "keywords": [],
     "effects": [
       {

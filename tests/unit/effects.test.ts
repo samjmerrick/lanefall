@@ -190,7 +190,7 @@ describe('starter card effects', () => {
     s = plan(s, 0, { type: 'playSpell', uid: mend, target: { kind: 'none' } });
     s = plan(s, 0, { type: 'playSpell', uid: fire, target: { kind: 'none' } });
     s = resolve(s).state;
-    expect(s.players[0].hp).toBe(98);
-    expect(s.players[1].hp).toBe(97);
+    expect(s.players[0].hp).toBe(99);
+    expect(s.players[1].hp).toBe(96);
   });
 });
