@@ -43,7 +43,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 **Lane combat**
 
 - Each side's lane power = the sum of its units' Power in that lane.
-- Both sides deal their lane power at the same time.
+- Both sides deal their lane power at the same time. Some lane effects change who deals damage and in what order (see Lane effects).
 - Damage is assigned to enemy units in that lane: Guard units first, then by slot position: front row (slots 1 and 2: front-left, front-right; the row nearest the lane strip) before back row (slots 3 and 4: back-left, back-right), left before right. Empty slots are skipped and gaps never close: units do not shift slots when others die, and play order does not matter. Each unit takes up to its remaining Health before the next takes any.
 - Damage left after every enemy unit in the lane is assigned goes to the enemy hero.
 - Units whose damage reaches their Health die after the lane resolves. Damage stays on surviving units between rounds unless healed.
@@ -61,8 +61,55 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 
 **Lane effects**
 
-- Each lane gets 1 effect, drawn by seed from a pool of about 20 (for example: "Units here have +1 Power", "Overflow damage here is doubled", "Only 2 units per side").
-- Lane effects stay for the whole match.
+- Each lane gets 1 effect, drawn by seed from a pool of 33 (see the table). The effect shows as soon as the lane is revealed and stays for the whole match.
+- Text must fit the 56 px lane strip (three columns at 360 px wide), so each is a short line; `tests/e2e/lane-text.spec.ts` checks it at every supported width.
+- "Top power" means the player with strictly more total Power in the lane when the effect resolves (after combat); on a tie, nobody.
+- A lane effect is data. Besides stat bonuses (`powerBonus`, `healthBonus`), `overflowMultiplier`, `maxUnits`, `heroDamage` and End of Round primitives, an effect may use:
+  - `winnerEndOfRound`: primitives at End of Round for the player with top power (their `friendlyHero`, `draw`, `gainMana`, `friendlyUnitsInLane`).
+  - `onEnter`: primitives for each unit that enters the lane (played, summoned, moved in or Shifted in); `self` is that unit.
+  - `onDeath`: primitives for each unit that dies in the lane; the owner is the dying unit's owner.
+  - `returnOnDeath`: a unit that dies there returns to its owner's hand instead of the discard (tokens do not; a full hand discards it).
+  - `keywords`: Guard, Pierce or Lifesteal for units fighting there (in combat only; it does not add the keyword to the card).
+  - `soak`: which of a side's units take damage first after Guard: `front` (default, slot order), `back` (back row first, right to left) or `weakest` (least remaining Health first, ties by slot).
+  - `champion`: only each side's highest-Power unit deals damage (the lowest slot wins a tie), with its Power multiplied.
+  - `spellShield`: enemy spells cannot target units there (the spell is illegal to plan, and fizzles if the target moves in before it reveals). Spells that target a lane still work.
+- Lane stat bonuses apply while the unit is in the lane. A lane effect that is not yet revealed does nothing.
+
+| Lane | Text |
+|---|---|
+| Open Field | No effect. |
+| Forge | Units here have +1 Power. Only 2 per side. |
+| Chasm | Only 1 unit per side. Overflow doubled. |
+| Narrows | Only 2 units per side. |
+| Bulwark | Units here have +1 Health. |
+| Sanctuary | No hero damage. Top power heals 4. |
+| Ashfield | Units take 1 a round. Top power draws. |
+| Spring | End of Round: heal each unit here by 2. |
+| Lowlands | -1 Power, +1 Health. Overflow x2. |
+| Fortress | Units here have +2 Health. |
+| Crucible | +2 Power, but units here die at End of Round. |
+| Rope Bridge | Only 1 unit per side. It has +2/+2. |
+| Mountain Pass | Only 3 units per side. |
+| Gorge | Only 2 units per side. -1 Power. Overflow tripled. |
+| Shrine | End of Round: fully heal each unit here. |
+| Stormfront | +1 Power. Units take 3 at End of Round. |
+| Oasis | End of Round: heal both heroes by 2. |
+| Cursed Land | End of Round: both heroes take 1. |
+| Barracks | Max 3 units. Each gains +1 Power a round. |
+| Glacier | -1 Power, +3 Health. Overflow tripled. |
+| Open Road | Units here have Pierce. Top power heals 1. |
+| Bloodmoon | Units here have Lifesteal and -1 Power. |
+| Aegis Gate | Units here enter with a Barrier. |
+| Ambush | Entering units deal 1 to a random enemy. |
+| Scriptorium | Top power here draws a card each round. |
+| Leyline | Top power here gains 1 mana each round. |
+| Catacombs | A unit dying here draws its owner a card. |
+| Phoenix Nest | Units that die here return to hand. |
+| Reverse Ranks | Damage hits the back row first. |
+| Culling Field | Damage hits the weakest unit first. |
+| Crossroads | Units move to another lane each round. |
+| Duelling Ring | +1 Power. Only the strongest unit attacks. |
+| Shroud | Enemy spells can't target units here. |
 
 ## Cards, keywords and factions
 
@@ -357,7 +404,7 @@ Map generation, Fight, Rest, Shop and Treasure nodes, card rewards, Hearts, gold
 
 ### M5: Full content
 
-All 5 factions (150 cards), Elites, Events (20), card upgrades, 40 relics, 20 lane effects, 3 acts with 9 bosses, and Hard AI.
+All 5 factions (150 cards), Elites, Events (20), card upgrades, 40 relics, 33 lane effects (20 at first, then reworked and extended), 3 acts with 9 bosses, and Hard AI.
 
 - All content files pass schema validation.
 - Every card has a test that its effect resolves as its text says.
@@ -383,7 +430,8 @@ Animation tuning, Fast animations and Reduce motion settings, haptics, simple so
 Run the simulator at scale and tune cards, hero HP and AI weights; tag version 1.0.
 
 - The simulator writes a Markdown report (`pnpm sim:balance`, `docs/balance.md`): win rate per faction pair, and win rate when played per card. A draw counts as a loss.
-- Targets: every faction wins 45–55% of Normal-vs-Normal matches; no card's win rate when played is above 60%. Any exception is listed in the report with a reason.
+- Targets: every faction wins 45–55% of Normal-vs-Normal matches; no card's win rate when played is above 60%. Every lane effect is also measured (how often it appears, the share of units and mana played there, hero damage through it, how often the player who dealt more hero damage there wins, and draws) against the lane targets in the report. Any exception is listed in the report with a reason.
+- Lane targets (`tools/sim/balance.ts`): 20–55% of the units played in rounds 3 to 8 go into the lane, hero damage through it is 0.4–1.8x the mean, the player who dealt more hero damage through it wins at most 80% of the time, and at most 8% of matches with it are drawn.
 
 ## Working rules for Claude Code
 
