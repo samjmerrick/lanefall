@@ -210,7 +210,7 @@ The layout is designed for a 390 × 844 viewport (iPhone 14-class) and must work
 **Vector art style**
 
 - Cards are drawn with CSS and SVG: a frame tinted in the faction colour, cost in a top-left gem, Power and Health in the bottom corners.
-- The art box shows a geometric emblem generated from the card's id (same card, same emblem), plus the faction glyph. It is replaced later with illustrated art without changing the layout.
+- The art box shows the card's line icon (`src/content/art/<id>.svg`: a geometric line drawing on a faction-coloured disc, style in `docs/art.md`) with the faction glyph as a small badge. A card without an icon falls back to a geometric emblem generated from its id. Icons are placeholders, to be replaced later with illustrated art, one file per card id, without changing the layout.
 - Every faction has a glyph as well as a colour, so factions can be told apart without colour.
 - Dark theme by default.
 
@@ -402,5 +402,5 @@ Copy this spec into the repository as `docs/spec.md`, and keep it as the source 
 - Final game name ("Lanefall" is a working title).
 - Hero HP: 20, or higher if simulations show matches ending before round 6.
 - Should damage on units carry over between rounds (current rule) or heal each round as in Legends of Runeterra?
-- Faction names and themes, before illustrated art is commissioned or generated.
+- Faction names: themes are fixed (Ember fire, Tide water, Grove nature, Bastion stone and order, Dusk shadow and death); the names may still change before illustrated art is commissioned or generated.
 - When to add Supabase cloud sync: straight after M8, or earlier if you want to play on two devices.
