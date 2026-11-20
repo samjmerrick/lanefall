@@ -10,6 +10,7 @@ import {
   type LaneIndex,
   type PlannedAction,
   type PlayerId,
+  type SideHits,
 } from '../engine';
 import { seedRng } from '../engine/rng';
 import { runAi } from './aiClient';
@@ -28,6 +29,36 @@ export interface Fx {
   amount: number;
   target: { unit: number } | { hero: PlayerId };
 }
+
+/** Where a damage counter is drawn: the lane strip cell, a unit, or a hero's HP. */
+export type CounterTarget =
+  { type: 'strip'; lane: LaneIndex } | { type: 'unit'; uid: number } | { type: 'hero'; player: PlayerId };
+
+/** The number that travels from the lane strip through the enemy units to their hero. */
+export interface CombatCounter {
+  id: number;
+  kind: 'power' | 'pierce';
+  attacker: PlayerId;
+  value: number;
+  target: CounterTarget;
+  /** Increases at every stop, so Reduce motion can fade in a fresh counter instead of moving one. */
+  stop: number;
+}
+
+/** What the stepper tracks while one lane's combat events play. */
+interface CombatScript {
+  lane: LaneIndex;
+  hits: [SideHits, SideHits];
+  current: PlayerId | null;
+}
+
+const COMBAT_EVENTS = new Set<GameEvent['type']>([
+  'LaneCombat',
+  'DamageDealt',
+  'BarrierBroken',
+  'HeroDamaged',
+  'HeroHealed',
+]);
 
 export interface Revealing {
   id: number;
@@ -55,6 +86,7 @@ interface MatchStore {
   fx: Fx[];
   revealing: Revealing | null;
   activeLane: LaneIndex | null;
+  counters: CombatCounter[];
   error: string | null;
 
   startMatch(deck?: DeckChoice, difficulty?: Difficulty): Promise<void>;
@@ -96,21 +128,86 @@ export const useMatch = create<MatchStore>((set, get) => {
     setTimeout(() => set((st) => ({ fx: st.fx.filter((f) => f.id !== id) })), 900);
   }
 
+  /** Which attacker's damage this event is, if it belongs to the lane combat being played. */
+  function attackerOf(cs: CombatScript, e: GameEvent): PlayerId | null {
+    if (e.type === 'DamageDealt' || e.type === 'BarrierBroken')
+      return ([0, 1] as const).find((a) => cs.hits[a].units.some((u) => u.uid === e.uid)) ?? null;
+    if (e.type === 'HeroDamaged' && e.lane === cs.lane) return (1 - e.player) as PlayerId;
+    return null;
+  }
+
+  /** The attacker's counters, waiting at the lane strip. */
+  function stripCounters(cs: CombatScript, a: PlayerId): CombatCounter[] {
+    const h = cs.hits[a];
+    const normal = h.units.reduce((sum, u) => sum + u.amount, 0) + h.overflow;
+    const target: CounterTarget = { type: 'strip', lane: cs.lane };
+    const out: CombatCounter[] = [];
+    if (normal > 0) out.push({ id: fxId++, kind: 'power', attacker: a, value: normal, target, stop: 0 });
+    if (h.pierce > 0 && h.hero > 0)
+      out.push({ id: fxId++, kind: 'pierce', attacker: a, value: h.pierce, target, stop: 0 });
+    return out;
+  }
+
+  /** Move the counters to wherever this event hits. */
+  function counterStop(cs: CombatScript, e: GameEvent, a: PlayerId) {
+    const h = cs.hits[a];
+    set((st) => ({
+      counters: st.counters.flatMap((c): CombatCounter[] => {
+        if (c.attacker !== a) return [c];
+        if (e.type === 'HeroDamaged') {
+          const value = c.kind === 'pierce' ? h.pierce : e.amount - h.pierce;
+          return value > 0
+            ? [{ ...c, value, target: { type: 'hero', player: e.player }, stop: c.stop + 1 }]
+            : [];
+        }
+        if (c.kind === 'pierce' || (e.type !== 'DamageDealt' && e.type !== 'BarrierBroken')) return [c];
+        const amount = h.units.find((u) => u.uid === e.uid)?.amount ?? 0;
+        return [
+          {
+            ...c,
+            value: Math.max(0, c.value - amount),
+            target: { type: 'unit', uid: e.uid },
+            stop: c.stop + 1,
+          },
+        ];
+      }),
+    }));
+  }
+
   async function playback(events: GameEvent[]) {
-    const scale = animationScale();
+    const profile = useApp.getState().profile.settings;
+    const scale = animationScale() * (profile.fastAnimations ? 0.5 : 1);
+    let cs: CombatScript | null = null;
     for (const e of events) {
+      if (e.type === 'LaneCombat') {
+        const first = e.order[0];
+        cs = { lane: e.lane, hits: e.hits, current: first };
+        set({ counters: stripCounters(cs, first) });
+      } else if (cs && !COMBAT_EVENTS.has(e.type)) {
+        cs = null;
+        set({ counters: [] });
+      }
+      // The second attacker's counter appears at the strip before it moves to its first stop.
+      const a = cs ? attackerOf(cs, e) : null;
+      if (cs && a !== null && a !== cs.current) {
+        const hadCounters = get().counters.length > 0;
+        cs.current = a;
+        set({ counters: stripCounters(cs, a) });
+        if (hadCounters) await sleep(150 * scale);
+      }
       set((st) => ({
         view: st.view ? applyEvent(st.view, e) : st.view,
         revealing:
           e.type === 'CardRevealed' ? { id: fxId++, cardId: e.cardId, player: e.player } : st.revealing,
         activeLane: e.type === 'LaneCombat' ? e.lane : e.type === 'RoundEnded' ? null : st.activeLane,
       }));
+      if (cs && a !== null) counterStop(cs, e, a);
       pushFx(e);
-      const ms = eventDuration(e) * scale;
+      const ms = eventDuration(e, cs !== null) * scale;
       if (ms > 0) await sleep(ms);
       if (e.type === 'CardRevealed') set({ revealing: null });
     }
-    set({ activeLane: null, revealing: null });
+    set({ activeLane: null, revealing: null, counters: [] });
   }
 
   function guard<T>(f: () => T): T | undefined {
@@ -145,6 +242,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     fx: [],
     revealing: null,
     activeLane: null,
+    counters: [],
     error: null,
 
     async startMatch(deckArg, difficultyArg) {

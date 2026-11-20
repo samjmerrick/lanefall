@@ -18,6 +18,8 @@ export interface ViewUnit {
   health: number;
   damage: number;
   barrier: boolean;
+  /** Guard units soak damage before the rest of their side. */
+  guard: boolean;
 }
 
 export interface ViewLane {
@@ -48,6 +50,7 @@ export function viewFromState(s: GameState): BoardView {
                 health: unitMaxHealth(s, { unit, lane: i as LaneIndex, slot }),
                 damage: unit.damage,
                 barrier: unit.barrier,
+                guard: unit.keywords.includes('guard'),
               }
             : null,
         ),
@@ -83,6 +86,7 @@ function newUnit(uid: number, cardId: string, owner: PlayerId): ViewUnit {
     health: card.health ?? 1,
     damage: 0,
     barrier: card.keywords.includes('barrier'),
+    guard: card.keywords.includes('guard'),
   };
 }
 
@@ -118,7 +122,9 @@ export function applyEvent(v: BoardView, e: GameEvent): BoardView {
     case 'BarrierBroken':
       return mapUnits(v, e.uid, (u) => ({ ...u, barrier: false }));
     case 'KeywordGranted':
-      return e.keyword === 'barrier' ? mapUnits(v, e.uid, (u) => ({ ...u, barrier: true })) : v;
+      if (e.keyword === 'barrier') return mapUnits(v, e.uid, (u) => ({ ...u, barrier: true }));
+      if (e.keyword === 'guard') return mapUnits(v, e.uid, (u) => ({ ...u, guard: true }));
+      return v;
     case 'UnitHealed':
       return mapUnits(v, e.uid, (u) => ({ ...u, damage: Math.max(0, u.damage - e.amount) }));
     case 'UnitDied':
@@ -144,12 +150,12 @@ export function applyEvent(v: BoardView, e: GameEvent): BoardView {
 }
 
 /** How long each event holds the screen, in ms at normal speed. */
-export function eventDuration(e: GameEvent): number {
+export function eventDuration(e: GameEvent, inCombat = false): number {
   switch (e.type) {
     case 'CardRevealed':
       return 500;
     case 'LaneCombat':
-      return 550;
+      return 300;
     case 'LaneRevealed':
       return 500;
     case 'HeroDamaged':
@@ -162,9 +168,11 @@ export function eventDuration(e: GameEvent): number {
     case 'UnitMoved':
       return 200;
     case 'DamageDealt':
+    case 'BarrierBroken':
+      // Inside a lane's combat the damage counter travels to the unit during this event.
+      return inCombat ? 250 : 120;
     case 'UnitHealed':
     case 'UnitBuffed':
-    case 'BarrierBroken':
       return 120;
     case 'RoundStarted':
       return 350;
