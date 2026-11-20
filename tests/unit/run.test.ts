@@ -33,7 +33,13 @@ import {
 } from '../../src/run';
 
 const pool = [...starterCollection()];
-const config = (seed = 1, heroId = 'hero-pyra') => ({ seed, heroId, pool });
+const config = (seed = 1, heroId = 'hero-pyra', ascension = 0) => ({
+  seed,
+  heroId,
+  pool,
+  ascension,
+  relics: RELICS.map((x) => x.id),
+});
 
 /** A run standing on a node of the given type in row 1 (test setup only). */
 function at(type: NodeType, extra: Partial<RunState> = {}): RunState {

@@ -9,11 +9,7 @@
       {
         "kind": "roundStart",
         "rounds": [3, 6],
-        "action": {
-          "op": "damage",
-          "target": "enemyHero",
-          "amount": 2
-        }
+        "action": { "op": "damage", "target": "enemyHero", "amount": 2 }
       }
     ],
     "unlock": "starter",
@@ -72,12 +68,7 @@
     "title": "Warden of the Gate",
     "faction": "bastion",
     "passive": "Your hero has +4 HP.",
-    "modifiers": [
-      {
-        "kind": "heroHp",
-        "amount": 4
-      }
-    ],
+    "modifiers": [{ "kind": "heroHp", "amount": 4 }],
     "unlock": "starter",
     "starterDeck": [
       "bastion-recruit",
@@ -92,6 +83,223 @@
       "bastion-muster-captain",
       "bastion-shield-sergeant",
       "bastion-rally-cry"
+    ]
+  },
+  {
+    "id": "hero-brenna",
+    "name": "Brenna",
+    "title": "Shieldwall Captain",
+    "faction": "bastion",
+    "passive": "At the start of rounds 2, 4 and 6, give a random friendly unit Barrier.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [2, 4, 6],
+        "action": { "op": "grantKeyword", "target": "randomFriendlyUnit", "keyword": "barrier" }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "bastion-militia",
+      "bastion-banner-knight",
+      "bastion-banner-knight",
+      "bastion-field-medic",
+      "bastion-wall-warden",
+      "bastion-wall-warden",
+      "bastion-shield-sergeant",
+      "bastion-mend"
+    ]
+  },
+  {
+    "id": "hero-marin",
+    "name": "Marin",
+    "title": "Tide Sage",
+    "faction": "tide",
+    "passive": "Start each match with 1 extra card. At the start of rounds 3 and 6, draw a card.",
+    "modifiers": [
+      { "kind": "startHand", "amount": 1 },
+      { "kind": "roundStart", "rounds": [3, 6], "action": { "op": "draw", "count": 1 } }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "tide-shoal-crab",
+      "tide-mist-sprite",
+      "tide-ripple",
+      "tide-tidecaller",
+      "tide-tidecaller",
+      "tide-current-rider",
+      "tide-pearl-diver",
+      "tide-pearl-diver",
+      "tide-coral-guardian",
+      "tide-storm-petrel",
+      "tide-insight",
+      "tide-tidal-knight"
+    ]
+  },
+  {
+    "id": "hero-corin",
+    "name": "Corin",
+    "title": "Frostwarden",
+    "faction": "tide",
+    "passive": "At the start of rounds 2, 4 and 6, give all enemy units -1 Power this round.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [2, 4, 6],
+        "action": { "op": "buff", "target": "allEnemyUnits", "power": -1, "health": 0, "duration": "round" }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "tide-shoal-crab",
+      "tide-shoal-crab",
+      "tide-mist-sprite",
+      "tide-tidecaller",
+      "tide-current-rider",
+      "tide-current-rider",
+      "tide-bubble-shield",
+      "tide-frost-snap",
+      "tide-coral-guardian",
+      "tide-coral-guardian",
+      "tide-storm-petrel",
+      "tide-tidal-knight"
+    ]
+  },
+  {
+    "id": "hero-sylva",
+    "name": "Sylva",
+    "title": "Wildwood Druid",
+    "faction": "grove",
+    "passive": "At the start of each round, give a random friendly unit +1 Health.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 0,
+          "health": 1,
+          "duration": "permanent"
+        }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "grove-seedling",
+      "grove-seedling",
+      "grove-bramble-sprite",
+      "grove-wild-growth",
+      "grove-mossback",
+      "grove-druid-initiate",
+      "grove-druid-initiate",
+      "grove-young-treant",
+      "grove-rejuvenate",
+      "grove-wolf-pack",
+      "grove-ironbark",
+      "grove-elder-stag"
+    ]
+  },
+  {
+    "id": "hero-oren",
+    "name": "Oren",
+    "title": "Barkskin Warden",
+    "faction": "grove",
+    "passive": "At the start of each round, heal all friendly units by 1. At the start of round 3, give all friendly units +2 Health.",
+    "modifiers": [
+      { "kind": "roundStart", "action": { "op": "heal", "target": "allFriendlyUnits", "amount": 1 } },
+      {
+        "kind": "roundStart",
+        "rounds": [3],
+        "action": {
+          "op": "buff",
+          "target": "allFriendlyUnits",
+          "power": 0,
+          "health": 2,
+          "duration": "permanent"
+        }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "grove-bramble-sprite",
+      "grove-mossback",
+      "grove-mossback",
+      "grove-young-treant",
+      "grove-young-treant",
+      "grove-sap",
+      "grove-rejuvenate",
+      "grove-ironbark",
+      "grove-ironbark",
+      "grove-overgrowth",
+      "grove-wolf-pack",
+      "grove-elder-stag"
+    ]
+  },
+  {
+    "id": "hero-vesper",
+    "name": "Vesper",
+    "title": "Night Huntress",
+    "faction": "dusk",
+    "passive": "At the start of rounds 2, 4 and 6, deal 2 damage to a random enemy unit.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [2, 4, 6],
+        "action": { "op": "damage", "target": "randomEnemyUnit", "amount": 2 }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "dusk-grave-rat",
+      "dusk-cultist",
+      "dusk-cultist",
+      "dusk-hex",
+      "dusk-bloodleech",
+      "dusk-night-stalker",
+      "dusk-night-stalker",
+      "dusk-bone-walker",
+      "dusk-shadow-bolt",
+      "dusk-vampire-thrall",
+      "dusk-ghoul",
+      "dusk-crypt-guard"
+    ]
+  },
+  {
+    "id": "hero-morrow",
+    "name": "Morrow",
+    "title": "Gravebinder",
+    "faction": "dusk",
+    "passive": "At the start of rounds 2, 4, 6 and 8, deal 1 damage to the enemy hero and heal your hero by 1.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [2, 4, 6, 8],
+        "action": { "op": "damage", "target": "enemyHero", "amount": 1 }
+      },
+      {
+        "kind": "roundStart",
+        "rounds": [2, 4, 6, 8],
+        "action": { "op": "heal", "target": "friendlyHero", "amount": 1 }
+      }
+    ],
+    "unlock": "track",
+    "starterDeck": [
+      "dusk-grave-rat",
+      "dusk-grave-rat",
+      "dusk-cultist",
+      "dusk-dark-pact",
+      "dusk-bloodleech",
+      "dusk-bloodleech",
+      "dusk-drain-life",
+      "dusk-bone-walker",
+      "dusk-ghoul",
+      "dusk-ghoul",
+      "dusk-vampire-thrall",
+      "dusk-crypt-guard"
     ]
   }
 ]

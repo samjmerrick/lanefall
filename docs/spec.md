@@ -157,10 +157,20 @@ XP from both modes raises one account level; each level unlocks something specif
 
 - **Levels:** level n needs 100 + 50n XP to reach the next level. Cap at level 30 for v1.
 - **Starting collection:** 12 Common cards per faction (60 cards), enough for every faction's pre-built deck.
-- **Unlock track:** levels 2–30 each unlock one bundle: 3–4 cards from one faction, a hero, or 3 relics added to the run relic pool. The full track is a JSON table so it can be tuned.
+- **Unlock track:** levels 2–30 each unlock one bundle: 3–4 cards from one faction, a hero (with 3 cards of its faction), or 3 relics added to the run relic pool. 29 bundles: 18 card bundles, 7 heroes and 4 relic bundles; all 90 track cards, 7 heroes and 12 relics appear exactly once. The full track is `src/content/unlocks.json` so it can be tuned. A new profile has 60 cards, 3 heroes and 28 relics in the pool.
 - **Heroes:** 3 at the start, 10 in total by level 30 (2 per faction).
 - **Shared pool:** unlocked cards appear in run card choices and in the deck builder, so both modes feed each other.
-- **Ascension:** after the first full run win, Ascension levels 1–10 open. Each adds one rule, such as "Elites have +2 HP" or "Shops cost 25% more". Beating a level unlocks the next.
+- **Ascension:** after the first full run win, Ascension levels 1–10 open. Each adds one rule, and the rules are cumulative (level n applies rules 1 to n). A full win at the highest open level unlocks the next. The rules (`src/content/ascension.json`):
+  1. Elites have +2 HP.
+  2. Shops cost 25% more (after relic discounts, rounded up; card removal too).
+  3. Start with 15 less gold.
+  4. Normal fight enemies have +3 HP.
+  5. Fights give 25% less gold (rounded down).
+  6. Bosses have +5 HP.
+  7. Act 1 enemies use at least Normal AI.
+  8. A rest can no longer restore a Heart (upgrade or move on).
+  9. Card rewards offer 2 cards (relic bonuses still add).
+  10. Start with 2 Hearts (the limit stays 3).
 - **Records:** a stats screen shows runs won and played per hero, best Ascension level, and Quick Play win rate per deck.
 
 ## Deck building
