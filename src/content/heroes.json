@@ -1,0 +1,97 @@
+[
+  {
+    "id": "hero-pyra",
+    "name": "Pyra",
+    "title": "Ashborn Duelist",
+    "faction": "ember",
+    "passive": "At the start of rounds 3 and 6, deal 2 damage to the enemy hero.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "rounds": [3, 6],
+        "action": {
+          "op": "damage",
+          "target": "enemyHero",
+          "amount": 2
+        }
+      }
+    ],
+    "unlock": "starter",
+    "starterDeck": [
+      "ember-spark-imp",
+      "ember-spark-imp",
+      "ember-cinder-scout",
+      "ember-ash-raider",
+      "ember-ash-raider",
+      "ember-torchbearer",
+      "ember-blaze-runner",
+      "ember-blaze-runner",
+      "ember-magma-brute",
+      "ember-cinder-bolt",
+      "ember-fireball",
+      "ember-kindle"
+    ]
+  },
+  {
+    "id": "hero-kael",
+    "name": "Kael",
+    "title": "Flamecaller",
+    "faction": "ember",
+    "passive": "At the start of each round, a random friendly unit gets +1 Power this round.",
+    "modifiers": [
+      {
+        "kind": "roundStart",
+        "action": {
+          "op": "buff",
+          "target": "randomFriendlyUnit",
+          "power": 1,
+          "health": 0,
+          "duration": "round"
+        }
+      }
+    ],
+    "unlock": "starter",
+    "starterDeck": [
+      "ember-spark-imp",
+      "ember-spark-imp",
+      "ember-ash-raider",
+      "ember-ash-raider",
+      "ember-ember-hound",
+      "ember-torchbearer",
+      "ember-torchbearer",
+      "ember-skyfire-archer",
+      "ember-blaze-runner",
+      "ember-magma-brute",
+      "ember-cinder-bolt",
+      "ember-kindle"
+    ]
+  },
+  {
+    "id": "hero-aldric",
+    "name": "Aldric",
+    "title": "Warden of the Gate",
+    "faction": "bastion",
+    "passive": "Your hero has +4 HP.",
+    "modifiers": [
+      {
+        "kind": "heroHp",
+        "amount": 4
+      }
+    ],
+    "unlock": "starter",
+    "starterDeck": [
+      "bastion-recruit",
+      "bastion-recruit",
+      "bastion-shieldbearer",
+      "bastion-squire",
+      "bastion-militia",
+      "bastion-militia",
+      "bastion-banner-knight",
+      "bastion-field-medic",
+      "bastion-wall-warden",
+      "bastion-muster-captain",
+      "bastion-shield-sergeant",
+      "bastion-rally-cry"
+    ]
+  }
+]

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { Difficulty } from '../ai';
+import type { AiHooks, Difficulty } from '../ai';
+import { matchAiRng, type RunMatch } from '../run';
 import {
   applyAction,
   initMatch,
@@ -14,6 +15,7 @@ import { seedRng } from '../engine/rng';
 import { runAi } from './aiClient';
 import { PREBUILT_DECKS } from '../engine';
 import { useApp, type DeckChoice } from './app';
+import { useRun } from './runStore';
 import { animationScale, randomSeed, urlSeed } from './settings';
 import { applyEvent, eventDuration, viewFromState, type BoardView } from './view';
 
@@ -34,8 +36,13 @@ export interface Revealing {
 }
 
 interface MatchStore {
+  /** Quick Play, or a run node's match (autosaved after every End Turn). */
+  mode: 'quick' | 'run';
   deck: DeckChoice | null;
   difficulty: Difficulty;
+  hooks: AiHooks;
+  /** Run mode: the enemy being fought. */
+  enemyId: string | null;
   opponentDeck: string | null;
   seed: number;
   game: GameState | null;
@@ -51,6 +58,7 @@ interface MatchStore {
   error: string | null;
 
   startMatch(deck?: DeckChoice, difficulty?: Difficulty): Promise<void>;
+  startRunMatch(m: RunMatch, saved: { game: GameState; aiRng: number } | null): Promise<void>;
   toggleMulligan(uid: number): void;
   confirmMulligan(): void;
   play(action: PlannedAction): void;
@@ -65,8 +73,8 @@ let fxId = 1;
 
 export const useMatch = create<MatchStore>((set, get) => {
   async function aiTurn(state: GameState): Promise<GameState> {
-    const { difficulty, aiRng } = get();
-    const { actions, rng } = await runAi(difficulty, state, AI, aiRng);
+    const { difficulty, aiRng, hooks } = get();
+    const { actions, rng } = await runAi(difficulty, state, AI, aiRng, hooks);
     set({ aiRng: rng });
     let s = state;
     for (const a of actions) s = applyAction(s, a);
@@ -114,9 +122,18 @@ export const useMatch = create<MatchStore>((set, get) => {
     }
   }
 
+  /** Run mode autosave: the match state after the AI has acted. */
+  function autosave() {
+    const { mode, game, aiRng } = get();
+    if (mode === 'run' && game) useRun.getState().saveMatch(game, aiRng);
+  }
+
   return {
+    mode: 'quick',
     deck: null,
     difficulty: 'normal',
+    hooks: {},
+    enemyId: null,
     opponentDeck: null,
     seed: 0,
     game: null,
@@ -141,6 +158,9 @@ export const useMatch = create<MatchStore>((set, get) => {
       let game = initMatch({ decks: [deck.cards, opponent.cards] }, seed);
       useApp.getState().go('match');
       set({
+        mode: 'quick',
+        hooks: {},
+        enemyId: null,
         deck,
         difficulty,
         opponentDeck: opponent.id,
@@ -157,6 +177,31 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ game, view: viewFromState(game), busy: false });
     },
 
+    async startRunMatch(m, saved) {
+      let game = saved?.game ?? initMatch(m.config, m.seed);
+      useApp.getState().go('match');
+      set({
+        mode: 'run',
+        deck: null,
+        difficulty: m.difficulty,
+        hooks: m.hooks,
+        enemyId: m.enemyId,
+        opponentDeck: null,
+        seed: m.seed,
+        game,
+        view: viewFromState(game),
+        busy: !saved,
+        aiRng: saved?.aiRng ?? matchAiRng(m.seed),
+        mulligan: [],
+        fx: [],
+        error: null,
+      });
+      if (saved) return;
+      game = await aiTurn(game); // AI mulligan
+      set({ game, view: viewFromState(game), busy: false });
+      autosave();
+    },
+
     toggleMulligan(uid) {
       set((st) => ({
         mulligan: st.mulligan.includes(uid) ? st.mulligan.filter((u) => u !== uid) : [...st.mulligan, uid],
@@ -167,7 +212,10 @@ export const useMatch = create<MatchStore>((set, get) => {
       const { game, mulligan } = get();
       if (!game) return;
       const next = guard(() => applyAction(game, { type: 'mulligan', player: HUMAN, uids: mulligan }));
-      if (next) set({ game: next, view: viewFromState(next), mulligan: [] });
+      if (next) {
+        set({ game: next, view: viewFromState(next), mulligan: [] });
+        autosave();
+      }
     },
 
     play(action) {
@@ -194,7 +242,8 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ view: viewFromState(s) });
       await playback(events);
       set({ game: state, view: viewFromState(state), busy: false });
-      if (state.result) {
+      autosave();
+      if (state.result && get().mode === 'quick') {
         const { winner } = state.result;
         const outcome = winner === null ? 'draw' : winner === HUMAN ? 'win' : 'loss';
         useApp.getState().recordQuickPlay(get().deck!.id, outcome);
@@ -203,8 +252,10 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     showDetail: (detail) => set({ detail }),
     leave() {
+      const run = get().mode === 'run';
       set({ game: null, view: null, busy: false });
-      useApp.getState().go('quickplay');
+      // A run match stays saved; the run screen offers to resume it.
+      useApp.getState().go(run ? 'run' : 'quickplay');
     },
   };
 });

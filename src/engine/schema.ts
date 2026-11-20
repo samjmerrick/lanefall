@@ -127,6 +127,40 @@ export type Faction = (typeof FACTIONS)[number];
 export type UnitSelector = (typeof UNIT_SELECTORS)[number];
 export type Targeting = (typeof TARGETING)[number];
 
+/** Selectors usable without a source unit or lane (match modifiers run at round start). */
+const GLOBAL_SELECTORS: readonly string[] = [
+  'allFriendlyUnits',
+  'allEnemyUnits',
+  'randomEnemyUnit',
+  'randomFriendlyUnit',
+  'friendlyHero',
+  'enemyHero',
+];
+
+/**
+ * A per-player rule for one match: hero passives, relics and boss rules are built from these.
+ * `roundStart` primitives run after mana refill and the draw, on the listed rounds (all rounds if omitted).
+ */
+export const MatchModifierSchema = z
+  .discriminatedUnion('kind', [
+    z.object({ kind: z.literal('heroHp'), amount: z.number().int() }),
+    z.object({ kind: z.literal('startReserve'), amount: posInt }),
+    z.object({ kind: z.literal('startHand'), amount: posInt }),
+    z.object({
+      kind: z.literal('roundStart'),
+      rounds: z.array(z.number().int().min(1).max(8)).optional(),
+      action: PrimitiveSchema,
+    }),
+  ])
+  .superRefine((m, ctx) => {
+    if (m.kind !== 'roundStart') return;
+    if ('target' in m.action && !GLOBAL_SELECTORS.includes(m.action.target))
+      ctx.addIssue({ code: 'custom', message: `roundStart cannot use the ${m.action.target} selector` });
+    if (m.action.op === 'summon' || m.action.op === 'move')
+      ctx.addIssue({ code: 'custom', message: `roundStart cannot use ${m.action.op}` });
+  });
+export type MatchModifier = z.infer<typeof MatchModifierSchema>;
+
 export const DeckDefSchema = z.object({
   id: z.string().regex(/^pre-[a-z-]+$/),
   name: z.string().min(1),

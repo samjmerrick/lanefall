@@ -1,4 +1,4 @@
-import type { Keyword } from './schema';
+import type { Keyword, MatchModifier } from './schema';
 
 export type PlayerId = 0 | 1;
 export type LaneIndex = 0 | 1 | 2;
@@ -84,6 +84,8 @@ export interface GameState {
   nextUid: number;
   nextPlayOrder: number;
   result: MatchResult | null;
+  /** Per-player match modifiers (hero passive, relics, boss rule). */
+  modifiers: [MatchModifier[], MatchModifier[]];
 }
 
 export interface MatchConfig {
@@ -91,6 +93,8 @@ export interface MatchConfig {
   heroHp?: number;
   /** Force specific lane effects (Left, Centre, Right); otherwise drawn by seed. */
   laneEffects?: [string, string, string];
+  /** Per-player match modifiers (hero passive, relics, boss rule). */
+  modifiers?: [MatchModifier[], MatchModifier[]];
 }
 
 export type Action =

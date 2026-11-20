@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fixtureV1 from '../fixtures/save-v1.json';
+import fixtureV2 from '../fixtures/save-v2.json';
 import {
   exportSaveCode,
   importSaveCode,
@@ -28,11 +29,23 @@ function sample(): Profile {
 }
 
 describe('schema and migrations', () => {
-  it('loads the stored v1 sample save', () => {
+  it('migrates the stored v1 sample save to v2', () => {
     const p = migrate(fixtureV1);
-    expect(p.schemaVersion).toBe(1);
+    expect(p.schemaVersion).toBe(2);
+    expect(p.activeRun).toBeNull();
+    expect(p.stats.runs).toEqual({});
     expect(p.decks[0]!.name).toBe('Fixture Deck');
     expect(p.stats.quickPlay.d1).toEqual({ played: 3, won: 2 });
+  });
+
+  it('loads the stored v2 sample save with a run in progress', () => {
+    const p = migrate(fixtureV2);
+    expect(p.schemaVersion).toBe(2);
+    expect(p.stats.runs['hero-pyra']).toEqual({ played: 2, won: 1 });
+    expect(p.activeRun!.choices).toEqual([{ t: 'move', col: 1 }]);
+    expect(() =>
+      migrate({ ...fixtureV2, activeRun: { ...fixtureV2.activeRun, choices: [{ t: 'fly' }] } }),
+    ).toThrow();
   });
 
   it('rejects saves without a schema version, from the future, or malformed', () => {

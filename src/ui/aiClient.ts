@@ -1,5 +1,5 @@
 // Runs the AI in a Web Worker so planning never blocks the UI; falls back to the main thread.
-import { plan, type Difficulty, type PlanResult } from '../ai';
+import { plan, type AiHooks, type Difficulty, type PlanResult } from '../ai';
 import type { GameState, PlayerId } from '../engine';
 import type { AiRequest } from './ai.worker';
 
@@ -26,11 +26,12 @@ export function runAi(
   state: GameState,
   player: PlayerId,
   rng: number,
+  hooks: AiHooks = {},
 ): Promise<PlanResult> {
   const w = getWorker();
-  if (!w) return Promise.resolve(plan(difficulty, state, player, rng));
+  if (!w) return Promise.resolve(plan(difficulty, state, player, rng, hooks));
   const id = nextId++;
-  const req: AiRequest = { id, difficulty, state, player, rng };
+  const req: AiRequest = { id, difficulty, state, player, rng, hooks };
   return new Promise((resolve) => {
     pending.set(id, resolve);
     w.postMessage(req);

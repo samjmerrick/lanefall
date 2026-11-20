@@ -17,7 +17,18 @@ import {
 } from '../save';
 
 export type Screen =
-  'loading' | 'corrupt' | 'menu' | 'quickplay' | 'decks' | 'builder' | 'collection' | 'settings' | 'match';
+  | 'loading'
+  | 'corrupt'
+  | 'menu'
+  | 'quickplay'
+  | 'decks'
+  | 'builder'
+  | 'collection'
+  | 'settings'
+  | 'match'
+  | 'runStart'
+  | 'run'
+  | 'runSummary';
 
 /** A deck the player can pick for Quick Play: pre-built or saved. */
 export interface DeckChoice {

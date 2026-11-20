@@ -4,7 +4,13 @@ import { CURRENT_SCHEMA, ProfileSchema, type Profile } from './profile';
  * migrations[n] upgrades a save from schema n to n + 1. Add one per schema bump, each with a unit
  * test that loads a stored sample save of the old version (tests/fixtures/save-v<n>.json).
  */
-export const migrations: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {};
+export const migrations: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {
+  // v2 (M4): run stats per hero and the active run.
+  1: (old) => {
+    const stats = (old.stats ?? {}) as Record<string, unknown>;
+    return { ...old, stats: { ...stats, runs: {} }, activeRun: null };
+  },
+};
 
 /** Runs migrations in order up to the current schema, then validates. Throws if the save is invalid. */
 export function migrate(raw: unknown): Profile {

@@ -1341,3 +1341,305 @@ textarea {
     animation: none !important;
   }
 }
+
+/* ---------- Runs ---------- */
+
+.hero-row {
+  align-items: flex-start;
+}
+
+.hero-row__glyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid var(--faction);
+  background: color-mix(in srgb, var(--faction) 22%, var(--surface-2));
+  font-size: 20px;
+}
+
+.hero-row__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hero-row__name {
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.hero-row__title,
+.hero-row__deck {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.hero-row__passive {
+  font-size: 13px;
+}
+
+.run-bar {
+  position: sticky;
+  top: 56px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 10px;
+  background: var(--bg);
+  font-weight: 800;
+}
+
+.run-bar__hearts {
+  display: flex;
+  gap: 2px;
+  font-size: 20px;
+}
+
+.heart {
+  color: var(--line);
+}
+
+.heart--on {
+  color: var(--hp);
+}
+
+.run-bar__gold {
+  color: var(--accent);
+  margin-right: auto;
+}
+
+.run-map {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.run-map__paths {
+  position: absolute;
+  inset: 0;
+}
+
+.run-map__paths line {
+  stroke: var(--line);
+  stroke-width: 3;
+  stroke-dasharray: 4 6;
+  stroke-linecap: round;
+}
+
+.run-map__paths .run-map__path--next {
+  stroke: var(--accent);
+  stroke-dasharray: none;
+}
+
+.map-node {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 18px;
+  cursor: default;
+}
+
+.map-node--boss {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  font-size: 26px;
+  border-color: var(--ember);
+}
+
+.map-node--past {
+  opacity: 0.45;
+}
+
+.map-node--here {
+  border-color: var(--text);
+  color: var(--text);
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.15);
+}
+
+.map-node--next {
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-2));
+  cursor: pointer;
+  animation: node-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes node-pulse {
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-node--next {
+    animation: none;
+  }
+}
+
+.encounter,
+.run-panel {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.encounter h2,
+.run-panel h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.encounter .label {
+  margin: 0;
+}
+
+.encounter__rule {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ember) 18%, var(--surface-2));
+  font-weight: 700;
+}
+
+.shop-item {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
+.shop-item__price {
+  font-weight: 800;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.relic-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.list__row.relic:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.relic__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 25%, var(--surface-2));
+  color: var(--accent);
+}
+
+.relic__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.relic__text {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.overlay--sheet {
+  position: fixed;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.sheet {
+  width: min(100%, 430px);
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px 20px 0 0;
+  background: var(--bg);
+  text-align: left;
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px 0 16px;
+}
+
+.sheet__header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.sheet__body {
+  display: grid;
+  gap: 10px;
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+
+.summary__title {
+  margin: 8px 0 0;
+  font-size: 32px;
+}
+
+.summary__title--won {
+  color: var(--accent);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.summary dt {
+  color: var(--muted);
+}
+
+.summary dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.summary__seed {
+  font-family: ui-monospace, monospace;
+  user-select: text;
+}
+
+.shop-item .grid-card {
+  width: 100%;
+}

@@ -121,7 +121,7 @@ There are two modes: Quick Play is one match against the AI; a Run is a 3-act ro
 **Start**
 
 - Pick a hero. 3 are unlocked at the start. Each hero has one faction, one passive ability and a fixed 12-card starter deck.
-- A run has 3 Hearts. Losing a match costs 1 Heart and gives no reward; the run ends at 0 Hearts.
+- A run has 3 Hearts. Losing a match costs 1 Heart and gives no reward; the run ends at 0 Hearts. A draw counts as a loss. Losing to a boss with Hearts left means a rematch.
 - Each match starts with both heroes on 20 HP, so damage does not carry between matches.
 
 **Map**

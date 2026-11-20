@@ -9,6 +9,9 @@ import { DeckBuilderScreen } from './screens/DeckBuilderScreen';
 import { DecksScreen } from './screens/DecksScreen';
 import { MenuScreen } from './screens/MenuScreen';
 import { QuickPlayScreen } from './screens/QuickPlayScreen';
+import { RunScreen } from './screens/RunScreen';
+import { RunStartScreen } from './screens/RunStartScreen';
+import { RunSummaryScreen } from './screens/RunSummaryScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 function CurrentScreen() {
@@ -32,6 +35,12 @@ function CurrentScreen() {
       return <SettingsScreen />;
     case 'match':
       return <MatchScreen />;
+    case 'runStart':
+      return <RunStartScreen />;
+    case 'run':
+      return <RunScreen />;
+    case 'runSummary':
+      return <RunSummaryScreen />;
   }
 }
 

@@ -28,6 +28,7 @@ jobs:
       - run: pnpm test
       - run: pnpm coverage
       - run: pnpm sim 1000
+      - run: pnpm sim:run 500
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e

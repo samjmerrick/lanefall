@@ -1,6 +1,8 @@
 import { z } from 'zod';
+import type { GameState } from '../engine';
+import { RunChoiceSchema, RunConfigSchema } from '../run/schema';
 
-export const CURRENT_SCHEMA = 1;
+export const CURRENT_SCHEMA = 2;
 export const MAX_SAVED_DECKS = 20;
 export const MAX_DECK_NAME = 24;
 
@@ -12,6 +14,22 @@ export const SavedDeckSchema = z.object({
 });
 
 const RecordSchema = z.object({ played: z.number().int().min(0), won: z.number().int().min(0) });
+
+/** A match state saved mid-match; the engine's own invariants are trusted, only the shape is checked. */
+const GameStateSchema = z.custom<GameState>(
+  (v) => typeof v === 'object' && v !== null && (v as { version?: unknown }).version === 1,
+  'Invalid match state',
+);
+
+/** The run in progress: rebuilt by replaying `choices` from `config`. */
+export const ActiveRunSchema = z.object({
+  config: RunConfigSchema,
+  choices: z.array(RunChoiceSchema),
+  /** The match in progress, if any. `step` is the run step it belongs to (the number of choices). */
+  match: z
+    .object({ step: z.number().int().min(0), game: GameStateSchema, aiRng: z.number().int() })
+    .nullable(),
+});
 
 export const ProfileSchema = z.object({
   schemaVersion: z.literal(CURRENT_SCHEMA),
@@ -28,12 +46,16 @@ export const ProfileSchema = z.object({
   stats: z.object({
     /** Quick Play results per deck id (saved deck ids and pre-built ids). */
     quickPlay: z.record(z.string(), RecordSchema),
+    /** Run results per hero id. */
+    runs: z.record(z.string(), RecordSchema),
   }),
   ascension: z.object({ best: z.number().int().min(0) }),
+  activeRun: ActiveRunSchema.nullable(),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;
 export type SavedDeck = z.infer<typeof SavedDeckSchema>;
+export type ActiveRun = z.infer<typeof ActiveRunSchema>;
 
 export function newProfile(): Profile {
   return {
@@ -44,7 +66,8 @@ export function newProfile(): Profile {
     decks: [],
     nextDeckId: 1,
     settings: { fastAnimations: false, reduceMotion: false },
-    stats: { quickPlay: {} },
+    stats: { quickPlay: {}, runs: {} },
     ascension: { best: 0 },
+    activeRun: null,
   };
 }
