@@ -1,23 +1,30 @@
 import { expect, test } from '@playwright/test';
+import { keepHand, startMatch, watchErrors } from './helpers';
 import { VIEWPORTS } from './viewports';
 
 for (const vp of VIEWPORTS) {
-  test.describe(`match screen at ${vp.width}x${vp.height}`, () => {
+  test.describe(`${vp.width}x${vp.height}`, () => {
     test.use({ viewport: vp, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
 
-    test('has no horizontal overflow', async ({ page }) => {
-      const errors: string[] = [];
-      page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-      page.on('pageerror', (e) => errors.push(e.message));
+    test('setup and match screens have no horizontal overflow', async ({ page }) => {
+      const errors = watchErrors(page);
+      const noOverflow = async () => {
+        const { scrollWidth, innerWidth } = await page.evaluate(() => ({
+          scrollWidth: document.documentElement.scrollWidth,
+          innerWidth: window.innerWidth,
+        }));
+        expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+      };
 
-      await page.goto('./');
-      await expect(page.getByRole('main', { name: 'Match' })).toBeVisible();
+      await page.goto('./?seed=7');
+      await expect(page.getByRole('main', { name: 'New match' })).toBeVisible();
+      await noOverflow();
+      await page.screenshot({ path: `test-results/screens/setup-${vp.width}x${vp.height}.png` });
 
-      const { scrollWidth, innerWidth } = await page.evaluate(() => ({
-        scrollWidth: document.documentElement.scrollWidth,
-        innerWidth: window.innerWidth,
-      }));
-      expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+      await startMatch(page, { seed: 7 });
+      await page.screenshot({ path: `test-results/screens/mulligan-${vp.width}x${vp.height}.png` });
+      await keepHand(page);
+      await noOverflow();
 
       // Every zone, including the whole hand, sits inside the viewport.
       for (const zone of [
@@ -40,7 +47,6 @@ for (const vp of VIEWPORTS) {
         expect(box.x + box.width).toBeLessThanOrEqual(vp.width);
       }
 
-      // End Turn meets the 44 px minimum tap target.
       const endTurn = (await page.getByRole('button', { name: 'End Turn' }).boundingBox())!;
       expect(endTurn.height).toBeGreaterThanOrEqual(44);
       expect(endTurn.width).toBeGreaterThanOrEqual(44);
@@ -57,6 +63,6 @@ test.describe('landscape', () => {
   test('shows the rotate notice', async ({ page }) => {
     await page.goto('./');
     await expect(page.getByText('Rotate your phone')).toBeVisible();
-    await expect(page.getByRole('main', { name: 'Match' })).toBeHidden();
+    await expect(page.getByRole('main', { name: 'New match' })).toBeHidden();
   });
 });

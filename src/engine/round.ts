@@ -56,6 +56,14 @@ export function planCost(s: GameState, player: PlayerId, plan: PlannedAction[] =
   return { unit, spell };
 }
 
+/** Mana and Reserve left after paying for the current plan (spells use Reserve first). */
+export function manaLeft(s: GameState, player: PlayerId): { mana: number; reserve: number } {
+  const p = s.players[player];
+  const { unit, spell } = planCost(s, player);
+  const fromReserve = Math.min(p.reserve, spell);
+  return { mana: p.mana - unit - (spell - fromReserve), reserve: p.reserve - fromReserve };
+}
+
 /** Units are paid from mana only; spells may also use Reserve. */
 export function isAffordable(s: GameState, player: PlayerId, plan: PlannedAction[]): boolean {
   const p = s.players[player];
@@ -158,12 +166,9 @@ function reveal(ctx: Ctx): void {
   // Mana is spent as planned, whether or not cards later fizzle.
   for (const player of [0, 1] as const) {
     const p = s.players[player];
-    const { unit, spell } = planCost(s, player);
-    const fromReserve = Math.min(p.reserve, spell);
-    const manaLeft = p.mana - unit - (spell - fromReserve);
-    const reserveLeft = p.reserve - fromReserve;
-    p.mana = manaLeft;
-    p.reserve = Math.min(RESERVE_CAP, manaLeft + reserveLeft);
+    const left = manaLeft(s, player);
+    p.mana = left.mana;
+    p.reserve = Math.min(RESERVE_CAP, left.mana + left.reserve);
   }
   for (const player of [s.initiative, other(s.initiative)]) {
     const plan = s.players[player].plan;

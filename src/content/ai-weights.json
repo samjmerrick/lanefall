@@ -1,0 +1,7 @@
+{
+  "heroHp": 3,
+  "lanePower": 1,
+  "board": 0.5,
+  "hand": 0.8,
+  "win": 10000
+}
