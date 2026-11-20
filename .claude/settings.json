@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "agent-config": {
+      "source": {
+        "source": "github",
+        "repo": "samjmerrick/agent-config"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "agent-config@agent-config": true
+  }
+}
