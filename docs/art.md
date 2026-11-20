@@ -1,40 +1,38 @@
 # Card art style guide
 
-Every card has a hand-drawn SVG illustration at `src/content/art/<card id>.svg`. Upgraded cards (`<id>+`) reuse their base card's art. Cards without art fall back to the generated emblem. Per-card subjects are in `docs/art-briefs.json`.
+Every card has an SVG icon at `src/content/art/<card id>.svg`; upgraded cards (`<id>+`) reuse the base card's. Cards without a file fall back to the generated emblem. Per-card subjects are in `docs/art-briefs.json`.
 
-## Style: bold flat medallion
+This is placeholder art: simple geometric line icons, meant to be replaced by illustrated art later. To swap in raster art, change the glob pattern in `src/ui/art.ts` (one file per card id).
 
-- **One subject, one silhouette.** It must read at 40 px (board tokens). Ask: could you name it from its shadow alone?
-- **Medallion backdrop.** Every piece starts with the faction disc: `<circle cx="50" cy="50" r="46" fill="DISC"/>`. The subject sits on it and may break out past its edge (horns, wings, flames), but stays inside the 100×100 box with about 2 units of margin. Outside the disc is transparent.
-- **Outline.** All subject shapes get the shared outline colour `#14161d` with `stroke-width="3"` and `stroke-linejoin="round"`. Small inner details (eyes, cracks) can use `stroke-width="2"` or a plain fill with no stroke.
-- **Flat fills, 3–4 tones.** Use the faction's dark, main and light tones, plus at most one accent. Shade with a single darker shape on one side (light from the top left), never with gradients. Gradients are allowed only as one radial glow behind the subject on a spell, and even then sparingly.
-- **Scale tells cost.** Cost 1–2 creatures are small and cute and fill about 60% of the disc. Cost 5+ fill the disc or burst out of it, so they look imposing. Legendaries get one extra flourish, such as a crown, halo or aura ring.
-- **Spells** show an object or action (a bolt, a shield, a swirl), not a character. Use a strong diagonal or radial burst so they read differently from units.
-- **No text, letters or numbers** in the art. No faces of real people, no logos, no copies of existing games' characters.
+## Style: geometric line icon on a faction disc
 
-## Palettes
+- **One subject, one silhouette**, recognisable at 40 px (board tokens) and without colour.
+- **Geometric, not hand-drawn.** Use straight segments, 45° and 90° angles, true circular arcs (`a` in paths) and symmetry where the subject allows. Put coordinates on an even grid (whole even numbers). No wobbly freehand curves. Quadratic curves and arcs are fine for organic parts that need them, such as tentacles, tails, flames and smoke, but keep them smooth and few.
+- **Lines only.** Every mark is a 4-unit stroke with round caps and joins. No fills, no shading and no second colour.
+- **Fill the disc.** The subject spans about x 14–86 and y 10–90. Cost 1–2 creatures are a little smaller; cost 5+ and legendaries fill the disc.
+- **Spells** show an object or action (bolt, shield, swirl, burst), not a character. A diagonal or radial layout sets them apart from units.
+- **Leave space.** Keep at least 6 units between parallel lines, so they don't merge at 40 px. Use 4–12 strokes per icon.
+- **No text, letters or numbers.** No logos, and no copies of characters from existing games.
 
-Shared: outline `#14161d`, bone/white `#f4efe6`, steel `#5b6170`.
+## Exact structure (enforced by `tests/unit/art.test.ts`)
 
-| Faction | Theme                          | Disc      | Dark      | Main      | Light     | Accent                    |
-| ------- | ------------------------------ | --------- | --------- | --------- | --------- | ------------------------- |
-| Ember   | fire, volcanoes, aggression    | `#3a1418` | `#8f1d22` | `#e5484d` | `#ff9a3c` | `#ffd36b` (hot glow)      |
-| Tide    | water, sea, magic, cunning     | `#0f2440` | `#1d4f8f` | `#3e93f7` | `#8fd0ff` | `#e6f6ff` (foam)          |
-| Grove   | nature, growth, beasts         | `#14301b` | `#2c6b38` | `#46a758` | `#a6d96a` | `#8a5a34` (bark)          |
-| Bastion | stone, order, knights, defence | `#2b2a26` | `#8c8572` | `#e8e2cf` | `#ffffff` | `#d9a520` (gold)          |
-| Dusk    | shadow, night, death, trickery | `#221333` | `#4d2a73` | `#8e4ec6` | `#c9a3f0` | `#7cf2c2` (spectral eyes) |
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="DISC"/><g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke="LINE">…shapes…</g></svg>
+```
 
-Stay inside your faction's palette and the shared colours. A creature's skin, fur or armour uses the faction tones (for example, Ember imps are red, not grey).
+- Inside the `<g>`: only `path line polyline polygon circle ellipse rect`. Shapes carry no `fill`, `stroke`, `stroke-width`, `opacity` or `transform` attributes; everything is inherited.
+- The file is at most 2048 bytes (typically about 400).
 
-## Technical rules (enforced by `tests/unit/art.test.ts`)
-
-- The root element is `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">`, with no width or height.
-- Allowed elements: `svg g path circle ellipse rect polygon polyline line defs linearGradient radialGradient stop clipPath`. No `text`, `image`, `use`, `filter`, `style`, scripts, `href`, `on*` or `style=` attributes. `url(#id)` may only point at the file's own defs, and ids are prefixed with the card id (for example `ember-meteor-glow`).
-- The file is at most 4096 bytes; aim for under 2.5 KB. Round coordinates to whole numbers or one decimal, and remove editor cruft.
-- Use presentation attributes (`fill=`, `stroke=`), and a `<g>` to share stroke settings.
+| Faction | Theme                          | DISC      | LINE      |
+| ------- | ------------------------------ | --------- | --------- |
+| Ember   | fire, volcanoes, aggression    | `#3a1418` | `#ff9a3c` |
+| Tide    | water, sea, magic, cunning     | `#0f2440` | `#8fd0ff` |
+| Grove   | nature, growth, beasts         | `#14301b` | `#a6d96a` |
+| Bastion | stone, order, knights, defence | `#2b2a26` | `#e8e2cf` |
+| Dusk    | shadow, night, death, trickery | `#221333` | `#c9a3f0` |
 
 ## Checking your work
 
-`pnpm art:sheet <faction>` writes `art-sheets/<faction>.png`, showing each card's art at 120, 64 and 40 px on the card frame. Look at it. At 40 px the subject must still be recognisable and must not turn into mush or a blob. Compare against the reference pieces, so a faction looks like one set.
+`pnpm art:sheet <faction or id prefix>` writes `art-sheets/<filter>.png`, showing each card at 120, 64 and 40 px. Look at it. At 40 px the subject must still be recognisable. Cards in a faction must also look like one set, and like the reference pieces.
 
 Reference pieces: `ember-spark-imp`, `tide-kraken`, `grove-elder-stag`, `bastion-shieldbearer`, `dusk-shadow-bolt`.

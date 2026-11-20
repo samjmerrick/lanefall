@@ -7,23 +7,29 @@ import cards from '../../src/content/cards.json';
 const REQUIRE_FULL_COVERAGE = false;
 
 const ART_DIR = join(__dirname, '../../src/content/art');
-const MAX_BYTES = 4096;
-const ALLOWED = new Set([
-  'svg',
-  'g',
-  'path',
-  'circle',
-  'ellipse',
-  'rect',
-  'polygon',
-  'polyline',
-  'line',
-  'defs',
-  'linearGradient',
-  'radialGradient',
-  'stop',
-  'clipPath',
-]);
+const MAX_BYTES = 2048;
+const ALLOWED = new Set(['svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'polygon', 'polyline', 'line']);
+const SHAPES = new Set([...ALLOWED].filter((n) => n !== 'svg' && n !== 'g'));
+
+/** Line-icon style (docs/art.md): faction disc, then one stroke group in the faction's line colour. */
+const PALETTE: Record<string, { disc: string; line: string }> = {
+  ember: { disc: '#3a1418', line: '#ff9a3c' },
+  tide: { disc: '#0f2440', line: '#8fd0ff' },
+  grove: { disc: '#14301b', line: '#a6d96a' },
+  bastion: { disc: '#2b2a26', line: '#e8e2cf' },
+  dusk: { disc: '#221333', line: '#c9a3f0' },
+};
+const DISC = /^\s*cx="50"\s+cy="50"\s+r="46"\s+fill="(#[0-9a-f]{6})"\s*\/?\s*$/;
+const GROUP = [
+  ['fill', 'none'],
+  ['stroke-width', '4'],
+  ['stroke-linecap', 'round'],
+  ['stroke-linejoin', 'round'],
+] as const;
+
+function attr(attrs: string, name: string): string | undefined {
+  return new RegExp(`(?:^|\\s)${name}\\s*=\\s*"([^"]*)"`).exec(attrs)?.[1];
+}
 
 const ids = new Set((cards as { id: string }[]).map((c) => c.id));
 const files = readdirSync(ART_DIR).filter((f) => f.endsWith('.svg'));
@@ -82,8 +88,30 @@ describe('card art', () => {
           }
         }
         expect(src).not.toMatch(/<!(?!--)/); // DOCTYPE, CDATA
-        for (const m of src.matchAll(/url\(([^)]*)\)/g)) {
-          expect((m[1] ?? '').trim(), `url(${m[1]})`).toMatch(/^#[\w-]+$/);
+        expect(src).not.toMatch(/url\(/);
+      });
+
+      it('follows the line-icon style', () => {
+        const pal = PALETTE[f.split('-')[0] ?? ''];
+        expect(pal, 'unknown faction prefix').toBeDefined();
+        const [, disc, group, ...shapes] = all;
+        expect(disc?.name, 'second element must be the faction disc').toBe('circle');
+        expect(
+          DISC.exec(disc?.attrs ?? '')?.[1],
+          'disc must be cx=50 cy=50 r=46 in the faction disc colour',
+        ).toBe(pal!.disc);
+        expect(group?.name, 'third element must be the stroke <g>').toBe('g');
+        for (const [k, v] of GROUP) expect(attr(group!.attrs, k), `<g ${k}>`).toBe(v);
+        expect(attr(group!.attrs, 'stroke'), '<g stroke> must be the faction line colour').toBe(pal!.line);
+        expect(shapes.length, 'no drawing').toBeGreaterThan(0);
+        for (const t of shapes) {
+          expect(SHAPES.has(t.name), `<${t.name}> inside the group`).toBe(true);
+          for (const a of attrNames(t.attrs)) {
+            expect(
+              ['fill', 'stroke', 'stroke-width', 'opacity', 'transform'],
+              `${a} on <${t.name}>`,
+            ).not.toContain(a);
+          }
         }
       });
     });
