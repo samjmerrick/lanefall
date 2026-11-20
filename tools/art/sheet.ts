@@ -37,7 +37,7 @@ body{margin:0;padding:12px;background:#0f1117;color:#e8e8ee;font:12px system-ui,
 .faction-ember{--f:#e5484d}.faction-tide{--f:#3e93f7}.faction-grove{--f:#46a758}.faction-bastion{--f:#e8e2cf}.faction-dusk{--f:#8e4ec6}
 .cell{padding:6px;border-radius:10px;border:2px solid var(--f);background:linear-gradient(160deg,color-mix(in srgb,var(--f) 35%,#1a1d27),#14161e)}
 .row{display:flex;gap:8px;align-items:flex-end;margin-bottom:6px}
-.box{display:grid;place-items:center;border-radius:6px;background:rgb(0 0 0/.25)}
+.box{display:grid;place-items:center;border-radius:6px;}
 .id{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .missing{border-color:#e5484d;background:#3a1216;min-height:150px}.missing b{display:block;color:#ff6b6b;font-size:16px;padding:50px 0 40px;text-align:center}
 </style></head><body><div class="grid">${picked.map(cell).join('')}</div></body></html>`;

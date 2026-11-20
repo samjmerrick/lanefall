@@ -11,15 +11,14 @@ const MAX_BYTES = 2048;
 const ALLOWED = new Set(['svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'polygon', 'polyline', 'line']);
 const SHAPES = new Set([...ALLOWED].filter((n) => n !== 'svg' && n !== 'g'));
 
-/** Line-icon style (docs/art.md): faction disc, then one stroke group in the faction's line colour. */
-const PALETTE: Record<string, { disc: string; line: string }> = {
-  ember: { disc: '#3a1418', line: '#ff9a3c' },
-  tide: { disc: '#0f2440', line: '#8fd0ff' },
-  grove: { disc: '#14301b', line: '#a6d96a' },
-  bastion: { disc: '#2b2a26', line: '#e8e2cf' },
-  dusk: { disc: '#221333', line: '#c9a3f0' },
+/** Line-icon style (docs/art.md): one stroke group in the faction's line colour, no backdrop. */
+const PALETTE: Record<string, { line: string }> = {
+  ember: { line: '#ff9a3c' },
+  tide: { line: '#8fd0ff' },
+  grove: { line: '#a6d96a' },
+  bastion: { line: '#e8e2cf' },
+  dusk: { line: '#c9a3f0' },
 };
-const DISC = /^\s*cx="50"\s+cy="50"\s+r="46"\s+fill="(#[0-9a-f]{6})"\s*\/?\s*$/;
 const GROUP = [
   ['fill', 'none'],
   ['stroke-width', '4'],
@@ -94,13 +93,8 @@ describe('card art', () => {
       it('follows the line-icon style', () => {
         const pal = PALETTE[f.split('-')[0] ?? ''];
         expect(pal, 'unknown faction prefix').toBeDefined();
-        const [, disc, group, ...shapes] = all;
-        expect(disc?.name, 'second element must be the faction disc').toBe('circle');
-        expect(
-          DISC.exec(disc?.attrs ?? '')?.[1],
-          'disc must be cx=50 cy=50 r=46 in the faction disc colour',
-        ).toBe(pal!.disc);
-        expect(group?.name, 'third element must be the stroke <g>').toBe('g');
+        const [, group, ...shapes] = all;
+        expect(group?.name, 'second element must be the stroke <g> (no backdrop shape)').toBe('g');
         for (const [k, v] of GROUP) expect(attr(group!.attrs, k), `<g ${k}>`).toBe(v);
         expect(attr(group!.attrs, 'stroke'), '<g stroke> must be the faction line colour').toBe(pal!.line);
         expect(shapes.length, 'no drawing').toBeGreaterThan(0);
