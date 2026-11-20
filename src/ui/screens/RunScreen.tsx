@@ -14,6 +14,7 @@ import {
   type ShopItem,
 } from '../../run';
 import { CardView } from '../CardView';
+import { Icon } from '../Icon';
 import { useApp } from '../app';
 import { useRun } from '../runStore';
 import { useMatch } from '../store';
@@ -126,7 +127,7 @@ function RelicList({ ids }: { ids: string[] }) {
         return (
           <li key={id} className="relic">
             <span className="relic__icon" aria-hidden>
-              ✦
+              <Icon id={id} size={28} fallback="✦" />
             </span>
             <span>
               <strong>{r.name}</strong>
@@ -147,6 +148,7 @@ function Encounter({ run }: { run: RunState }) {
   return (
     <section className="encounter" aria-label="Encounter">
       <p className="label">{{ boss: `Act ${run.act} boss`, elite: 'Elite', fight: 'Fight' }[enemy.kind]}</p>
+      <Icon id={enemy.id} size={96} className="icon--hero" />
       <h2 className="encounter__name">{enemy.name}</h2>
       {enemy.rule && <p className="encounter__rule">Boss rule: {enemy.rule}</p>}
       <p className="hint">
@@ -229,7 +231,7 @@ function Shop({ run, choose }: { run: RunState; choose: (c: RunChoice) => void }
               onClick={() => choose({ t: 'buy', index: i })}
             >
               <span className="relic__icon" aria-hidden>
-                ✦
+                <Icon id={r.id} size={28} fallback="✦" />
               </span>
               <span className="relic__body">
                 <strong>{r.name}</strong>
@@ -325,6 +327,7 @@ function EventScene({ run, choose }: { run: RunState; choose: (c: RunChoice) => 
     [cost.gold && `● ${cost.gold}`, cost.hearts && `−${cost.hearts} ♥`].filter(Boolean).join(' · ');
   return (
     <section className="run-panel event" aria-label="Event">
+      <Icon id={event.id} size={96} className="icon--hero" />
       <h2>{event.name}</h2>
       <p className="event__text">{event.text}</p>
       {chosen === null ? (

@@ -426,6 +426,27 @@ button {
   background: #b0303a;
 }
 
+/* Keyword icons on board tokens: a short column down the right edge, under the faction glyph. The
+   token is too narrow for a bottom row between the Power and Health badges. Shift comes first. */
+.token__kw {
+  position: absolute;
+  top: 18px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.token__kw .kw {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.9)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.7));
+}
+
 /* ---------- Cards ---------- */
 
 .faction-ember {
@@ -479,7 +500,7 @@ button {
   border: 2px solid var(--faction);
   box-shadow: 0 6px 16px rgb(0 0 0 / 0.45);
   display: grid;
-  grid-template-rows: 1fr auto 18px;
+  grid-template-rows: 1fr auto 24px;
   overflow: hidden;
 }
 
@@ -495,31 +516,61 @@ button {
 }
 
 .card__art {
+  position: relative;
   display: grid;
   place-items: center;
-  border-radius: 6px;
-  background: rgb(0 0 0 / 0.25);
   min-height: 0;
 }
 
-.card__art {
-  position: relative;
-}
-
+/* The line art sits straight on the card background: no box, no disc. */
 .card__art .emblem,
 .card__art .card-art {
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
+  max-width: 68px;
+  max-height: 100%;
 }
 
 .card__name {
   font-size: 11px;
   font-weight: 700;
   text-align: center;
-  padding-top: 3px;
+  padding: 2px 0 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Bottom row: Power, keyword icons, Health. Own row, so nothing can overlap the name. */
+.card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  min-width: 0;
+  margin: 0 -3px -3px;
+}
+
+.card__kw {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+  overflow: hidden;
+  color: color-mix(in srgb, var(--text) 88%, var(--faction));
+}
+
+.card__kw .kw {
+  flex: none;
+  width: 10px;
+  height: 10px;
+}
+
+.card__foot .card__type {
+  flex: 1;
 }
 
 .card__type {
@@ -531,22 +582,21 @@ button {
   letter-spacing: 0.08em;
 }
 
-.card__power,
-.card__health {
-  bottom: 3px;
-  width: 24px;
-  height: 24px;
-  font-size: 15px;
+.card__foot .card__power,
+.card__foot .card__health {
+  position: static;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
   border-radius: 7px;
 }
 
 .card__power {
-  left: 3px;
   background: #b5651d;
 }
 
 .card__health {
-  right: 3px;
   background: #b0303a;
 }
 
@@ -807,14 +857,31 @@ button {
 .card--large {
   --card-w: 220px;
   --card-h: 316px;
-  grid-template-rows: 150px auto 1fr 30px;
+  grid-template-rows: 150px auto 1fr 36px;
   padding: 10px;
+}
+
+.card--large .card__foot {
+  margin: 0 -6px -6px;
+  gap: 6px;
+}
+
+.card--large .card__kw {
+  gap: 4px;
+}
+
+.card--large .card__kw .kw {
+  width: 20px;
+  height: 20px;
+}
+
+.card--large .card__type {
+  font-size: 12px;
 }
 
 .card--large .card__art .emblem,
 .card--large .card__art .card-art {
-  width: 120px;
-  height: 120px;
+  max-width: 140px;
 }
 
 .card--large .card__name {
@@ -829,8 +896,8 @@ button {
 }
 
 .card--large .card__cost,
-.card--large .card__power,
-.card--large .card__health {
+.card--large .card__foot .card__power,
+.card--large .card__foot .card__health {
   width: 36px;
   height: 36px;
   font-size: 20px;
@@ -2396,4 +2463,43 @@ textarea {
 .menu__prompt button {
   min-width: 0;
   min-height: 40px;
+}
+
+/* ---------- Run content icons ---------- */
+
+.icon {
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-row__glyph .icon {
+  width: 40px;
+  height: 40px;
+}
+
+.relic__icon .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.icon--hero {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+}
+
+/* Inline in the 56 px lane strip: negative block margins keep the line box at its normal height. */
+.lane-info__effect .icon--lane {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: -4px 3px -4px 0;
+  vertical-align: middle;
+}
+
+.hero-row__faction {
+  font-weight: 400;
+  color: var(--muted);
 }

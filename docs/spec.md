@@ -209,8 +209,8 @@ The layout is designed for a 390 × 844 viewport (iPhone 14-class) and must work
 
 **Vector art style**
 
-- Cards are drawn with CSS and SVG: a frame tinted in the faction colour, cost in a top-left gem, Power and Health in the bottom corners.
-- The art box shows the card's line icon (`src/content/art/<id>.svg`: a geometric line drawing on a faction-coloured disc, style in `docs/art.md`) with the faction glyph as a small badge. A card without an icon falls back to a geometric emblem generated from its id. Icons are placeholders, to be replaced later with illustrated art, one file per card id, without changing the layout.
+- Cards are drawn with CSS and SVG: a frame tinted in the faction colour, cost in a top-left gem, Power and Health in the bottom corners, with a row of small keyword and effect-trigger icons (Guard, Shift, On Reveal and so on, each with a label) between them. The name sits on its own line above that row and shrinks to fit, so it never overlaps the stats.
+- The art box shows the card's line icon (`src/content/art/<id>.svg`: a geometric line drawing in the faction colour drawn straight onto the card background, with no backdrop shape; style in `docs/art.md`) with the faction glyph as a small badge. A card without an icon falls back to a geometric emblem generated from its id. Icons are placeholders, to be replaced later with illustrated art, one file per card id, without changing the layout.
 - Every faction has a glyph as well as a colour, so factions can be told apart without colour.
 - Dark theme by default.
 
