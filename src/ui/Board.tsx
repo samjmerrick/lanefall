@@ -10,6 +10,7 @@ import {
   type UnitForecast,
 } from '../engine';
 import { CardArt } from './CardView';
+import { KeywordRow } from './keywordIcons';
 import { useCoachKey } from './coach';
 import { dropClass, useDrag } from './drag';
 import { AI, HUMAN, useMatch, type Fx } from './store';
@@ -140,6 +141,7 @@ export function UnitToken({
       <CardArt id={card.id} faction={card.faction} />
       <span className="token__power">{unit.power}</span>
       <span className={`token__health${unit.damage > 0 ? ' token__health--hurt' : ''}`}>{remaining}</span>
+      <KeywordRow keywords={card.keywords} className="token__kw" max={2} />
       <TokenMarks rank={rank} guard={unit.guard} forecast={forecast} />
       <FxFloat fx={fx} />
     </motion.div>
@@ -175,6 +177,7 @@ function GhostToken({
       <CardArt id={card.id} faction={card.faction} />
       <span className="token__power">{card.power}</span>
       <span className="token__health">{card.health}</span>
+      <KeywordRow keywords={card.keywords} className="token__kw" max={2} />
       <TokenMarks rank={rank} guard={card.keywords.includes('guard')} forecast={forecast} />
     </button>
   );
