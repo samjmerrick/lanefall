@@ -44,7 +44,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 
 - Each side's lane power = the sum of its units' Power in that lane.
 - Both sides deal their lane power at the same time.
-- Damage is assigned to enemy units in that lane: Guard units first, then in the order they were played. Each unit takes up to its remaining Health before the next takes any.
+- Damage is assigned to enemy units in that lane: Guard units first, then by slot position: front row (slots 1 and 2: front-left, front-right; the row nearest the lane strip) before back row (slots 3 and 4: back-left, back-right), left before right. Empty slots are skipped and gaps never close: units do not shift slots when others die, and play order does not matter. Each unit takes up to its remaining Health before the next takes any.
 - Damage left after every enemy unit in the lane is assigned goes to the enemy hero.
 - Units whose damage reaches their Health die after the lane resolves. Damage stays on surviving units between rounds unless healed.
 
@@ -82,7 +82,7 @@ v1 ships 150 cards: 30 per faction across 5 factions, with no colourless cards. 
 
 | Keyword | Rule |
 |---|---|
-| Guard | Enemy lane damage is assigned to this unit before non-Guard units. |
+| Guard | Enemy lane damage is assigned to this unit before non-Guard units, whatever row it is in. |
 | Barrier | Prevents the next damage this unit would take, then is removed. |
 | Pierce | This unit's Power skips enemy units and goes straight to the enemy hero. |
 | Rally | On Reveal: other friendly units in this lane get +1 Power this round. |

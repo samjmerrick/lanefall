@@ -61,7 +61,7 @@ describe('keywords', () => {
       duration: 'round',
     });
     expect(events).not.toContainEqual(expect.objectContaining({ type: 'UnitBuffed', uid: other.uid }));
-    expect(events).toContainEqual({ type: 'LaneCombat', lane: 0, power: [3, 0] });
+    expect(events).toContainEqual(expect.objectContaining({ type: 'LaneCombat', lane: 0, power: [3, 0] }));
     expect(byUid(state, ally.uid)!.roundPower).toBe(0);
   });
 

@@ -10,6 +10,7 @@ import { nextInt, shuffle, type RngState } from '../engine/rng';
 import type { PlanResult } from './easy';
 import {
   enumeratePlans,
+  arrangeSlots,
   evaluate,
   hideOpponent,
   mulliganChoice,
@@ -82,5 +83,5 @@ export function planHard(
 
   let best = candidates[0]!;
   for (const c of candidates) if (c.total > best.total) best = c;
-  return { actions: toActions(player, best.plan), rng: r };
+  return { actions: toActions(player, arrangeSlots(base, player, best.plan)), rng: r };
 }

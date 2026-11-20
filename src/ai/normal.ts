@@ -77,7 +77,7 @@ function quickScore(s: GameState, player: PlayerId, plan: PlannedAction[]): numb
   return score;
 }
 
-/** One action per (card, lane): the slot inside a lane does not change the outcome. */
+/** One action per (card, lane). Slots matter for damage order, but `arrangeSlots` fixes them once a plan is chosen. */
 function distinctPlays(s: GameState, player: PlayerId): PlannedAction[] {
   const seen = new Set<string>();
   const out: PlannedAction[] = [];
@@ -153,6 +153,53 @@ export function mulliganChoice(s: GameState, player: PlayerId): Action {
   return { type: 'mulligan', player, uids };
 }
 
+/** Sort key for placing units front-first: Guard, then Barrier, then more Health, then less Power. */
+function toughness(cardId: string): [number, number, number, number] {
+  const c = getCard(cardId);
+  return [
+    c.keywords.includes('guard') ? 0 : 1,
+    c.keywords.includes('barrier') ? 0 : 1,
+    -(c.health ?? 0),
+    c.power ?? 0,
+  ];
+}
+
+/**
+ * Re-slots the plan's new units within each lane. Damage is dealt front row first, so the
+ * toughest units take the lowest free slots. Slots held by units on the board or by planned
+ * shifts stay as they are. Action order (hence reveal order) is unchanged.
+ */
+export function arrangeSlots(s: GameState, player: PlayerId, plan: PlannedAction[]): PlannedAction[] {
+  const out = [...plan];
+  for (const lane of LANES) {
+    const idx: number[] = [];
+    const taken = new Set<number>();
+    s.lanes[lane].slots[player].forEach((u, slot) => u && taken.add(slot));
+    out.forEach((a, i) => {
+      if (a.type === 'playUnit' && a.lane === lane) idx.push(i);
+      else if (a.type === 'shift' && a.lane === lane) taken.add(a.slot);
+    });
+    if (idx.length < 2) continue;
+    const free = [...idx.map((i) => (out[i] as Extract<PlannedAction, { type: 'playUnit' }>).slot)];
+    for (let slot = 0; slot < 4 && free.length < idx.length; slot++) {
+      if (!taken.has(slot) && !free.includes(slot)) free.push(slot);
+    }
+    free.sort((a, b) => a - b);
+    const hand = s.players[player].hand;
+    const key = (i: number) => toughness(hand.find((h) => h.uid === out[i]!.uid)!.cardId);
+    const order = [...idx].sort((a, b) => {
+      const ka = key(a);
+      const kb = key(b);
+      for (let k = 0; k < ka.length; k++) if (ka[k] !== kb[k]) return ka[k]! - kb[k]!;
+      return 0;
+    });
+    order.forEach((i, n) => {
+      out[i] = { ...(out[i] as Extract<PlannedAction, { type: 'playUnit' }>), slot: free[n]! };
+    });
+  }
+  return out;
+}
+
 export function toActions(player: PlayerId, plan: PlannedAction[]): Action[] {
   return [...plan.map((action): Action => ({ type: 'plan', player, action })), { type: 'endTurn', player }];
 }
@@ -176,5 +223,5 @@ export function planNormal(
       best = plan;
     }
   }
-  return { actions: toActions(player, best), rng };
+  return { actions: toActions(player, arrangeSlots(base, player, best)), rng };
 }

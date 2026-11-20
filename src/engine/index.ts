@@ -1,5 +1,7 @@
 // Public engine API. The UI, AI and simulator import from here only.
 export { initMatch, applyAction, legalActions } from './match';
+export { assignLaneDamage, previewCombat, soakOrder } from './combat';
+export type { SideHits, UnitHit, CombatPreview, UnitForecast } from './combat';
 export { resolveRound, planCost, manaLeft } from './round';
 export {
   lanePower,
