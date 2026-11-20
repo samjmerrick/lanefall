@@ -1,0 +1,428 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1117;
+  --surface: #181b24;
+  --surface-2: #222634;
+  --line: #2f3445;
+  --text: #eef0f6;
+  --muted: #9aa1b5;
+  --accent: #f5b83d;
+  --hp: #ef5f67;
+  --mana: #4fa3ff;
+
+  --ember: #e5484d;
+  --tide: #3e93f7;
+  --grove: #46a758;
+  --bastion: #e8e2cf;
+  --dusk: #8e4ec6;
+
+  --gutter: 8px;
+  --card-w: 86px;
+  --card-h: 124px;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+#root {
+  min-height: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- Match layout (designed at 390 × 844) ---------- */
+
+.match {
+  display: grid;
+  grid-template-rows: 48px 200px 56px 200px 48px 160px;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top) var(--gutter) env(safe-area-inset-bottom);
+  overflow: hidden;
+}
+
+.hero-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-bar__hp {
+  color: var(--hp);
+  font-size: 18px;
+}
+
+.hero-bar__mana {
+  color: var(--mana);
+}
+
+.hero-bar__reserve {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--mana);
+}
+
+.pip--on {
+  background: var(--mana);
+}
+
+.hero-bar__stat {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.end-turn {
+  margin-left: auto;
+  min-width: 112px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--accent);
+  color: #1b1405;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.end-turn:active {
+  transform: scale(0.97);
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gutter);
+  padding: 6px 0;
+}
+
+.lane-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.slot {
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  display: grid;
+  place-items: stretch;
+}
+
+.slot--player {
+  background: rgb(255 255 255 / 0.02);
+}
+
+.lane-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gutter);
+}
+
+.lane-info {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  justify-items: center;
+  border-radius: 8px;
+  background: var(--surface-2);
+  padding: 2px 4px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.lane-info__effect {
+  color: var(--muted);
+  line-height: 1.1;
+}
+
+.lane-info__power {
+  font-weight: 800;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lane-info__power--opponent {
+  color: var(--hp);
+}
+
+.lane-info__power--player {
+  color: var(--mana);
+}
+
+/* ---------- Unit tokens ---------- */
+
+.token {
+  position: relative;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--faction) 22%, var(--surface-2));
+  border: 2px solid var(--faction);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.token .emblem {
+  width: 70%;
+  height: 70%;
+}
+
+.token__power,
+.token__health,
+.card__power,
+.card__health,
+.card__cost {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.6);
+}
+
+.token__power,
+.token__health {
+  bottom: 1px;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+.token__power {
+  left: 1px;
+  background: #b5651d;
+}
+
+.token__health {
+  right: 1px;
+  background: #b0303a;
+}
+
+/* ---------- Cards ---------- */
+
+.faction-ember {
+  --faction: var(--ember);
+}
+.faction-tide {
+  --faction: var(--tide);
+}
+.faction-grove {
+  --faction: var(--grove);
+}
+.faction-bastion {
+  --faction: var(--bastion);
+}
+.faction-dusk {
+  --faction: var(--dusk);
+}
+
+.hand {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hand__slot {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  margin-left: calc(var(--card-w) / -2);
+  /* 60px leaves room for the outer cards' rotation. */
+  --spacing: min(62px, (min(100vw, 430px) - 2 * var(--gutter) - var(--card-w) - 60px) / var(--gaps));
+  transform: translateX(calc(var(--offset) * var(--spacing))) translateY(calc(var(--abs-offset) * 6px))
+    rotate(calc(var(--offset) * 5deg));
+  transform-origin: 50% 120%;
+}
+
+.card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 10px;
+  padding: 6px;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--faction) 35%, var(--surface-2)),
+    var(--surface)
+  );
+  border: 2px solid var(--faction);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.45);
+  display: grid;
+  grid-template-rows: 1fr auto 18px;
+  overflow: hidden;
+}
+
+.card__cost {
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  font-size: 15px;
+  background: var(--mana);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  z-index: 1;
+}
+
+.card__art {
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.25);
+  min-height: 0;
+}
+
+.card__art .emblem {
+  width: 64px;
+  height: 64px;
+}
+
+.card__name {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__type {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  align-self: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card__power,
+.card__health {
+  bottom: 3px;
+  width: 24px;
+  height: 24px;
+  font-size: 15px;
+  border-radius: 7px;
+}
+
+.card__power {
+  left: 3px;
+  background: #b5651d;
+}
+
+.card__health {
+  right: 3px;
+  background: #b0303a;
+}
+
+.emblem__ring {
+  fill: none;
+  stroke: var(--faction);
+  stroke-width: 3;
+  opacity: 0.8;
+}
+
+.emblem__core {
+  fill: var(--faction);
+  opacity: 0.6;
+}
+
+.emblem__glyph {
+  fill: var(--text);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---------- Rotate notice (portrait only) ---------- */
+
+.rotate-notice {
+  display: none;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .match {
+    display: none;
+  }
+
+  .rotate-notice {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: var(--bg);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .rotate-notice p {
+    margin: 0;
+  }
+
+  .rotate-notice__hint {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .rotate-notice__icon {
+    width: 40px;
+    height: 64px;
+    border: 3px solid var(--text);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    transform: rotate(-90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
