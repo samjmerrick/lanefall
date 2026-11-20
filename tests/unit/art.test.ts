@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import cards from '../../src/content/cards.json';
 
 /** Flip to true once every card has art, so a missing illustration fails CI. */
-const REQUIRE_FULL_COVERAGE = false;
+const REQUIRE_FULL_COVERAGE = true;
 
 const ART_DIR = join(__dirname, '../../src/content/art');
 const MAX_BYTES = 2048;
