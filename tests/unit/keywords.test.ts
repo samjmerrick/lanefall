@@ -38,12 +38,12 @@ describe('keywords', () => {
 
   it('Pierce: power skips enemy units and goes to the hero', () => {
     let s = board();
-    place(s, 0, 0, 'ember-skyfire-archer'); // 2/3 Pierce
+    place(s, 0, 0, 'ember-skyfire-archer'); // 3/3 Pierce
     const wall = place(s, 1, 0, 'bastion-wall-warden');
     wall.basePower = 0;
     s = resolve(s).state;
     expect(byUid(s, wall.uid)!.damage).toBe(0);
-    expect(s.players[1].hp).toBe(98);
+    expect(s.players[1].hp).toBe(97);
   });
 
   it('Rally: on reveal, other friendly units in the lane get +1 Power this round', () => {

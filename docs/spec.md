@@ -50,7 +50,7 @@ A match is at most 8 rounds. Both players plan face-down at the same time, cards
 
 **Winning**
 
-- A hero on 0 HP or less after combat loses. Both at 0 or less = draw.
+- A hero on 0 HP or less after combat loses. If both are at 0 or less, the one with more HP left wins; equal HP = draw.
 - After round 8, the higher HP wins; equal HP = draw.
 - In a run, a draw counts as a loss.
 

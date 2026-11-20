@@ -88,7 +88,7 @@ describe('round sequence', () => {
     expect(() => plan(s, 0, { type: 'playUnit', uid: unit, lane: 0, slot: 0 })).toThrow(/mana/);
     const next = plan(s, 0, { type: 'playSpell', uid: spell, target: { kind: 'none' } });
     const after = resolve(next).state;
-    expect(after.players[1].hp).toBe(17);
+    expect(after.players[1].hp).toBe(16);
     expect(after.players[0].reserve).toBe(0);
   });
 
@@ -348,13 +348,24 @@ describe('winning', () => {
     expect(legalActions(state, 0)).toEqual([]);
   });
 
-  it('both heroes at 0 or less is a draw', () => {
+  it('both heroes at 0 or less with equal HP is a draw', () => {
     let s = setup({ heroHp: 2 });
     clearHands(s);
     place(s, 0, 0, 'ember-spark-imp');
     place(s, 1, 1, 'ember-spark-imp');
     s = resolve(s).state;
     expect(s.result).toEqual({ winner: null, reason: 'hp' });
+  });
+
+  it('both heroes at 0 or less: the one with more HP left wins', () => {
+    let s = setup({ heroHp: 2 });
+    clearHands(s);
+    place(s, 0, 0, 'ember-flame-dancer');
+    place(s, 1, 1, 'ember-spark-imp');
+    s = resolve(s).state;
+    expect(s.players[0].hp).toBe(0);
+    expect(s.players[1].hp).toBe(-1);
+    expect(s.result).toEqual({ winner: 0, reason: 'hp' });
   });
 
   it('after round 8 the higher HP wins; equal HP is a draw', () => {

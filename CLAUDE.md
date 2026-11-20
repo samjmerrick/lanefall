@@ -14,6 +14,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm screens` — regenerate the committed screenshots in `docs/screens/` (every screen at all 3 viewports; also checks overflow)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
 - `pnpm sim:run [n] [easy|normal|hard] [ascension]` — bot roguelike runs per hero, fully unlocked profile (win rate, nodes cleared)
+- `pnpm sim:balance [n] [--out path]` — M8 balance report (all 10 faction pairs, Normal vs Normal, n per seat, default 1000) written to `docs/balance.md`; multi-threaded, reproducible; exits 1 if an out-of-target faction/card has no reason in `tools/sim/balance-exceptions.json`
 - `pnpm content:text` — rewrite every card's `text` in `cards.json` from its data (`src/engine/text.ts`)
 - `pnpm content:paths` — regenerate `tests/fixtures/run-paths.json` (e2e run paths) after run or content changes
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)

@@ -27,9 +27,9 @@ describe('lane effects', () => {
   it('Chasm: overflow damage here is doubled, Pierce is not', () => {
     let s = withLeft('lane-chasm');
     place(s, 0, 0, 'ember-spark-imp');
-    place(s, 0, 0, 'ember-ember-hound'); // 1 Pierce
+    place(s, 0, 0, 'ember-ember-hound'); // 2 Pierce
     s = resolve(s).state;
-    expect(s.players[1].hp).toBe(100 - 4 - 1);
+    expect(s.players[1].hp).toBe(100 - 4 - 2);
   });
 
   it('Narrows: only 2 units per side', () => {
