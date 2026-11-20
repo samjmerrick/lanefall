@@ -985,7 +985,7 @@
     "type": "unit",
     "cost": 8,
     "power": 7,
-    "health": 7,
+    "health": 6,
     "keywords": ["pierce"],
     "effects": [],
     "text": "Pierce.",
