@@ -241,7 +241,8 @@ function endOfRound(ctx: Ctx): void {
 function checkHp(ctx: Ctx): boolean {
   const [a, b] = ctx.s.players;
   if (a.hp > 0 && b.hp > 0) return false;
-  const winner: PlayerId | null = a.hp <= 0 && b.hp <= 0 ? null : a.hp <= 0 ? 1 : 0;
+  // Both down: the hero with more HP left wins; equal HP is a draw.
+  const winner: PlayerId | null = a.hp === b.hp ? null : a.hp > b.hp ? 0 : 1;
   endMatch(ctx, winner, 'hp');
   return true;
 }

@@ -74,10 +74,10 @@ describe('assignLaneDamage and LaneCombat', () => {
     s.lanes[0].revealed = true;
     clearHands(s);
     place(s, 0, 0, 'ember-spark-imp', { keywords: ['lifesteal'] }); // 2
-    place(s, 0, 0, 'ember-ember-hound'); // 1 pierce
+    place(s, 0, 0, 'ember-ember-hound'); // 2 pierce
     place(s, 1, 0, 'bastion-recruit'); // 1/2
     const [mine, theirs] = assignLaneDamage(s, 0);
-    expect(mine).toMatchObject({ attacker: 0, overflow: 0, pierce: 1, hero: 1, lifesteal: 2 });
+    expect(mine).toMatchObject({ attacker: 0, overflow: 0, pierce: 2, hero: 2, lifesteal: 2 });
     expect(theirs).toMatchObject({ attacker: 1, hero: 0 });
     expect(mine.units).toHaveLength(1);
   });
