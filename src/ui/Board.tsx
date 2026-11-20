@@ -11,6 +11,7 @@ import {
   type UnitForecast,
 } from '../engine';
 import { CardArt } from './CardView';
+import { Icon } from './Icon';
 import { KeywordRow } from './keywordIcons';
 import { useCoachKey } from './coach';
 import { dropClass, useDrag } from './drag';
@@ -352,7 +353,10 @@ function LaneInfo({ lane }: { lane: LaneIndex }) {
       <span className="lane-info__effect" title={effect?.text}>
         {effect ? (
           <>
-            <strong>{effect.name}</strong>
+            <strong>
+              <Icon id={effect.id} size={18} className="icon--lane" />
+              {effect.name}
+            </strong>
             <span>{effect.text}</span>
           </>
         ) : (

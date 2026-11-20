@@ -2519,3 +2519,42 @@ textarea {
   pointer-events: none;
   z-index: 15;
 }
+
+/* ---------- Run content icons ---------- */
+
+.icon {
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-row__glyph .icon {
+  width: 40px;
+  height: 40px;
+}
+
+.relic__icon .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.icon--hero {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+}
+
+/* Inline in the 56 px lane strip: negative block margins keep the line box at its normal height. */
+.lane-info__effect .icon--lane {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: -4px 3px -4px 0;
+  vertical-align: middle;
+}
+
+.hero-row__faction {
+  font-weight: 400;
+  color: var(--muted);
+}

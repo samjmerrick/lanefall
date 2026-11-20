@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { getCard } from '../../engine';
 import { ascensionRules, HEROES, MAX_ASCENSION, ownedHeroes, unlockLevel } from '../../run';
 import { useApp } from '../app';
-import { GLYPHS } from '../factions';
+import { FACTION_NAME, GLYPHS } from '../factions';
+import { Icon } from '../Icon';
 import { useRun } from '../runStore';
 import { ScreenFrame } from './common';
 
@@ -90,11 +91,17 @@ export function RunStartScreen() {
               onClick={() => setHeroId(h.id)}
             >
               <span className="hero-row__glyph" aria-hidden>
-                {locked ? '🔒' : GLYPHS[h.faction]}
+                {locked ? '🔒' : <Icon id={h.id} size={40} fallback={GLYPHS[h.faction]} />}
               </span>
               <span className="hero-row__text">
                 <span className="hero-row__name">
-                  {h.name} <span className="hero-row__title">· {h.title}</span>
+                  {h.name}{' '}
+                  {!locked && (
+                    <span className="hero-row__faction" aria-label={FACTION_NAME[h.faction]}>
+                      {GLYPHS[h.faction]}
+                    </span>
+                  )}{' '}
+                  <span className="hero-row__title">· {h.title}</span>
                 </span>
                 {locked ? (
                   <span className="hero-row__lock">Unlocks at level {at}</span>
