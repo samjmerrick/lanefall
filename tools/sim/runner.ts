@@ -1,5 +1,5 @@
 // Plays bot-vs-bot matches through the public engine API.
-import { planEasy } from '../../src/ai/easy';
+import { plan, type Difficulty } from '../../src/ai';
 import {
   applyAction,
   initMatch,
@@ -22,19 +22,23 @@ function aiSeed(seed: number, player: PlayerId): RngState {
   return seedRng((seed ^ (0x9e3779b9 * (player + 1))) >>> 0);
 }
 
-export function playBotMatch(config: MatchConfig, seed: number): MatchRecord {
+export function playBotMatch(
+  config: MatchConfig,
+  seed: number,
+  difficulty: [Difficulty, Difficulty] = ['easy', 'easy'],
+): MatchRecord {
   let s = initMatch(config, seed);
   const rngs: [RngState, RngState] = [aiSeed(seed, 0), aiSeed(seed, 1)];
   const events: GameEvent[] = [];
   for (const p of [0, 1] as const) {
-    const { actions, rng } = planEasy(s, p, rngs[p]);
+    const { actions, rng } = plan(difficulty[p], s, p, rngs[p]);
     rngs[p] = rng;
     for (const a of actions) s = applyAction(s, a);
   }
   for (let guard = 0; s.phase === 'plan'; guard++) {
     if (guard > 20) throw new Error(`Match ${seed} did not end`);
     for (const p of [0, 1] as const) {
-      const { actions, rng } = planEasy(s, p, rngs[p]);
+      const { actions, rng } = plan(difficulty[p], s, p, rngs[p]);
       rngs[p] = rng;
       for (const a of actions) s = applyAction(s, a);
     }

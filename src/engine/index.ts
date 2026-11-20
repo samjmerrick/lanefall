@@ -1,6 +1,6 @@
 // Public engine API. The UI, AI and simulator import from here only.
 export { initMatch, applyAction, legalActions } from './match';
-export { resolveRound, planCost } from './round';
+export { resolveRound, planCost, manaLeft } from './round';
 export {
   lanePower,
   unitPower,

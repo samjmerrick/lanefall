@@ -10,7 +10,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm test` — Vitest unit and simulation tests (includes 10,000 bot matches, ~15 s)
 - `pnpm coverage` — unit tests with the engine coverage gate (≥90%)
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
-- `pnpm sim [n]` — bot-vs-bot simulator (Easy vs Easy, Ember vs Bastion)
+- `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)
 
 ## Folder rules
@@ -27,6 +27,10 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - Public API is `src/engine/index.ts`: `initMatch`, `legalActions`, `applyAction`, `resolveRound`.
 - Card and lane-effect behaviour is data (`src/content/*.json`, validated by `src/engine/schema.ts`). Add a primitive
   in `src/engine/effects.ts` only when no combination of existing ones can express a card.
+- AI planners live in `src/ai` behind `plan(difficulty, state, player, rng)`; the UI runs them in a Web Worker
+  (`src/ui/aiClient.ts`).
+- The UI replays engine events onto a view model (`src/ui/view.ts`) to animate, then snaps to the engine's state.
+  URL params `?seed=N&speed=0.05` make matches deterministic and fast for Playwright.
 - Tests build boards with `tests/unit/helpers.ts` (`setup`, `place`, `give`, `plan`, `resolve`).
 
 ## Working rules
