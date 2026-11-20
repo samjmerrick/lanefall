@@ -123,6 +123,7 @@ function targetValid(
       if (target.kind !== 'unit') return false;
       const loc = findUnit(s, target.uid);
       if (!loc) return targeting !== 'enemyUnit' && plannedUnitUids(plan).includes(target.uid);
+      if (loc.unit.owner !== player && activeLaneEffect(s, loc.lane).spellShield) return false;
       if (targeting === 'enemyUnit') return loc.unit.owner !== player;
       if (targeting === 'friendlyUnit') return loc.unit.owner === player;
       return true;

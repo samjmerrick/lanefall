@@ -4,12 +4,13 @@ import {
   canPlaceAt,
   findUnit,
   firstFreeSlot,
-  hasKeyword,
+  hasKeywordHere,
   unitPower,
   unitRemainingHealth,
   type UnitLocation,
 } from './board';
 import { createUnit, type Ctx } from './effects';
+import type { LaneEffectDef } from './schema';
 import { LANES, other, type GameState, type LaneIndex, type PlayerId } from './types';
 
 export interface UnitHit {
@@ -35,11 +36,21 @@ export interface SideHits {
 }
 
 /**
- * Order in which a side's units soak damage: Guard first, then by slot (0, 1 front row;
- * 2, 3 back row). Empty slots are skipped by the caller; gaps never close.
+ * Order in which a side's units soak damage: Guard first, then by the lane's rule. By default
+ * that is by slot (0, 1 front row; 2, 3 back row); a lane may soak the back row first, or the unit
+ * with the least Health first (ties by slot). Empty slots are skipped by the caller; gaps never close.
  */
-export function soakOrder<T extends { slot: number; guard: boolean }>(units: T[]): T[] {
-  return [...units].sort((a, b) => Number(b.guard) - Number(a.guard) || a.slot - b.slot);
+export function soakOrder<T extends { slot: number; guard: boolean; health?: number }>(
+  units: T[],
+  mode: LaneEffectDef['soak'] = 'front',
+): T[] {
+  const rank = (a: T, b: T) =>
+    mode === 'back'
+      ? b.slot - a.slot
+      : mode === 'weakest'
+        ? (a.health ?? 0) - (b.health ?? 0) || a.slot - b.slot
+        : a.slot - b.slot;
+  return [...units].sort((a, b) => Number(b.guard) - Number(a.guard) || rank(a, b));
 }
 
 function locationsOf(s: GameState, lane: LaneIndex, player: PlayerId): UnitLocation[] {
@@ -56,11 +67,18 @@ export function assignLaneDamage(s: GameState, lane: LaneIndex): [SideHits, Side
     let normal = 0;
     let pierce = 0;
     let lifesteal = 0;
-    for (const l of units) {
-      const p = unitPower(s, l);
-      if (hasKeyword(l.unit, 'pierce')) pierce += p;
+    // A duelling lane counts only the highest-Power unit (the lowest slot wins a tie).
+    let dealers = units;
+    const mult = effect.champion > 0 ? effect.champion : 1;
+    if (effect.champion > 0 && units.length > 0) {
+      const power = (l: UnitLocation) => unitPower(s, l);
+      dealers = [units.reduce((best, l) => (power(l) > power(best) ? l : best))];
+    }
+    for (const l of dealers) {
+      const p = unitPower(s, l) * mult;
+      if (hasKeywordHere(s, l, 'pierce')) pierce += p;
       else normal += p;
-      if (hasKeyword(l.unit, 'lifesteal')) lifesteal += p;
+      if (hasKeywordHere(s, l, 'lifesteal')) lifesteal += p;
     }
     return { units, normal, pierce, lifesteal };
   });
@@ -70,8 +88,10 @@ export function assignLaneDamage(s: GameState, lane: LaneIndex): [SideHits, Side
       sides[other(attacker)]!.units.map((loc) => ({
         loc,
         slot: loc.slot,
-        guard: hasKeyword(loc.unit, 'guard'),
+        guard: hasKeywordHere(s, loc, 'guard'),
+        health: unitRemainingHealth(s, loc),
       })),
+      effect.soak,
     );
     let left = me.normal;
     const units: UnitHit[] = [];

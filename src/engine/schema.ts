@@ -134,6 +134,22 @@ export const LaneEffectSchema = z.object({
   maxUnits: z.number().int().min(1).max(4).default(4),
   heroDamage: z.boolean().default(true),
   endOfRound: z.array(PrimitiveSchema).default([]),
+  /** End of Round, for the player with strictly more lane power here (the primitives' owner). */
+  winnerEndOfRound: z.array(PrimitiveSchema).default([]),
+  /** Runs for each unit that enters the lane (played, summoned or moved in); `self` is that unit. */
+  onEnter: z.array(PrimitiveSchema).default([]),
+  /** Runs for each unit that dies here; the unit's owner is the owner (`friendlyHero`, `draw`). */
+  onDeath: z.array(PrimitiveSchema).default([]),
+  /** Units here count as having these keywords in combat. */
+  keywords: z.array(z.enum(['guard', 'pierce', 'lifesteal'])).default([]),
+  /** Which of a side's units soak damage first (after Guard): front row, back row or lowest Health. */
+  soak: z.enum(['front', 'back', 'weakest']).default('front'),
+  /** If above 0, only each side's highest-Power unit deals damage here, with its Power multiplied by this. */
+  champion: z.number().int().min(0).default(0),
+  /** A unit that dies here returns to its owner's hand (tokens do not). */
+  returnOnDeath: z.boolean().default(false),
+  /** Enemy spells cannot target units here. */
+  spellShield: z.boolean().default(false),
 });
 
 export const LaneEffectListSchema = z.array(LaneEffectSchema);

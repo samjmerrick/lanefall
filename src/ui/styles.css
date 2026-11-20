@@ -2465,6 +2465,61 @@ textarea {
   min-height: 40px;
 }
 
+/* ---------- Shift (drag a unit to another lane) ---------- */
+
+/* A unit that may Shift now: a dotted inner outline and a grab cursor. */
+.token--shiftable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  outline: 2px dotted var(--accent);
+  outline-offset: -5px;
+}
+
+/* The unit that has a Shift planned stays put until End Turn, faded. */
+.token--shifting {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.token__shift-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.drag-card--shift {
+  opacity: 0.9;
+}
+
+.queued__chip--shift {
+  border-style: dashed;
+}
+
+.shift-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  translate: -50% 0;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  color: var(--text, #fff);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 15;
+}
+
 /* ---------- Run content icons ---------- */
 
 .icon {

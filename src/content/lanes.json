@@ -7,14 +7,16 @@
   {
     "id": "lane-forge",
     "name": "Forge",
-    "text": "Units here have +1 Power.",
-    "powerBonus": 1
+    "text": "Units here have +1 Power. Only 2 per side.",
+    "powerBonus": 1,
+    "maxUnits": 2
   },
   {
     "id": "lane-chasm",
     "name": "Chasm",
-    "text": "Overflow damage here is doubled.",
-    "overflowMultiplier": 2
+    "text": "Only 1 unit per side. Overflow doubled.",
+    "overflowMultiplier": 2,
+    "maxUnits": 1
   },
   {
     "id": "lane-narrows",
@@ -31,18 +33,31 @@
   {
     "id": "lane-sanctuary",
     "name": "Sanctuary",
-    "text": "Heroes take no damage from this lane.",
-    "heroDamage": false
+    "text": "No hero damage. Top power heals 4.",
+    "heroDamage": false,
+    "winnerEndOfRound": [
+      {
+        "op": "heal",
+        "target": "friendlyHero",
+        "amount": 4
+      }
+    ]
   },
   {
     "id": "lane-ashfield",
     "name": "Ashfield",
-    "text": "End of Round: deal 1 damage to each unit here.",
+    "text": "Units take 1 a round. Top power draws.",
     "endOfRound": [
       {
         "op": "damage",
         "target": "allUnitsInLane",
         "amount": 1
+      }
+    ],
+    "winnerEndOfRound": [
+      {
+        "op": "draw",
+        "count": 1
       }
     ]
   },
@@ -61,8 +76,10 @@
   {
     "id": "lane-lowlands",
     "name": "Lowlands",
-    "text": "Units here have -1 Power.",
-    "powerBonus": -1
+    "text": "-1 Power, +1 Health. Overflow x2.",
+    "powerBonus": -1,
+    "healthBonus": 1,
+    "overflowMultiplier": 2
   },
   {
     "id": "lane-fortress",
@@ -73,14 +90,22 @@
   {
     "id": "lane-crucible",
     "name": "Crucible",
-    "text": "Units here have +2 Power.",
-    "powerBonus": 2
+    "text": "+2 Power, but units here die at End of Round.",
+    "powerBonus": 2,
+    "endOfRound": [
+      {
+        "op": "destroy",
+        "target": "allUnitsInLane"
+      }
+    ]
   },
   {
     "id": "lane-bridge",
     "name": "Rope Bridge",
-    "text": "Only 1 unit per side.",
-    "maxUnits": 1
+    "text": "Only 1 unit per side. It has +2/+2.",
+    "maxUnits": 1,
+    "powerBonus": 2,
+    "healthBonus": 2
   },
   {
     "id": "lane-pass",
@@ -91,8 +116,10 @@
   {
     "id": "lane-gorge",
     "name": "Gorge",
-    "text": "Overflow damage here is tripled.",
-    "overflowMultiplier": 3
+    "text": "Only 2 units per side. -1 Power. Overflow tripled.",
+    "overflowMultiplier": 3,
+    "maxUnits": 2,
+    "powerBonus": -1
   },
   {
     "id": "lane-shrine",
@@ -109,12 +136,13 @@
   {
     "id": "lane-storm",
     "name": "Stormfront",
-    "text": "End of Round: deal 2 damage to each unit here.",
+    "text": "+1 Power. Units take 3 at End of Round.",
+    "powerBonus": 1,
     "endOfRound": [
       {
         "op": "damage",
         "target": "allUnitsInLane",
-        "amount": 2
+        "amount": 3
       }
     ]
   },
@@ -137,8 +165,8 @@
   },
   {
     "id": "lane-cursed",
-    "name": "Cursed Ground",
-    "text": "End of Round: deal 1 damage to both heroes.",
+    "name": "Cursed Land",
+    "text": "End of Round: both heroes take 1.",
     "endOfRound": [
       {
         "op": "damage",
@@ -155,7 +183,8 @@
   {
     "id": "lane-barracks",
     "name": "Barracks",
-    "text": "End of Round: give each unit here +1 Power.",
+    "text": "Max 3 units. Each gains +1 Power a round.",
+    "maxUnits": 3,
     "endOfRound": [
       {
         "op": "buff",
@@ -169,8 +198,128 @@
   {
     "id": "lane-glacier",
     "name": "Glacier",
-    "text": "Units here have -1 Power and +2 Health.",
+    "text": "-1 Power, +3 Health. Overflow tripled.",
     "powerBonus": -1,
-    "healthBonus": 2
+    "healthBonus": 3,
+    "overflowMultiplier": 3
+  },
+  {
+    "id": "lane-road",
+    "name": "Open Road",
+    "text": "Units here have Pierce. Top power heals 1.",
+    "keywords": ["pierce"],
+    "winnerEndOfRound": [
+      {
+        "op": "heal",
+        "target": "friendlyHero",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-bloodmoon",
+    "name": "Bloodmoon",
+    "text": "Units here have Lifesteal and -1 Power.",
+    "keywords": ["lifesteal"],
+    "powerBonus": -1
+  },
+  {
+    "id": "lane-aegis",
+    "name": "Aegis Gate",
+    "text": "Units here enter with a Barrier.",
+    "onEnter": [
+      {
+        "op": "grantKeyword",
+        "target": "self",
+        "keyword": "barrier"
+      }
+    ]
+  },
+  {
+    "id": "lane-ambush",
+    "name": "Ambush",
+    "text": "Entering units deal 1 to a random enemy.",
+    "onEnter": [
+      {
+        "op": "damage",
+        "target": "randomEnemyUnitInLane",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-scriptorium",
+    "name": "Scriptorium",
+    "text": "Top power here draws a card each round.",
+    "winnerEndOfRound": [
+      {
+        "op": "draw",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-leyline",
+    "name": "Leyline",
+    "text": "Top power here gains 1 mana each round.",
+    "winnerEndOfRound": [
+      {
+        "op": "gainMana",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-catacombs",
+    "name": "Catacombs",
+    "text": "A unit dying here draws its owner a card.",
+    "onDeath": [
+      {
+        "op": "draw",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "lane-phoenix",
+    "name": "Phoenix Nest",
+    "text": "Units that die here return to hand.",
+    "returnOnDeath": true
+  },
+  {
+    "id": "lane-ranks",
+    "name": "Reverse Ranks",
+    "text": "Damage hits the back row first.",
+    "soak": "back"
+  },
+  {
+    "id": "lane-cull",
+    "name": "Culling Field",
+    "text": "Damage hits the weakest unit first.",
+    "soak": "weakest"
+  },
+  {
+    "id": "lane-crossroads",
+    "name": "Crossroads",
+    "text": "Units move to another lane each round.",
+    "endOfRound": [
+      {
+        "op": "move",
+        "target": "allUnitsInLane"
+      }
+    ]
+  },
+  {
+    "id": "lane-ring",
+    "name": "Duelling Ring",
+    "text": "+1 Power. Only the strongest unit attacks.",
+    "champion": 1,
+    "powerBonus": 1
+  },
+  {
+    "id": "lane-shroud",
+    "name": "Shroud",
+    "text": "Enemy spells can't target units here.",
+    "spellShield": true
   }
 ]

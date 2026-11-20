@@ -38,7 +38,7 @@ describe('slot damage order', () => {
     const { state } = resolve(s);
     expect(byUid(state, a.uid)).toBeUndefined();
     expect(byUid(state, b.uid)).toBeUndefined();
-    expect(state.players[1].hp).toBe(98);
+    expect(state.players[1].hp).toBe(99);
   });
 
   it('a Guard in the back row is still hit first', () => {

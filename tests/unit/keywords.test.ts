@@ -23,7 +23,7 @@ describe('keywords', () => {
 
   it('Barrier: prevents the next damage, then is removed', () => {
     let s = board();
-    place(s, 0, 0, 'ember-magma-brute'); // 6 power
+    place(s, 0, 0, 'ember-magma-brute'); // 5 power
     const paladin = place(s, 1, 0, 'bastion-paladin'); // 3/3 Barrier
     paladin.basePower = 0; // so the brute survives to attack again
     s = resolve(s).state;
@@ -31,7 +31,7 @@ describe('keywords', () => {
     expect(after.damage).toBe(0);
     expect(after.barrier).toBe(false);
     // Barrier soaks the paladin's share; the rest overflows to the hero.
-    expect(s.players[1].hp).toBe(97);
+    expect(s.players[1].hp).toBe(98);
     s = resolve(s).state;
     expect(byUid(s, paladin.uid)).toBeUndefined();
   });
@@ -85,10 +85,10 @@ describe('keywords', () => {
   it('Lifesteal: when the lane deals hero damage, heal by this unit’s Power', () => {
     let s = board();
     s.players[0].hp = 90;
-    place(s, 0, 0, 'ember-magma-brute', { keywords: ['lifesteal'] }); // 6 power
+    place(s, 0, 0, 'ember-magma-brute', { keywords: ['lifesteal'] }); // 5 power
     s = resolve(s).state;
-    expect(s.players[1].hp).toBe(94);
-    expect(s.players[0].hp).toBe(96);
+    expect(s.players[1].hp).toBe(95);
+    expect(s.players[0].hp).toBe(95);
 
     let t = board();
     t.players[0].hp = 90;

@@ -1,6 +1,6 @@
 // Board queries and derived unit stats. Pure reads over GameState.
 import { getCard, getLaneEffect } from './content';
-import type { LaneEffectDef, UnitSelector } from './schema';
+import { LaneEffectSchema, type Keyword, type LaneEffectDef, type UnitSelector } from './schema';
 import {
   LANES,
   other,
@@ -17,17 +17,7 @@ export interface UnitLocation {
   slot: number;
 }
 
-const NO_EFFECT: LaneEffectDef = {
-  id: 'lane-hidden',
-  name: 'Hidden',
-  text: '',
-  powerBonus: 0,
-  healthBonus: 0,
-  overflowMultiplier: 1,
-  maxUnits: SLOTS_PER_SIDE,
-  heroDamage: true,
-  endOfRound: [],
-};
+const NO_EFFECT: LaneEffectDef = LaneEffectSchema.parse({ id: 'lane-hidden', name: 'Hidden', text: '-' });
 
 /** The lane's effect if revealed, otherwise a neutral effect. */
 export function activeLaneEffect(s: GameState, lane: LaneIndex): LaneEffectDef {
@@ -166,4 +156,9 @@ export function lanePower(s: GameState, lane: LaneIndex, player: PlayerId): numb
 
 export function hasKeyword(unit: Unit, k: Unit['keywords'][number]): boolean {
   return unit.keywords.includes(k);
+}
+
+/** The unit's keywords, or the lane's keyword effect (Guard, Pierce, Lifesteal) for units fighting there. */
+export function hasKeywordHere(s: GameState, loc: UnitLocation, k: Keyword): boolean {
+  return hasKeyword(loc.unit, k) || (activeLaneEffect(s, loc.lane).keywords as Keyword[]).includes(k);
 }
