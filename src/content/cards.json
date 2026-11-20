@@ -2355,7 +2355,7 @@
     "faction": "grove",
     "type": "unit",
     "cost": 8,
-    "power": 8,
+    "power": 7,
     "health": 6,
     "keywords": [],
     "effects": [],
