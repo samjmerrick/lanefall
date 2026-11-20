@@ -1,155 +1,920 @@
 [
-{"id":"ember-spark-imp","subject":"a tiny grinning imp made of sparks","composition":"head-and-shoulders, centered, fills 70% of frame","motif":"flames flickering from its head"},
-{"id":"ember-cinder-scout","subject":"a lean scout lunging with a cinder-tipped spear","composition":"three-quarter body, facing right, fills 75% of frame","motif":"ember sparks trailing behind"},
-{"id":"ember-flame-dancer","subject":"a dancer wreathed in swirling flames","composition":"full-body, mid-leap, centered, fills 75% of frame","motif":"flames curling from raised arms"},
-{"id":"ember-ash-raider","subject":"a hooded raider swinging a crude axe","composition":"head-and-shoulders, facing left, fills 80% of frame","motif":"molten cracks across the axe blade"},
-{"id":"ember-ember-hound","subject":"a snarling hound with flaming fur","composition":"full-body, facing right, fills 80% of frame","motif":"curved horns on its head"},
-{"id":"ember-torchbearer","subject":"a soldier holding a blazing torch aloft","composition":"head-and-shoulders, torch raised, fills 80% of frame","motif":"flames burning from the torch head"},
-{"id":"ember-blaze-runner","subject":"a runner with blazing trails for legs","composition":"full-body, mid-stride, facing right, fills 85% of frame","motif":"embers streaming from its heels"},
-{"id":"ember-pyre-zealot","subject":"a robed zealot holding a burning censer","composition":"head-and-shoulders, facing forward, fills 85% of frame","motif":"flames rising from the censer"},
-{"id":"ember-skyfire-archer","subject":"an archer drawing a flaming arrow skyward","composition":"half-body, three-quarter view, fills 85% of frame","motif":"fire trailing from the arrow"},
-{"id":"ember-magma-brute","subject":"a hulking brute of cracked molten rock","composition":"full-body, centered, fills 90% of frame","motif":"glowing magma cracks across its chest"},
-{"id":"ember-war-drummer","subject":"a drummer beating a large fiery war drum","composition":"half-body, facing forward, fills 85% of frame","motif":"horns and embers around the drum"},
-{"id":"ember-inferno-titan","subject":"a towering titan of roaring fire","composition":"full-body, low angle, fills 95% of frame","motif":"volcanic horns crowning its head"},
-{"id":"ember-phoenix","subject":"a phoenix with wings spread wide in flame","composition":"full-body, wings spread, fills 95% of frame","motif":"flame feathers and an ember tail"},
-{"id":"ember-volcano-lord","subject":"a lord whose body is an erupting volcano","composition":"full-body, low angle, fills 95% of frame","motif":"lava rivers and a molten crown"},
-{"id":"ember-cinder-bolt","subject":"a bolt of cinders streaking diagonally","composition":"single object, diagonal, fills 80% of frame","motif":"embers trailing a flaming bolt"},
-{"id":"ember-kindle","subject":"a small flame bursting up from a spark","composition":"single object, centered, fills 70% of frame","motif":"a flicker of embers around the flame"},
-{"id":"ember-fireball","subject":"a fireball streaking diagonally","composition":"single object, diagonal, fills 85% of frame","motif":"flame tail and ember sparks"},
-{"id":"ember-reckless-charge","subject":"a flaming warhorn blasting outward","composition":"single object, diagonal, fills 80% of frame","motif":"horn-shaped flames and embers"},
-{"id":"ember-flame-wave","subject":"a rolling wall of flame","composition":"horizontal wave, fills full width, centered","motif":"molten cracks in the crest of the wave"},
-{"id":"ember-meteor","subject":"a flaming meteor falling diagonally","composition":"single object, diagonal, fills 85% of frame","motif":"fire trail and molten cracks on the rock"},
-{"id":"bastion-recruit","subject":"a young soldier holding a plain spear","composition":"head-and-shoulders, facing forward, fills 70% of frame","motif":"a small banner on the spear"},
-{"id":"bastion-shieldbearer","subject":"a soldier raising a large round shield","composition":"head-and-shoulders behind shield, fills 80% of frame","motif":"a crenellated tower emblem on the shield"},
-{"id":"bastion-squire","subject":"a squire holding a rallying banner aloft","composition":"head-and-shoulders, facing right, fills 70% of frame","motif":"a pennant flying from a lance"},
-{"id":"bastion-militia","subject":"a helmeted militia soldier with a pike","composition":"head-and-shoulders, facing left, fills 75% of frame","motif":"crenellated shield edge"},
-{"id":"bastion-banner-knight","subject":"a knight holding a tall banner","composition":"half-body, facing forward, fills 80% of frame","motif":"banner with a tower emblem"},
-{"id":"bastion-field-medic","subject":"a medic with a glowing healing cross","composition":"head-and-shoulders, facing forward, fills 75% of frame","motif":"a shield-shaped medical badge"},
-{"id":"bastion-wall-warden","subject":"a warden standing behind a stone wall","composition":"half-body behind wall, fills 85% of frame","motif":"crenellated stone wall top"},
-{"id":"bastion-muster-captain","subject":"a captain blowing a war horn","composition":"half-body, facing right, fills 85% of frame","motif":"a banner flying from the horn"},
-{"id":"bastion-paladin","subject":"a paladin in plate armor with a glowing sword","composition":"full-body, centered, fills 85% of frame","motif":"shield with a tower emblem"},
-{"id":"bastion-standard-bearer","subject":"a bearer lifting a tall standard banner","composition":"full-body, centered, fills 85% of frame","motif":"tall banner with a crenellated edge"},
-{"id":"bastion-shield-sergeant","subject":"a sergeant behind a large tower shield","composition":"half-body, facing forward, fills 85% of frame","motif":"crenellated top of the shield"},
-{"id":"bastion-cathedral-guard","subject":"a tall armored guard in a spire-shaped helm","composition":"full-body, low angle, fills 90% of frame","motif":"spire-shaped helm and banner"},
-{"id":"bastion-high-cleric","subject":"a robed cleric raising a radiant staff","composition":"full-body, centered, fills 85% of frame","motif":"a shield-shaped halo behind the head"},
-{"id":"bastion-lionheart","subject":"a lion-maned knight raising a sword","composition":"half-body, low angle, fills 90% of frame","motif":"lion-shaped crest and banner"},
-{"id":"bastion-grand-marshal","subject":"a grand marshal in ornate armor holding a baton","composition":"full-body, low angle, fills 95% of frame","motif":"a cape banner and crenellated crown"},
-{"id":"bastion-rally-cry","subject":"a war horn blasting sound waves","composition":"single object, centered, fills 80% of frame","motif":"banner pennants flowing from the horn"},
-{"id":"bastion-mend","subject":"a healing potion flask with a glowing cross","composition":"single object, centered, fills 75% of frame","motif":"shield-shaped label on the flask"},
-{"id":"bastion-call-to-arms","subject":"a war horn with two swords crossed behind it","composition":"single object, centered, fills 80% of frame","motif":"a banner unfurling from the horn"},
-{"id":"bastion-blessing","subject":"a sword blessed with glowing light","composition":"single object, diagonal, fills 80% of frame","motif":"a shield-shaped aura around the blade"},
-{"id":"bastion-divine-shield","subject":"a radiant shield with a halo","composition":"single object, centered, fills 80% of frame","motif":"crenellated tower emblem on the shield"},
-{"id":"bastion-levy","subject":"a small levy soldier with a wooden shield","composition":"head-and-shoulders, facing forward, fills 75% of frame","motif":"a simple banner on the shield"},
-{"id":"ember-cinder-whelp","subject":"a small fire whelp with stubby wings","composition":"head-and-shoulders, facing left, fills 70% of frame","motif":"small horns and flames on its tail"},
-{"id":"ember-ignite","subject":"a flaming match striking a spark","composition":"single object, diagonal, fills 80% of frame","motif":"a burst of embers on impact"},
-{"id":"ember-sootcaller","subject":"a hooded caller with soot billowing from its arms","composition":"head-and-shoulders, facing forward, fills 80% of frame","motif":"molten cracks across the robe"},
-{"id":"ember-scorch","subject":"a blast of fire fanning outward","composition":"single object, centered, fills 85% of frame","motif":"embers and molten cracks radiating outward"},
-{"id":"ember-lava-hound","subject":"a hound made of molten lava with horns","composition":"full-body, facing right, fills 85% of frame","motif":"lava cracks and curved horns"},
-{"id":"ember-wildfire","subject":"a wildfire burst of sparks scattering","composition":"single object, centered, fills 85% of frame","motif":"embers scattering in all directions"},
-{"id":"ember-flame-colossus","subject":"a colossus of living flame","composition":"full-body, low angle, fills 95% of frame","motif":"molten cracks across its stone body"},
-{"id":"ember-ember-witch","subject":"a witch with fiery hair holding an ember staff","composition":"head-and-shoulders, facing forward, fills 85% of frame","motif":"flame hair and a horned hat"},
-{"id":"ember-inferno","subject":"a towering column of fire erupting upward","composition":"vertical, centered, fills 90% of frame","motif":"embers and flames spiraling upward"},
-{"id":"ember-ashen-dragon","subject":"a dragon of ash and fire with spread wings","composition":"full-body, wings spread, low angle, fills 95% of frame","motif":"horns and ember-tipped wings"},
-{"id":"bastion-fortify","subject":"a sturdy shield reinforced with iron bands","composition":"single object, centered, fills 80% of frame","motif":"crenellated edge and iron bands"},
-{"id":"bastion-drill-sergeant","subject":"a stern sergeant barking orders with a baton","composition":"half-body, facing right, fills 85% of frame","motif":"a banner and crenellated shoulder plate"},
-{"id":"bastion-sanctify","subject":"a glowing chalice of holy light","composition":"single object, centered, fills 80% of frame","motif":"a shield-shaped halo around the chalice"},
-{"id":"bastion-templar","subject":"a templar knight holding a barrier shield","composition":"full-body, centered, fills 85% of frame","motif":"tower emblem on the shield"},
-{"id":"bastion-reinforcements","subject":"a tall war banner planted in the ground","composition":"single object, centered, fills 85% of frame","motif":"crenellated banner edge and stone base"},
-{"id":"bastion-war-chaplain","subject":"a chaplain holding a glowing holy book","composition":"head-and-shoulders, facing forward, fills 80% of frame","motif":"shield-shaped holy symbol on the chest"},
-{"id":"bastion-phalanx","subject":"a row of shields locked together","composition":"single object, horizontal, fills 85% of frame","motif":"crenellated shield tops"},
-{"id":"bastion-sun-knight","subject":"a knight with a radiant sun-shaped shield","composition":"full-body, centered, fills 90% of frame","motif":"sun rays and a tower banner"},
-{"id":"bastion-last-stand","subject":"a sword thrust point-first into the ground","composition":"single object, centered, fills 80% of frame","motif":"a tattered banner behind the sword"},
-{"id":"bastion-archon","subject":"a winged archon in sculpted armor","composition":"full-body, low angle, fills 95% of frame","motif":"shield-shaped wings and a crenellated crown"},
-{"id":"tide-shoal-crab","subject":"a small crab with a curled claw","composition":"front-facing, centered, fills 75% of frame","motif":"bubbles rising from its shell"},
-{"id":"tide-mist-sprite","subject":"a wispy sprite of mist and bubbles","composition":"head-and-shoulders, centered, fills 70% of frame","motif":"bubbles drifting off its form"},
-{"id":"tide-ripple","subject":"a ripple of concentric rings spreading","composition":"single object, centered, fills 85% of frame","motif":"swirls and concentric wave rings"},
-{"id":"tide-undertow","subject":"a swirling current pulling a shape inward","composition":"single object, diagonal swirl, fills 80% of frame","motif":"spiral swirl and bubbles"},
-{"id":"tide-tidecaller","subject":"a caller raising a conch shell","composition":"head-and-shoulders, facing left, fills 75% of frame","motif":"conch shell and a wave crest"},
-{"id":"tide-current-rider","subject":"a rider surfing a curling wave","composition":"half-body on a wave, fills 80% of frame","motif":"wave crest and swirls"},
-{"id":"tide-pearl-diver","subject":"a diver holding a glowing pearl","composition":"head-and-shoulders, centered, fills 75% of frame","motif":"bubbles and a shell helmet"},
-{"id":"tide-bubble-shield","subject":"a bubble-shaped shield floating","composition":"single object, centered, fills 80% of frame","motif":"bubbles clustering around the shield"},
-{"id":"tide-frost-snap","subject":"a jagged shard of ice snapping","composition":"single object, diagonal, fills 80% of frame","motif":"water droplets and swirls"},
-{"id":"tide-wave-dancer","subject":"a dancer spinning inside a wave","composition":"full-body, mid-spin, centered, fills 80% of frame","motif":"wave swirls around the dancer"},
-{"id":"tide-coral-guardian","subject":"a guardian holding a coral shield","composition":"half-body, facing forward, fills 80% of frame","motif":"shell and coral pattern on the shield"},
-{"id":"tide-storm-petrel","subject":"a petrel bird skimming a storm wave","composition":"full-body, wings spread, fills 80% of frame","motif":"wave swirls under the wings"},
-{"id":"tide-riptide","subject":"a rip current spiraling through water","composition":"single object, horizontal swirl, fills 85% of frame","motif":"spiral swirl and bubbles"},
-{"id":"tide-insight","subject":"an open shell revealing a glowing pearl","composition":"single object, centered, fills 80% of frame","motif":"shell halves and rising bubbles"},
-{"id":"tide-mirror-mage","subject":"a mage holding a shimmering mirror","composition":"head-and-shoulders, centered, fills 75% of frame","motif":"shell-shaped mirror frame"},
-{"id":"tide-sea-witch","subject":"a witch with seaweed hair holding a trident","composition":"head-and-shoulders, facing right, fills 80% of frame","motif":"swirls in her hair and bubbles"},
-{"id":"tide-tidal-knight","subject":"a knight in shell armor with a wave shield","composition":"full-body, centered, fills 85% of frame","motif":"shell-scale armor and wave shield"},
-{"id":"tide-whirlpool","subject":"a whirlpool spiraling inward","composition":"single object, centered, fills 85% of frame","motif":"concentric swirls and bubbles"},
-{"id":"tide-deep-oracle","subject":"an oracle holding a glowing orb in a shell","composition":"half-body, centered, fills 80% of frame","motif":"shell crown and bubbles"},
-{"id":"tide-high-tide","subject":"a towering wave cresting across the frame","composition":"horizontal wave, fills full width, centered","motif":"bubbles and a swirling crest"},
-{"id":"tide-reef-serpent","subject":"a serpent with coral spines coiling","composition":"full-body, S-curve, fills 85% of frame","motif":"coral fins and bubbles"},
-{"id":"tide-leviathan-spawn","subject":"a young leviathan rising from the sea","composition":"full-body, low angle, fills 90% of frame","motif":"shell plates and water spouts"},
-{"id":"tide-maelstrom","subject":"a maelstrom vortex of swirling water","composition":"single object, centered, fills 90% of frame","motif":"spiral swirls and bubbles"},
-{"id":"tide-wave-lord","subject":"a lord riding a towering wave","composition":"half-body on wave, fills 85% of frame","motif":"shell crown and wave crest"},
-{"id":"tide-tempest-mage","subject":"a mage inside a sphere of swirling water","composition":"full-body, centered, fills 85% of frame","motif":"bubble sphere and swirls"},
-{"id":"tide-kraken","subject":"a kraken with tentacles coiling around the frame","composition":"full-body, centered, fills 95% of frame","motif":"bubbles and shell-plated tentacles"},
-{"id":"tide-tsunami","subject":"a crashing tsunami wave","composition":"horizontal wave, fills full width, centered","motif":"foam crest and swirls"},
-{"id":"tide-storm-herald","subject":"a winged herald riding a wave","composition":"full-body, wings spread, fills 90% of frame","motif":"wave swirls and a shell crown"},
-{"id":"tide-abyssal-titan","subject":"a titan rising from a deep abyss","composition":"full-body, low angle, fills 95% of frame","motif":"shell-encrusted body and bubbles"},
-{"id":"tide-sea-queen","subject":"a regal sea queen wearing a shell crown","composition":"full-body, low angle, fills 95% of frame","motif":"shell crown and flowing waves"},
-{"id":"grove-seedling","subject":"a sprouting seedling with two leaves","composition":"single plant, centered, fills 75% of frame","motif":"leaves and tiny roots"},
-{"id":"grove-bramble-sprite","subject":"a tiny sprite made of thorny bramble","composition":"head-and-shoulders, centered, fills 70% of frame","motif":"vines curling around the sprite"},
-{"id":"grove-wild-growth","subject":"a vine sprouting upward from soil","composition":"single object, vertical, fills 85% of frame","motif":"leaves and roots"},
-{"id":"grove-sap","subject":"a drop of glowing sap on a leaf","composition":"single object, centered, fills 75% of frame","motif":"leaf veins and a sap drip"},
-{"id":"grove-mossback","subject":"a moss-covered turtle-like beast","composition":"full-body, facing right, fills 75% of frame","motif":"moss and root patterns on its shell"},
-{"id":"grove-druid-initiate","subject":"a young druid holding a leafy staff","composition":"head-and-shoulders, centered, fills 75% of frame","motif":"leafy staff and an antler circlet"},
-{"id":"grove-young-treant","subject":"a young treant with sprouting branches","composition":"full-body, centered, fills 80% of frame","motif":"leaf canopy and root feet"},
-{"id":"grove-rejuvenate","subject":"a leafy sprig glowing with new growth","composition":"single object, centered, fills 80% of frame","motif":"leaves and sprouting buds"},
-{"id":"grove-entangle","subject":"a thick vine coiling around a shape","composition":"single object, diagonal, fills 80% of frame","motif":"thorny vine loops"},
-{"id":"grove-thorn-lasher","subject":"a plant creature lashing with thorned vines","composition":"head-and-shoulders, centered, fills 75% of frame","motif":"thorns and curling vines"},
-{"id":"grove-ironbark","subject":"a beast armored in bark plates","composition":"half-body, facing forward, fills 85% of frame","motif":"bark ridges and root feet"},
-{"id":"grove-wolf-pack","subject":"a lean grey wolf mid-howl","composition":"full-body, facing left, fills 80% of frame","motif":"leaves and vines around its legs"},
-{"id":"grove-overgrowth","subject":"a sprawling mass of thick vines","composition":"single object, horizontal, fills 85% of frame","motif":"leaves and roots spreading"},
-{"id":"grove-grove-tender","subject":"a tender holding a sprouting bough","composition":"half-body, centered, fills 80% of frame","motif":"leaves and antlers on the head"},
-{"id":"grove-call-saplings","subject":"sapling shoots bursting from soil","composition":"single object, centered, fills 80% of frame","motif":"leaves and roots"},
-{"id":"grove-bloom","subject":"a flower in full bloom","composition":"single object, centered, fills 80% of frame","motif":"petals and leaves"},
-{"id":"grove-elder-stag","subject":"an elder stag with a massive antler crown","composition":"full-body, facing left, fills 85% of frame","motif":"branching antlers and leaves"},
-{"id":"grove-briar-guardian","subject":"a guardian of thick briar and thorns","composition":"full-body, centered, fills 85% of frame","motif":"thorned vines and leaves"},
-{"id":"grove-giant-growth","subject":"a giant leafy stalk bursting upward","composition":"vertical, centered, fills 90% of frame","motif":"leaves and root tendrils"},
-{"id":"grove-rootweaver","subject":"a weaver of roots holding a root staff","composition":"half-body, centered, fills 80% of frame","motif":"roots and vines weaving together"},
-{"id":"grove-thornwall","subject":"a wall of thorny vines","composition":"horizontal wall, fills 85% of frame, centered","motif":"thorns and leaf clusters"},
-{"id":"grove-ancient-oak","subject":"an ancient oak with a gnarled trunk","composition":"full-body, low angle, fills 95% of frame","motif":"roots and antler-like branches"},
-{"id":"grove-stampede","subject":"a stag charging diagonally","composition":"single object, diagonal, fills 85% of frame","motif":"leaves trailing behind"},
-{"id":"grove-bear-matriarch","subject":"a bear matriarch with leafy fur","composition":"full-body, facing forward, fills 90% of frame","motif":"antler crown and leaves"},
-{"id":"grove-moonwell-druid","subject":"a druid holding a glowing well-orb","composition":"half-body, centered, fills 85% of frame","motif":"leaves wreathing the orb"},
-{"id":"grove-forest-titan","subject":"a titan made of trees and vines","composition":"full-body, low angle, fills 95% of frame","motif":"branches and roots forming the body"},
-{"id":"grove-worldroot","subject":"a massive root rising from the soil","composition":"vertical, centered, fills 90% of frame","motif":"roots and a leafy canopy"},
-{"id":"grove-natures-wrath","subject":"a thorned vine lashing down diagonally","composition":"single object, diagonal, fills 85% of frame","motif":"thorns and leaves"},
-{"id":"grove-moss-colossus","subject":"a colossus of moss and stone","composition":"full-body, low angle, fills 95% of frame","motif":"moss and vines over stone"},
-{"id":"grove-world-tree","subject":"a great world tree with spreading branches","composition":"full-body, low angle, fills 95% of frame","motif":"branches like antlers and roots"},
-{"id":"grove-sapling","subject":"a small sapling with two leaves","composition":"single plant, centered, fills 75% of frame","motif":"leaves and tiny roots"},
-{"id":"dusk-grave-rat","subject":"a skeletal rat with glowing eyes","composition":"head-and-shoulders, facing left, fills 70% of frame","motif":"smoke wisps and glowing eyes"},
-{"id":"dusk-cultist","subject":"a hooded cultist holding a candle","composition":"head-and-shoulders, facing forward, fills 75% of frame","motif":"crescent moon on the hood"},
-{"id":"dusk-hex","subject":"a glowing eye sigil hurled forward","composition":"single object, centered, fills 80% of frame","motif":"an eye and smoke wisps"},
-{"id":"dusk-dark-pact","subject":"a black quill signing a scroll","composition":"single object, centered, fills 80% of frame","motif":"a skull seal on the scroll"},
-{"id":"dusk-bloodleech","subject":"a bloated leech with crescent-shaped jaws","composition":"full-body, centered, fills 75% of frame","motif":"skull markings on its back"},
-{"id":"dusk-bone-walker","subject":"a skeletal walker holding a bone staff","composition":"full-body, centered, fills 80% of frame","motif":"a skull on the staff tip"},
-{"id":"dusk-night-stalker","subject":"a shadowy stalker with glowing eyes","composition":"head-and-shoulders, centered, fills 75% of frame","motif":"crescent moon and smoke"},
-{"id":"dusk-drain-life","subject":"a skull-shaped vial siphoning life","composition":"single object, centered, fills 80% of frame","motif":"smoke wisps and a skull"},
-{"id":"dusk-siphon","subject":"a dark siphon tube drawing a glowing orb","composition":"single object, diagonal, fills 80% of frame","motif":"smoke swirls and a crescent moon"},
-{"id":"dusk-plague-rat","subject":"a plague rat with a skull collar","composition":"full-body, centered, fills 75% of frame","motif":"skull collar and smoke"},
-{"id":"dusk-ghoul","subject":"a hunched ghoul with clawed hands","composition":"half-body, facing forward, fills 80% of frame","motif":"glowing eyes and smoke"},
-{"id":"dusk-vampire-thrall","subject":"a pale thrall with a fanged mouth","composition":"head-and-shoulders, centered, fills 80% of frame","motif":"crescent moon cape"},
-{"id":"dusk-soul-reaper","subject":"a reaper with a scythe trailing smoke","composition":"half-body, facing left, fills 85% of frame","motif":"skull on the scythe and smoke"},
-{"id":"dusk-shadow-bolt","subject":"a dark bolt streaking diagonally","composition":"single object, diagonal, fills 80% of frame","motif":"smoke trail and an eye"},
-{"id":"dusk-grave-call","subject":"a gravestone bursting open in smoke","composition":"single object, centered, fills 85% of frame","motif":"smoke and a skull on the stone"},
-{"id":"dusk-corpse-eater","subject":"a corpse-eater creature with a gaping jaw","composition":"half-body, centered, fills 80% of frame","motif":"skull teeth and smoke"},
-{"id":"dusk-death-knight","subject":"a death knight in black armor with a skull helm","composition":"full-body, centered, fills 85% of frame","motif":"skull helm and smoke"},
-{"id":"dusk-wraith","subject":"a hooded wraith trailing smoke","composition":"full-body, centered, lower body fades, fills 85% of frame","motif":"smoke trails and glowing eyes"},
-{"id":"dusk-doom","subject":"a skull inside a dark rune circle","composition":"single object, centered, fills 80% of frame","motif":"skull and a crescent moon"},
-{"id":"dusk-crypt-guard","subject":"a crypt guard in stone armor with a skull shield","composition":"full-body, centered, fills 85% of frame","motif":"skull shield and smoke"},
-{"id":"dusk-blood-ritual","subject":"a blood-filled chalice with smoke rising","composition":"single object, centered, fills 80% of frame","motif":"a skull etched on the chalice"},
-{"id":"dusk-lich","subject":"a lich in tattered robes holding a skull staff","composition":"full-body, centered, fills 90% of frame","motif":"crescent moon crown and smoke"},
-{"id":"dusk-abomination","subject":"a stitched abomination of corpses","composition":"full-body, low angle, fills 90% of frame","motif":"skulls embedded in its flesh"},
-{"id":"dusk-plague","subject":"a cloud of noxious smoke spreading","composition":"horizontal cloud, fills full width, centered","motif":"skulls within the smoke"},
-{"id":"dusk-vampire-lord","subject":"a vampire lord with a high collar and cape","composition":"head-and-shoulders, facing forward, fills 85% of frame","motif":"crescent moon behind his head"},
-{"id":"dusk-bone-dragon","subject":"a dragon skeleton with spread bone wings","composition":"full-body, wings spread, low angle, fills 95% of frame","motif":"skull head and smoke"},
-{"id":"dusk-soul-harvest","subject":"a scythe arc sweeping soul wisps","composition":"single object, diagonal arc, fills 85% of frame","motif":"eyes and smoke wisps"},
-{"id":"dusk-shadow-fiend","subject":"a shadow fiend with a horned silhouette","composition":"full-body, centered, fills 90% of frame","motif":"crescent horns and smoke"},
-{"id":"dusk-death-lord","subject":"a death lord seated on a throne of bone","composition":"full-body, low angle, fills 95% of frame","motif":"skull crown and a crescent moon"},
-{"id":"dusk-night-queen","subject":"a night queen with a flowing veil of smoke","composition":"full-body, low angle, fills 95% of frame","motif":"crescent crown and eyes in the veil"},
-{"id":"dusk-shade","subject":"a faint shadow figure with glowing eyes","composition":"head-and-shoulders, centered, fills 70% of frame","motif":"smoke wisps and a crescent moon"}
+  {
+    "id": "ember-spark-imp",
+    "subject": "a tiny grinning imp made of sparks",
+    "composition": "head-and-shoulders, centered, fills 70% of frame",
+    "motif": "flames flickering from its head"
+  },
+  {
+    "id": "ember-cinder-scout",
+    "subject": "a lean scout lunging with a cinder-tipped spear",
+    "composition": "three-quarter body, facing right, fills 75% of frame",
+    "motif": "ember sparks trailing behind"
+  },
+  {
+    "id": "ember-flame-dancer",
+    "subject": "a dancer wreathed in swirling flames",
+    "composition": "full-body, mid-leap, centered, fills 75% of frame",
+    "motif": "flames curling from raised arms"
+  },
+  {
+    "id": "ember-ash-raider",
+    "subject": "a hooded raider swinging a crude axe",
+    "composition": "head-and-shoulders, facing left, fills 80% of frame",
+    "motif": "molten cracks across the axe blade"
+  },
+  {
+    "id": "ember-ember-hound",
+    "subject": "a snarling hound with flaming fur",
+    "composition": "full-body, facing right, fills 80% of frame",
+    "motif": "curved horns on its head"
+  },
+  {
+    "id": "ember-torchbearer",
+    "subject": "a soldier holding a blazing torch aloft",
+    "composition": "head-and-shoulders, torch raised, fills 80% of frame",
+    "motif": "flames burning from the torch head"
+  },
+  {
+    "id": "ember-blaze-runner",
+    "subject": "a runner with blazing trails for legs",
+    "composition": "full-body, mid-stride, facing right, fills 85% of frame",
+    "motif": "embers streaming from its heels"
+  },
+  {
+    "id": "ember-pyre-zealot",
+    "subject": "a robed zealot holding a burning censer",
+    "composition": "head-and-shoulders, facing forward, fills 85% of frame",
+    "motif": "flames rising from the censer"
+  },
+  {
+    "id": "ember-skyfire-archer",
+    "subject": "an archer drawing a flaming arrow skyward",
+    "composition": "half-body, three-quarter view, fills 85% of frame",
+    "motif": "fire trailing from the arrow"
+  },
+  {
+    "id": "ember-magma-brute",
+    "subject": "a hulking brute of cracked molten rock",
+    "composition": "full-body, centered, fills 90% of frame",
+    "motif": "glowing magma cracks across its chest"
+  },
+  {
+    "id": "ember-war-drummer",
+    "subject": "a drummer beating a large fiery war drum",
+    "composition": "half-body, facing forward, fills 85% of frame",
+    "motif": "horns and embers around the drum"
+  },
+  {
+    "id": "ember-inferno-titan",
+    "subject": "a towering titan of roaring fire",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "volcanic horns crowning its head"
+  },
+  {
+    "id": "ember-phoenix",
+    "subject": "a phoenix with wings spread wide in flame",
+    "composition": "full-body, wings spread, fills 95% of frame",
+    "motif": "flame feathers and an ember tail"
+  },
+  {
+    "id": "ember-volcano-lord",
+    "subject": "a lord whose body is an erupting volcano",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "lava rivers and a molten crown"
+  },
+  {
+    "id": "ember-cinder-bolt",
+    "subject": "a bolt of cinders streaking diagonally",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "embers trailing a flaming bolt"
+  },
+  {
+    "id": "ember-kindle",
+    "subject": "a small flame bursting up from a spark",
+    "composition": "single object, centered, fills 70% of frame",
+    "motif": "a flicker of embers around the flame"
+  },
+  {
+    "id": "ember-fireball",
+    "subject": "a fireball streaking diagonally",
+    "composition": "single object, diagonal, fills 85% of frame",
+    "motif": "flame tail and ember sparks"
+  },
+  {
+    "id": "ember-reckless-charge",
+    "subject": "a flaming warhorn blasting outward",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "horn-shaped flames and embers"
+  },
+  {
+    "id": "ember-flame-wave",
+    "subject": "a rolling wall of flame",
+    "composition": "horizontal wave, fills full width, centered",
+    "motif": "molten cracks in the crest of the wave"
+  },
+  {
+    "id": "ember-meteor",
+    "subject": "a flaming meteor falling diagonally",
+    "composition": "single object, diagonal, fills 85% of frame",
+    "motif": "fire trail and molten cracks on the rock"
+  },
+  {
+    "id": "bastion-recruit",
+    "subject": "a young soldier holding a plain spear",
+    "composition": "head-and-shoulders, facing forward, fills 70% of frame",
+    "motif": "a small banner on the spear"
+  },
+  {
+    "id": "bastion-shieldbearer",
+    "subject": "a soldier raising a large round shield",
+    "composition": "head-and-shoulders behind shield, fills 80% of frame",
+    "motif": "a crenellated tower emblem on the shield"
+  },
+  {
+    "id": "bastion-squire",
+    "subject": "a squire holding a rallying banner aloft",
+    "composition": "head-and-shoulders, facing right, fills 70% of frame",
+    "motif": "a pennant flying from a lance"
+  },
+  {
+    "id": "bastion-militia",
+    "subject": "a helmeted militia soldier with a pike",
+    "composition": "head-and-shoulders, facing left, fills 75% of frame",
+    "motif": "crenellated shield edge"
+  },
+  {
+    "id": "bastion-banner-knight",
+    "subject": "a knight holding a tall banner",
+    "composition": "half-body, facing forward, fills 80% of frame",
+    "motif": "banner with a tower emblem"
+  },
+  {
+    "id": "bastion-field-medic",
+    "subject": "a medic with a glowing healing cross",
+    "composition": "head-and-shoulders, facing forward, fills 75% of frame",
+    "motif": "a shield-shaped medical badge"
+  },
+  {
+    "id": "bastion-wall-warden",
+    "subject": "a warden standing behind a stone wall",
+    "composition": "half-body behind wall, fills 85% of frame",
+    "motif": "crenellated stone wall top"
+  },
+  {
+    "id": "bastion-muster-captain",
+    "subject": "a captain blowing a war horn",
+    "composition": "half-body, facing right, fills 85% of frame",
+    "motif": "a banner flying from the horn"
+  },
+  {
+    "id": "bastion-paladin",
+    "subject": "a paladin in plate armor with a glowing sword",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "shield with a tower emblem"
+  },
+  {
+    "id": "bastion-standard-bearer",
+    "subject": "a bearer lifting a tall standard banner",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "tall banner with a crenellated edge"
+  },
+  {
+    "id": "bastion-shield-sergeant",
+    "subject": "a sergeant behind a large tower shield",
+    "composition": "half-body, facing forward, fills 85% of frame",
+    "motif": "crenellated top of the shield"
+  },
+  {
+    "id": "bastion-cathedral-guard",
+    "subject": "a tall armored guard in a spire-shaped helm",
+    "composition": "full-body, low angle, fills 90% of frame",
+    "motif": "spire-shaped helm and banner"
+  },
+  {
+    "id": "bastion-high-cleric",
+    "subject": "a robed cleric raising a radiant staff",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "a shield-shaped halo behind the head"
+  },
+  {
+    "id": "bastion-lionheart",
+    "subject": "a lion-maned knight raising a sword",
+    "composition": "half-body, low angle, fills 90% of frame",
+    "motif": "lion-shaped crest and banner"
+  },
+  {
+    "id": "bastion-grand-marshal",
+    "subject": "a grand marshal in ornate armor holding a baton",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "a cape banner and crenellated crown"
+  },
+  {
+    "id": "bastion-rally-cry",
+    "subject": "a war horn blasting sound waves",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "banner pennants flowing from the horn"
+  },
+  {
+    "id": "bastion-mend",
+    "subject": "a healing potion flask with a glowing cross",
+    "composition": "single object, centered, fills 75% of frame",
+    "motif": "shield-shaped label on the flask"
+  },
+  {
+    "id": "bastion-call-to-arms",
+    "subject": "a war horn with two swords crossed behind it",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "a banner unfurling from the horn"
+  },
+  {
+    "id": "bastion-blessing",
+    "subject": "a sword blessed with glowing light",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "a shield-shaped aura around the blade"
+  },
+  {
+    "id": "bastion-divine-shield",
+    "subject": "a radiant shield with a halo",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "crenellated tower emblem on the shield"
+  },
+  {
+    "id": "bastion-levy",
+    "subject": "a small levy soldier with a wooden shield",
+    "composition": "head-and-shoulders, facing forward, fills 75% of frame",
+    "motif": "a simple banner on the shield"
+  },
+  {
+    "id": "ember-cinder-whelp",
+    "subject": "a small fire whelp with stubby wings",
+    "composition": "head-and-shoulders, facing left, fills 70% of frame",
+    "motif": "small horns and flames on its tail"
+  },
+  {
+    "id": "ember-ignite",
+    "subject": "a flaming match striking a spark",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "a burst of embers on impact"
+  },
+  {
+    "id": "ember-sootcaller",
+    "subject": "a hooded caller with soot billowing from its arms",
+    "composition": "head-and-shoulders, facing forward, fills 80% of frame",
+    "motif": "molten cracks across the robe"
+  },
+  {
+    "id": "ember-scorch",
+    "subject": "a blast of fire fanning outward",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "embers and molten cracks radiating outward"
+  },
+  {
+    "id": "ember-lava-hound",
+    "subject": "a hound made of molten lava with horns",
+    "composition": "full-body, facing right, fills 85% of frame",
+    "motif": "lava cracks and curved horns"
+  },
+  {
+    "id": "ember-wildfire",
+    "subject": "a wildfire burst of sparks scattering",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "embers scattering in all directions"
+  },
+  {
+    "id": "ember-flame-colossus",
+    "subject": "a colossus of living flame",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "molten cracks across its stone body"
+  },
+  {
+    "id": "ember-ember-witch",
+    "subject": "a witch with fiery hair holding an ember staff",
+    "composition": "head-and-shoulders, facing forward, fills 85% of frame",
+    "motif": "flame hair and a horned hat"
+  },
+  {
+    "id": "ember-inferno",
+    "subject": "a towering column of fire erupting upward",
+    "composition": "vertical, centered, fills 90% of frame",
+    "motif": "embers and flames spiraling upward"
+  },
+  {
+    "id": "ember-ashen-dragon",
+    "subject": "a dragon of ash and fire with spread wings",
+    "composition": "full-body, wings spread, low angle, fills 95% of frame",
+    "motif": "horns and ember-tipped wings"
+  },
+  {
+    "id": "bastion-fortify",
+    "subject": "a sturdy shield reinforced with iron bands",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "crenellated edge and iron bands"
+  },
+  {
+    "id": "bastion-drill-sergeant",
+    "subject": "a stern sergeant barking orders with a baton",
+    "composition": "half-body, facing right, fills 85% of frame",
+    "motif": "a banner and crenellated shoulder plate"
+  },
+  {
+    "id": "bastion-sanctify",
+    "subject": "a glowing chalice of holy light",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "a shield-shaped halo around the chalice"
+  },
+  {
+    "id": "bastion-templar",
+    "subject": "a templar knight holding a barrier shield",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "tower emblem on the shield"
+  },
+  {
+    "id": "bastion-reinforcements",
+    "subject": "a tall war banner planted in the ground",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "crenellated banner edge and stone base"
+  },
+  {
+    "id": "bastion-war-chaplain",
+    "subject": "a chaplain holding a glowing holy book",
+    "composition": "head-and-shoulders, facing forward, fills 80% of frame",
+    "motif": "shield-shaped holy symbol on the chest"
+  },
+  {
+    "id": "bastion-phalanx",
+    "subject": "a row of shields locked together",
+    "composition": "single object, horizontal, fills 85% of frame",
+    "motif": "crenellated shield tops"
+  },
+  {
+    "id": "bastion-sun-knight",
+    "subject": "a knight with a radiant sun-shaped shield",
+    "composition": "full-body, centered, fills 90% of frame",
+    "motif": "sun rays and a tower banner"
+  },
+  {
+    "id": "bastion-last-stand",
+    "subject": "a sword thrust point-first into the ground",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "a tattered banner behind the sword"
+  },
+  {
+    "id": "bastion-archon",
+    "subject": "a winged archon in sculpted armor",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "shield-shaped wings and a crenellated crown"
+  },
+  {
+    "id": "tide-shoal-crab",
+    "subject": "a small crab with a curled claw",
+    "composition": "front-facing, centered, fills 75% of frame",
+    "motif": "bubbles rising from its shell"
+  },
+  {
+    "id": "tide-mist-sprite",
+    "subject": "a wispy sprite of mist and bubbles",
+    "composition": "head-and-shoulders, centered, fills 70% of frame",
+    "motif": "bubbles drifting off its form"
+  },
+  {
+    "id": "tide-ripple",
+    "subject": "a ripple of concentric rings spreading",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "swirls and concentric wave rings"
+  },
+  {
+    "id": "tide-undertow",
+    "subject": "a swirling current pulling a shape inward",
+    "composition": "single object, diagonal swirl, fills 80% of frame",
+    "motif": "spiral swirl and bubbles"
+  },
+  {
+    "id": "tide-tidecaller",
+    "subject": "a caller raising a conch shell",
+    "composition": "head-and-shoulders, facing left, fills 75% of frame",
+    "motif": "conch shell and a wave crest"
+  },
+  {
+    "id": "tide-current-rider",
+    "subject": "a rider surfing a curling wave",
+    "composition": "half-body on a wave, fills 80% of frame",
+    "motif": "wave crest and swirls"
+  },
+  {
+    "id": "tide-pearl-diver",
+    "subject": "a diver holding a glowing pearl",
+    "composition": "head-and-shoulders, centered, fills 75% of frame",
+    "motif": "bubbles and a shell helmet"
+  },
+  {
+    "id": "tide-bubble-shield",
+    "subject": "a bubble-shaped shield floating",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "bubbles clustering around the shield"
+  },
+  {
+    "id": "tide-frost-snap",
+    "subject": "a jagged shard of ice snapping",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "water droplets and swirls"
+  },
+  {
+    "id": "tide-wave-dancer",
+    "subject": "a dancer spinning inside a wave",
+    "composition": "full-body, mid-spin, centered, fills 80% of frame",
+    "motif": "wave swirls around the dancer"
+  },
+  {
+    "id": "tide-coral-guardian",
+    "subject": "a guardian holding a coral shield",
+    "composition": "half-body, facing forward, fills 80% of frame",
+    "motif": "shell and coral pattern on the shield"
+  },
+  {
+    "id": "tide-storm-petrel",
+    "subject": "a petrel bird skimming a storm wave",
+    "composition": "full-body, wings spread, fills 80% of frame",
+    "motif": "wave swirls under the wings"
+  },
+  {
+    "id": "tide-riptide",
+    "subject": "a rip current spiraling through water",
+    "composition": "single object, horizontal swirl, fills 85% of frame",
+    "motif": "spiral swirl and bubbles"
+  },
+  {
+    "id": "tide-insight",
+    "subject": "an open shell revealing a glowing pearl",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "shell halves and rising bubbles"
+  },
+  {
+    "id": "tide-mirror-mage",
+    "subject": "a mage holding a shimmering mirror",
+    "composition": "head-and-shoulders, centered, fills 75% of frame",
+    "motif": "shell-shaped mirror frame"
+  },
+  {
+    "id": "tide-sea-witch",
+    "subject": "a witch with seaweed hair holding a trident",
+    "composition": "head-and-shoulders, facing right, fills 80% of frame",
+    "motif": "swirls in her hair and bubbles"
+  },
+  {
+    "id": "tide-tidal-knight",
+    "subject": "a knight in shell armor with a wave shield",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "shell-scale armor and wave shield"
+  },
+  {
+    "id": "tide-whirlpool",
+    "subject": "a whirlpool spiraling inward",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "concentric swirls and bubbles"
+  },
+  {
+    "id": "tide-deep-oracle",
+    "subject": "an oracle holding a glowing orb in a shell",
+    "composition": "half-body, centered, fills 80% of frame",
+    "motif": "shell crown and bubbles"
+  },
+  {
+    "id": "tide-high-tide",
+    "subject": "a towering wave cresting across the frame",
+    "composition": "horizontal wave, fills full width, centered",
+    "motif": "bubbles and a swirling crest"
+  },
+  {
+    "id": "tide-reef-serpent",
+    "subject": "a serpent with coral spines coiling",
+    "composition": "full-body, S-curve, fills 85% of frame",
+    "motif": "coral fins and bubbles"
+  },
+  {
+    "id": "tide-leviathan-spawn",
+    "subject": "a young leviathan rising from the sea",
+    "composition": "full-body, low angle, fills 90% of frame",
+    "motif": "shell plates and water spouts"
+  },
+  {
+    "id": "tide-maelstrom",
+    "subject": "a maelstrom vortex of swirling water",
+    "composition": "single object, centered, fills 90% of frame",
+    "motif": "spiral swirls and bubbles"
+  },
+  {
+    "id": "tide-wave-lord",
+    "subject": "a lord riding a towering wave",
+    "composition": "half-body on wave, fills 85% of frame",
+    "motif": "shell crown and wave crest"
+  },
+  {
+    "id": "tide-tempest-mage",
+    "subject": "a mage inside a sphere of swirling water",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "bubble sphere and swirls"
+  },
+  {
+    "id": "tide-kraken",
+    "subject": "a kraken with tentacles coiling around the frame",
+    "composition": "full-body, centered, fills 95% of frame",
+    "motif": "bubbles and shell-plated tentacles"
+  },
+  {
+    "id": "tide-tsunami",
+    "subject": "a crashing tsunami wave",
+    "composition": "horizontal wave, fills full width, centered",
+    "motif": "foam crest and swirls"
+  },
+  {
+    "id": "tide-storm-herald",
+    "subject": "a winged herald riding a wave",
+    "composition": "full-body, wings spread, fills 90% of frame",
+    "motif": "wave swirls and a shell crown"
+  },
+  {
+    "id": "tide-abyssal-titan",
+    "subject": "a titan rising from a deep abyss",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "shell-encrusted body and bubbles"
+  },
+  {
+    "id": "tide-sea-queen",
+    "subject": "a regal sea queen wearing a shell crown",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "shell crown and flowing waves"
+  },
+  {
+    "id": "grove-seedling",
+    "subject": "a sprouting seedling with two leaves",
+    "composition": "single plant, centered, fills 75% of frame",
+    "motif": "leaves and tiny roots"
+  },
+  {
+    "id": "grove-bramble-sprite",
+    "subject": "a tiny sprite made of thorny bramble",
+    "composition": "head-and-shoulders, centered, fills 70% of frame",
+    "motif": "vines curling around the sprite"
+  },
+  {
+    "id": "grove-wild-growth",
+    "subject": "a vine sprouting upward from soil",
+    "composition": "single object, vertical, fills 85% of frame",
+    "motif": "leaves and roots"
+  },
+  {
+    "id": "grove-sap",
+    "subject": "a drop of glowing sap on a leaf",
+    "composition": "single object, centered, fills 75% of frame",
+    "motif": "leaf veins and a sap drip"
+  },
+  {
+    "id": "grove-mossback",
+    "subject": "a moss-covered turtle-like beast",
+    "composition": "full-body, facing right, fills 75% of frame",
+    "motif": "moss and root patterns on its shell"
+  },
+  {
+    "id": "grove-druid-initiate",
+    "subject": "a young druid holding a leafy staff",
+    "composition": "head-and-shoulders, centered, fills 75% of frame",
+    "motif": "leafy staff and an antler circlet"
+  },
+  {
+    "id": "grove-young-treant",
+    "subject": "a young treant with sprouting branches",
+    "composition": "full-body, centered, fills 80% of frame",
+    "motif": "leaf canopy and root feet"
+  },
+  {
+    "id": "grove-rejuvenate",
+    "subject": "a leafy sprig glowing with new growth",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "leaves and sprouting buds"
+  },
+  {
+    "id": "grove-entangle",
+    "subject": "a thick vine coiling around a shape",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "thorny vine loops"
+  },
+  {
+    "id": "grove-thorn-lasher",
+    "subject": "a plant creature lashing with thorned vines",
+    "composition": "head-and-shoulders, centered, fills 75% of frame",
+    "motif": "thorns and curling vines"
+  },
+  {
+    "id": "grove-ironbark",
+    "subject": "a beast armored in bark plates",
+    "composition": "half-body, facing forward, fills 85% of frame",
+    "motif": "bark ridges and root feet"
+  },
+  {
+    "id": "grove-wolf-pack",
+    "subject": "a lean grey wolf mid-howl",
+    "composition": "full-body, facing left, fills 80% of frame",
+    "motif": "leaves and vines around its legs"
+  },
+  {
+    "id": "grove-overgrowth",
+    "subject": "a sprawling mass of thick vines",
+    "composition": "single object, horizontal, fills 85% of frame",
+    "motif": "leaves and roots spreading"
+  },
+  {
+    "id": "grove-grove-tender",
+    "subject": "a tender holding a sprouting bough",
+    "composition": "half-body, centered, fills 80% of frame",
+    "motif": "leaves and antlers on the head"
+  },
+  {
+    "id": "grove-call-saplings",
+    "subject": "sapling shoots bursting from soil",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "leaves and roots"
+  },
+  {
+    "id": "grove-bloom",
+    "subject": "a flower in full bloom",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "petals and leaves"
+  },
+  {
+    "id": "grove-elder-stag",
+    "subject": "an elder stag with a massive antler crown",
+    "composition": "full-body, facing left, fills 85% of frame",
+    "motif": "branching antlers and leaves"
+  },
+  {
+    "id": "grove-briar-guardian",
+    "subject": "a guardian of thick briar and thorns",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "thorned vines and leaves"
+  },
+  {
+    "id": "grove-giant-growth",
+    "subject": "a giant leafy stalk bursting upward",
+    "composition": "vertical, centered, fills 90% of frame",
+    "motif": "leaves and root tendrils"
+  },
+  {
+    "id": "grove-rootweaver",
+    "subject": "a weaver of roots holding a root staff",
+    "composition": "half-body, centered, fills 80% of frame",
+    "motif": "roots and vines weaving together"
+  },
+  {
+    "id": "grove-thornwall",
+    "subject": "a wall of thorny vines",
+    "composition": "horizontal wall, fills 85% of frame, centered",
+    "motif": "thorns and leaf clusters"
+  },
+  {
+    "id": "grove-ancient-oak",
+    "subject": "an ancient oak with a gnarled trunk",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "roots and antler-like branches"
+  },
+  {
+    "id": "grove-stampede",
+    "subject": "a stag charging diagonally",
+    "composition": "single object, diagonal, fills 85% of frame",
+    "motif": "leaves trailing behind"
+  },
+  {
+    "id": "grove-bear-matriarch",
+    "subject": "a bear matriarch with leafy fur",
+    "composition": "full-body, facing forward, fills 90% of frame",
+    "motif": "antler crown and leaves"
+  },
+  {
+    "id": "grove-moonwell-druid",
+    "subject": "a druid holding a glowing well-orb",
+    "composition": "half-body, centered, fills 85% of frame",
+    "motif": "leaves wreathing the orb"
+  },
+  {
+    "id": "grove-forest-titan",
+    "subject": "a titan made of trees and vines",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "branches and roots forming the body"
+  },
+  {
+    "id": "grove-worldroot",
+    "subject": "a massive root rising from the soil",
+    "composition": "vertical, centered, fills 90% of frame",
+    "motif": "roots and a leafy canopy"
+  },
+  {
+    "id": "grove-natures-wrath",
+    "subject": "a thorned vine lashing down diagonally",
+    "composition": "single object, diagonal, fills 85% of frame",
+    "motif": "thorns and leaves"
+  },
+  {
+    "id": "grove-moss-colossus",
+    "subject": "a colossus of moss and stone",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "moss and vines over stone"
+  },
+  {
+    "id": "grove-world-tree",
+    "subject": "a great world tree with spreading branches",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "branches like antlers and roots"
+  },
+  {
+    "id": "grove-sapling",
+    "subject": "a small sapling with two leaves",
+    "composition": "single plant, centered, fills 75% of frame",
+    "motif": "leaves and tiny roots"
+  },
+  {
+    "id": "dusk-grave-rat",
+    "subject": "a skeletal rat with glowing eyes",
+    "composition": "head-and-shoulders, facing left, fills 70% of frame",
+    "motif": "smoke wisps and glowing eyes"
+  },
+  {
+    "id": "dusk-cultist",
+    "subject": "a hooded cultist holding a candle",
+    "composition": "head-and-shoulders, facing forward, fills 75% of frame",
+    "motif": "crescent moon on the hood"
+  },
+  {
+    "id": "dusk-hex",
+    "subject": "a glowing eye sigil hurled forward",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "an eye and smoke wisps"
+  },
+  {
+    "id": "dusk-dark-pact",
+    "subject": "a black quill signing a scroll",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "a skull seal on the scroll"
+  },
+  {
+    "id": "dusk-bloodleech",
+    "subject": "a bloated leech with crescent-shaped jaws",
+    "composition": "full-body, centered, fills 75% of frame",
+    "motif": "skull markings on its back"
+  },
+  {
+    "id": "dusk-bone-walker",
+    "subject": "a skeletal walker holding a bone staff",
+    "composition": "full-body, centered, fills 80% of frame",
+    "motif": "a skull on the staff tip"
+  },
+  {
+    "id": "dusk-night-stalker",
+    "subject": "a shadowy stalker with glowing eyes",
+    "composition": "head-and-shoulders, centered, fills 75% of frame",
+    "motif": "crescent moon and smoke"
+  },
+  {
+    "id": "dusk-drain-life",
+    "subject": "a skull-shaped vial siphoning life",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "smoke wisps and a skull"
+  },
+  {
+    "id": "dusk-siphon",
+    "subject": "a dark siphon tube drawing a glowing orb",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "smoke swirls and a crescent moon"
+  },
+  {
+    "id": "dusk-plague-rat",
+    "subject": "a plague rat with a skull collar",
+    "composition": "full-body, centered, fills 75% of frame",
+    "motif": "skull collar and smoke"
+  },
+  {
+    "id": "dusk-ghoul",
+    "subject": "a hunched ghoul with clawed hands",
+    "composition": "half-body, facing forward, fills 80% of frame",
+    "motif": "glowing eyes and smoke"
+  },
+  {
+    "id": "dusk-vampire-thrall",
+    "subject": "a pale thrall with a fanged mouth",
+    "composition": "head-and-shoulders, centered, fills 80% of frame",
+    "motif": "crescent moon cape"
+  },
+  {
+    "id": "dusk-soul-reaper",
+    "subject": "a reaper with a scythe trailing smoke",
+    "composition": "half-body, facing left, fills 85% of frame",
+    "motif": "skull on the scythe and smoke"
+  },
+  {
+    "id": "dusk-shadow-bolt",
+    "subject": "a dark bolt streaking diagonally",
+    "composition": "single object, diagonal, fills 80% of frame",
+    "motif": "smoke trail and an eye"
+  },
+  {
+    "id": "dusk-grave-call",
+    "subject": "a gravestone bursting open in smoke",
+    "composition": "single object, centered, fills 85% of frame",
+    "motif": "smoke and a skull on the stone"
+  },
+  {
+    "id": "dusk-corpse-eater",
+    "subject": "a corpse-eater creature with a gaping jaw",
+    "composition": "half-body, centered, fills 80% of frame",
+    "motif": "skull teeth and smoke"
+  },
+  {
+    "id": "dusk-death-knight",
+    "subject": "a death knight in black armor with a skull helm",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "skull helm and smoke"
+  },
+  {
+    "id": "dusk-wraith",
+    "subject": "a hooded wraith trailing smoke",
+    "composition": "full-body, centered, lower body fades, fills 85% of frame",
+    "motif": "smoke trails and glowing eyes"
+  },
+  {
+    "id": "dusk-doom",
+    "subject": "a skull inside a dark rune circle",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "skull and a crescent moon"
+  },
+  {
+    "id": "dusk-crypt-guard",
+    "subject": "a crypt guard in stone armor with a skull shield",
+    "composition": "full-body, centered, fills 85% of frame",
+    "motif": "skull shield and smoke"
+  },
+  {
+    "id": "dusk-blood-ritual",
+    "subject": "a blood-filled chalice with smoke rising",
+    "composition": "single object, centered, fills 80% of frame",
+    "motif": "a skull etched on the chalice"
+  },
+  {
+    "id": "dusk-lich",
+    "subject": "a lich in tattered robes holding a skull staff",
+    "composition": "full-body, centered, fills 90% of frame",
+    "motif": "crescent moon crown and smoke"
+  },
+  {
+    "id": "dusk-abomination",
+    "subject": "a stitched abomination of corpses",
+    "composition": "full-body, low angle, fills 90% of frame",
+    "motif": "skulls embedded in its flesh"
+  },
+  {
+    "id": "dusk-plague",
+    "subject": "a cloud of noxious smoke spreading",
+    "composition": "horizontal cloud, fills full width, centered",
+    "motif": "skulls within the smoke"
+  },
+  {
+    "id": "dusk-vampire-lord",
+    "subject": "a vampire lord with a high collar and cape",
+    "composition": "head-and-shoulders, facing forward, fills 85% of frame",
+    "motif": "crescent moon behind his head"
+  },
+  {
+    "id": "dusk-bone-dragon",
+    "subject": "a dragon skeleton with spread bone wings",
+    "composition": "full-body, wings spread, low angle, fills 95% of frame",
+    "motif": "skull head and smoke"
+  },
+  {
+    "id": "dusk-soul-harvest",
+    "subject": "a scythe arc sweeping soul wisps",
+    "composition": "single object, diagonal arc, fills 85% of frame",
+    "motif": "eyes and smoke wisps"
+  },
+  {
+    "id": "dusk-shadow-fiend",
+    "subject": "a shadow fiend with a horned silhouette",
+    "composition": "full-body, centered, fills 90% of frame",
+    "motif": "crescent horns and smoke"
+  },
+  {
+    "id": "dusk-death-lord",
+    "subject": "a death lord seated on a throne of bone",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "skull crown and a crescent moon"
+  },
+  {
+    "id": "dusk-night-queen",
+    "subject": "a night queen with a flowing veil of smoke",
+    "composition": "full-body, low angle, fills 95% of frame",
+    "motif": "crescent crown and eyes in the veil"
+  },
+  {
+    "id": "dusk-shade",
+    "subject": "a faint shadow figure with glowing eyes",
+    "composition": "head-and-shoulders, centered, fills 70% of frame",
+    "motif": "smoke wisps and a crescent moon"
+  }
 ]

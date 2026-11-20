@@ -16,13 +16,13 @@ Every card has a hand-drawn SVG illustration at `src/content/art/<card id>.svg`.
 
 Shared: outline `#14161d`, bone/white `#f4efe6`, steel `#5b6170`.
 
-| Faction | Theme | Disc | Dark | Main | Light | Accent |
-|---|---|---|---|---|---|---|
-| Ember | fire, volcanoes, aggression | `#3a1418` | `#8f1d22` | `#e5484d` | `#ff9a3c` | `#ffd36b` (hot glow) |
-| Tide | water, sea, magic, cunning | `#0f2440` | `#1d4f8f` | `#3e93f7` | `#8fd0ff` | `#e6f6ff` (foam) |
-| Grove | nature, growth, beasts | `#14301b` | `#2c6b38` | `#46a758` | `#a6d96a` | `#8a5a34` (bark) |
-| Bastion | stone, order, knights, defence | `#2b2a26` | `#8c8572` | `#e8e2cf` | `#ffffff` | `#d9a520` (gold) |
-| Dusk | shadow, night, death, trickery | `#221333` | `#4d2a73` | `#8e4ec6` | `#c9a3f0` | `#7cf2c2` (spectral eyes) |
+| Faction | Theme                          | Disc      | Dark      | Main      | Light     | Accent                    |
+| ------- | ------------------------------ | --------- | --------- | --------- | --------- | ------------------------- |
+| Ember   | fire, volcanoes, aggression    | `#3a1418` | `#8f1d22` | `#e5484d` | `#ff9a3c` | `#ffd36b` (hot glow)      |
+| Tide    | water, sea, magic, cunning     | `#0f2440` | `#1d4f8f` | `#3e93f7` | `#8fd0ff` | `#e6f6ff` (foam)          |
+| Grove   | nature, growth, beasts         | `#14301b` | `#2c6b38` | `#46a758` | `#a6d96a` | `#8a5a34` (bark)          |
+| Bastion | stone, order, knights, defence | `#2b2a26` | `#8c8572` | `#e8e2cf` | `#ffffff` | `#d9a520` (gold)          |
+| Dusk    | shadow, night, death, trickery | `#221333` | `#4d2a73` | `#8e4ec6` | `#c9a3f0` | `#7cf2c2` (spectral eyes) |
 
 Stay inside your faction's palette and the shared colours. A creature's skin, fur or armour uses the faction tones (for example, Ember imps are red, not grey).
 

@@ -9,7 +9,7 @@ import {
   type PlayerId,
   type UnitForecast,
 } from '../engine';
-import { CardEmblem } from './CardView';
+import { CardArt } from './CardView';
 import { useCoachKey } from './coach';
 import { dropClass, useDrag } from './drag';
 import { AI, HUMAN, useMatch, type Fx } from './store';
@@ -137,7 +137,7 @@ export function UnitToken({
       aria-label={`${card.name}, ${unit.power} power, ${remaining} health${forecastText(forecast)}`}
       onClick={() => showDetail(unit.cardId)}
     >
-      <CardEmblem id={card.id} faction={card.faction} />
+      <CardArt id={card.id} faction={card.faction} />
       <span className="token__power">{unit.power}</span>
       <span className={`token__health${unit.damage > 0 ? ' token__health--hurt' : ''}`}>{remaining}</span>
       <TokenMarks rank={rank} guard={unit.guard} forecast={forecast} />
@@ -172,7 +172,7 @@ function GhostToken({
       aria-label={`Planned: ${card.name}${forecastText(forecast)}. Tap to take back.`}
       onClick={onTap}
     >
-      <CardEmblem id={card.id} faction={card.faction} />
+      <CardArt id={card.id} faction={card.faction} />
       <span className="token__power">{card.power}</span>
       <span className="token__health">{card.health}</span>
       <TokenMarks rank={rank} guard={card.keywords.includes('guard')} forecast={forecast} />

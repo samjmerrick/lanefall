@@ -8,11 +8,17 @@ const base = process.env.VITE_BASE ?? '/';
 
 export default defineConfig({
   base,
+  build: {
+    // Card art stays as separate hashed files (cached by the service worker), never inlined into the JS.
+    assetsInlineLimit: (file, content) =>
+      file.includes('/src/content/art/') ? false : content.length < 4096,
+  },
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
+      workbox: { globPatterns: ['**/*.{js,css,html,svg}'] },
       manifest: {
         name: 'Lanefall',
         short_name: 'Lanefall',

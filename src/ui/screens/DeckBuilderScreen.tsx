@@ -12,7 +12,7 @@ import {
 } from '../../engine';
 import { MAX_DECK_NAME } from '../../save';
 import { ownedCards, useApp } from '../app';
-import { CardEmblem } from '../CardView';
+import { CardArt } from '../CardView';
 import { GLYPHS } from '../factions';
 import { CardBrowser } from './CardBrowser';
 import { ScreenFrame } from './common';
@@ -121,7 +121,7 @@ export function DeckBuilderScreen() {
                     aria-pressed={isCover}
                     onClick={() => setDraft({ ...draft, cover: id })}
                   >
-                    <CardEmblem id={id} faction={card.faction} />
+                    <CardArt id={id} faction={card.faction} />
                   </button>
                 </div>
               );

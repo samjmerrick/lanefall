@@ -1,6 +1,7 @@
 import { baseId, getCard, type Faction } from '../engine';
 import { GLYPHS } from './factions';
 import { emblemFor, polygonPoints } from './emblem';
+import { artUrl } from './art';
 
 export function CardEmblem({ id, faction }: { id: string; faction: Faction }) {
   const e = emblemFor(baseId(id));
@@ -21,6 +22,20 @@ export function CardEmblem({ id, faction }: { id: string; faction: Faction }) {
   );
 }
 
+/** Per-card illustration when one exists for the base card id, otherwise the generated emblem. */
+export function CardArt({ id, faction }: { id: string; faction: Faction }) {
+  const url = artUrl(id);
+  if (!url) return <CardEmblem id={id} faction={faction} />;
+  return (
+    <>
+      <img className="card-art" src={url} alt="" draggable={false} />
+      <span className="card-art__glyph" aria-hidden="true">
+        {GLYPHS[faction]}
+      </span>
+    </>
+  );
+}
+
 export function CardView({ cardId, size = 'hand' }: { cardId: string; size?: 'hand' | 'large' }) {
   const card = getCard(cardId);
   const isUnit = card.type === 'unit';
@@ -34,7 +49,7 @@ export function CardView({ cardId, size = 'hand' }: { cardId: string; size?: 'ha
         {card.cost}
       </span>
       <div className="card__art">
-        <CardEmblem id={card.id} faction={card.faction} />
+        <CardArt id={card.id} faction={card.faction} />
       </div>
       <span className="card__name">{card.name}</span>
       {size === 'large' && <p className="card__text">{card.text || 'No abilities.'}</p>}
