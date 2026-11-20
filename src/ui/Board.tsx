@@ -59,12 +59,16 @@ export function UnitToken({ unit }: { unit: ViewUnit }) {
   );
 }
 
-function GhostToken({ cardId, onTap }: { cardId: string; onTap: () => void }) {
+function GhostToken({ uid, cardId, onTap }: { uid: number; cardId: string; onTap: () => void }) {
   const card = getCard(cardId);
+  const drag = useDrag((s) => s.drag);
+  // A planned unit can be the target of a friendly spell queued after it.
+  const key = `unit:${uid}`;
   return (
     <button
       type="button"
-      className={`token token--ghost faction-${card.faction}`}
+      data-drop={key}
+      className={`token token--ghost faction-${card.faction}${drag?.targets.has(key) ? dropClass(drag, key) : ''}`}
       aria-label={`Planned: ${card.name}. Tap to take back.`}
       onClick={onTap}
     >
@@ -97,9 +101,10 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
           (a) => a.type === 'playUnit' && a.lane === lane && a.slot === slot,
         );
         const planned = plannedIndex >= 0 ? plan[plannedIndex]! : null;
+        const plannedUid = planned && planned.type === 'playUnit' ? planned.uid : undefined;
         const plannedCard =
-          planned && planned.type === 'playUnit'
-            ? game.players[HUMAN].hand.find((h) => h.uid === planned.uid)?.cardId
+          plannedUid !== undefined
+            ? game.players[HUMAN].hand.find((h) => h.uid === plannedUid)?.cardId
             : undefined;
         return (
           <div
@@ -109,7 +114,9 @@ function LaneGrid({ lane, side }: { lane: LaneIndex; side: PlayerId }) {
             data-slot={slot}
           >
             <AnimatePresence>{u && <UnitToken key={u.uid} unit={u} />}</AnimatePresence>
-            {!u && plannedCard && <GhostToken cardId={plannedCard} onTap={() => unplan(plannedIndex)} />}
+            {!u && plannedCard && plannedUid !== undefined && (
+              <GhostToken uid={plannedUid} cardId={plannedCard} onTap={() => unplan(plannedIndex)} />
+            )}
           </div>
         );
       })}

@@ -153,6 +153,33 @@ describe('round sequence', () => {
     expect(s.players[0].plan).toEqual([{ type: 'playUnit', uid: b, lane: 0, slot: 1 }]);
   });
 
+  it('a friendly spell can target a unit planned earlier this turn', () => {
+    let s = setup();
+    clearHands(s);
+    s.players[0].mana = 8;
+    const unit = give(s, 0, FILLER);
+    const kindle = give(s, 0, 'ember-kindle');
+    const bolt = give(s, 0, 'ember-cinder-bolt');
+    const kindleAt = { type: 'playSpell', uid: kindle, target: { kind: 'unit', uid: unit } } as const;
+    // Not before the unit is planned, and never for enemy-unit spells.
+    expect(() => plan(s, 0, kindleAt)).toThrow(/target/);
+    s = plan(s, 0, { type: 'playUnit', uid: unit, lane: 0, slot: 0 });
+    expect(() => plan(s, 0, { type: 'playSpell', uid: bolt, target: { kind: 'unit', uid: unit } })).toThrow(
+      /target/,
+    );
+    const legal = legalActions(s, 0).filter((a) => a.type === 'plan' && a.action.uid === kindle);
+    expect(legal.map((a) => a.type === 'plan' && a.action)).toContainEqual(kindleAt);
+    s = plan(s, 0, kindleAt);
+    // Taking the unit back drops the spell aimed at it.
+    const back = applyAction(s, { type: 'unplan', player: 0, index: 0 });
+    expect(back.players[0].plan).toEqual([]);
+    s = applyAction(s, { type: 'endTurn', player: 0 });
+    s = applyAction(s, { type: 'endTurn', player: 1 });
+    const { state, events } = resolveRound(s);
+    expect(events).toContainEqual(expect.objectContaining({ type: 'UnitBuffed', uid: unit, power: 2 }));
+    expect(state.players[1].hp).toBeLessThan(s.players[1].hp);
+  });
+
   it('rejects illegal plans', () => {
     let s = setup();
     clearHands(s);

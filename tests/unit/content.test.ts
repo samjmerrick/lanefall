@@ -1,13 +1,41 @@
 import { describe, expect, it } from 'vitest';
-import { CARDS, collectibleCards, getCard, getLaneEffect, LANE_EFFECTS } from '../../src/engine';
-import { CardSchema } from '../../src/engine/schema';
+import {
+  CARDS,
+  collectibleCards,
+  generatedText,
+  getCard,
+  getLaneEffect,
+  LANE_EFFECTS,
+  starterCollection,
+} from '../../src/engine';
+import { CardSchema, FACTIONS } from '../../src/engine/schema';
 
 describe('content', () => {
-  it('ships 40 starter cards: 20 Ember and 20 Bastion', () => {
+  it('ships 150 cards: 30 per faction, 12 starter commons each', () => {
     const cards = collectibleCards();
-    expect(cards).toHaveLength(40);
-    expect(cards.filter((c) => c.faction === 'ember')).toHaveLength(20);
-    expect(cards.filter((c) => c.faction === 'bastion')).toHaveLength(20);
+    expect(cards).toHaveLength(150);
+    for (const f of FACTIONS) {
+      expect(cards.filter((c) => c.faction === f), f).toHaveLength(30);
+      const starters = cards.filter((c) => c.faction === f && c.unlock === 'starter');
+      expect(starters, f).toHaveLength(12);
+      expect(starters.every((c) => c.rarity === 'common'), f).toBe(true);
+    }
+    expect(starterCollection().size).toBe(60);
+  });
+
+  it('follows the mana curve per faction within one card per step', () => {
+    const target: Record<number, number> = { 1: 4, 2: 6, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2 };
+    for (const f of FACTIONS) {
+      const pool = collectibleCards().filter((c) => c.faction === f);
+      for (const [cost, n] of Object.entries(target)) {
+        const have = pool.filter((c) => Math.min(c.cost, 7) === Number(cost)).length;
+        expect(Math.abs(have - n), `${f} at ${cost}`).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  it("every card's text is generated from its data", () => {
+    for (const c of CARDS) expect(c.text, c.id).toBe(generatedText(c));
   });
 
   it('has unique ids and every summoned card exists', () => {
@@ -22,10 +50,10 @@ describe('content', () => {
   });
 
   it('has about 1 in 3 spells per faction', () => {
-    for (const f of ['ember', 'bastion'] as const) {
+    for (const f of FACTIONS) {
       const spells = collectibleCards().filter((c) => c.faction === f && c.type === 'spell').length;
-      expect(spells).toBeGreaterThanOrEqual(5);
-      expect(spells).toBeLessThanOrEqual(8);
+      expect(spells).toBeGreaterThanOrEqual(8);
+      expect(spells).toBeLessThanOrEqual(12);
     }
   });
 
@@ -90,5 +118,18 @@ describe('content', () => {
         effects: [{ trigger: 'spell', action: dmg }],
       }).success,
     ).toBe(true);
+    const laneDmg = { op: 'damage', target: 'enemyUnitsInLane', amount: 1 };
+    expect(
+      CardSchema.safeParse({ ...base, type: 'spell', effects: [{ trigger: 'spell', action: laneDmg }] }).success,
+    ).toBe(false);
+    expect(
+      CardSchema.safeParse({
+        ...base,
+        type: 'unit',
+        power: 1,
+        health: 1,
+        effects: [{ trigger: 'onReveal', action: dmg }],
+      }).success,
+    ).toBe(false);
   });
 });

@@ -32,7 +32,7 @@ for (const vp of VIEWPORTS) {
           path: `test-results/screens/${screen.toLowerCase().replace(' ', '')}-${vp.width}x${vp.height}.png`,
         });
         if (screen === 'Decks') {
-          await page.getByRole('button', { name: 'Copy Ember Blitz' }).click();
+          await page.getByRole('button', { name: 'Copy Steam Raiders' }).click();
           await expect(page.getByRole('main', { name: 'Deck builder' })).toBeVisible();
           await noOverflow();
           await page.screenshot({ path: `test-results/screens/builder-${vp.width}x${vp.height}.png` });

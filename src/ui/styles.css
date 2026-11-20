@@ -553,6 +553,24 @@ button {
   fill: var(--accent);
 }
 
+.drag-arrow--locked circle {
+  fill: rgb(245 184 61 / 0.35);
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.drag-arrow--locked line {
+  stroke: #fff;
+}
+
+.drag-card--spell {
+  opacity: 0.85;
+}
+
+.token.drop--hover {
+  transform: scale(1.12);
+}
+
 .queued {
   position: absolute;
   top: 0;
