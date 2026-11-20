@@ -1,13 +1,49 @@
+import { useEffect } from 'react';
+import { useApp } from './app';
 import { MatchScreen } from './MatchScreen';
+import { CardDetail } from './Overlays';
 import { RotateNotice } from './RotateNotice';
-import { SetupScreen } from './SetupScreen';
-import { useMatch } from './store';
+import { CollectionScreen } from './screens/CollectionScreen';
+import { CorruptScreen } from './screens/CorruptScreen';
+import { DeckBuilderScreen } from './screens/DeckBuilderScreen';
+import { DecksScreen } from './screens/DecksScreen';
+import { MenuScreen } from './screens/MenuScreen';
+import { QuickPlayScreen } from './screens/QuickPlayScreen';
+import { SettingsScreen } from './screens/SettingsScreen';
+
+function CurrentScreen() {
+  const screen = useApp((s) => s.screen);
+  switch (screen) {
+    case 'loading':
+      return <main className="loading" aria-label="Loading" aria-busy="true" />;
+    case 'corrupt':
+      return <CorruptScreen />;
+    case 'menu':
+      return <MenuScreen />;
+    case 'quickplay':
+      return <QuickPlayScreen />;
+    case 'decks':
+      return <DecksScreen />;
+    case 'builder':
+      return <DeckBuilderScreen />;
+    case 'collection':
+      return <CollectionScreen />;
+    case 'settings':
+      return <SettingsScreen />;
+    case 'match':
+      return <MatchScreen />;
+  }
+}
 
 export function App() {
-  const screen = useMatch((s) => s.screen);
+  const boot = useApp((s) => s.boot);
+  useEffect(() => {
+    void boot();
+  }, [boot]);
   return (
     <>
-      {screen === 'setup' ? <SetupScreen /> : <MatchScreen />}
+      <CurrentScreen />
+      <CardDetail />
       <RotateNotice />
     </>
   );

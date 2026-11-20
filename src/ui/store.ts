@@ -12,7 +12,8 @@ import {
 } from '../engine';
 import { seedRng } from '../engine/rng';
 import { runAi } from './aiClient';
-import { PLAYABLE_FACTIONS, starterDeck, type PlayableFaction } from './decks';
+import { PREBUILT_DECKS } from '../engine';
+import { useApp, type DeckChoice } from './app';
 import { animationScale, randomSeed, urlSeed } from './settings';
 import { applyEvent, eventDuration, viewFromState, type BoardView } from './view';
 
@@ -33,9 +34,9 @@ export interface Revealing {
 }
 
 interface MatchStore {
-  screen: 'setup' | 'match';
-  faction: PlayableFaction;
+  deck: DeckChoice | null;
   difficulty: Difficulty;
+  opponentDeck: string | null;
   seed: number;
   game: GameState | null;
   view: BoardView | null;
@@ -49,16 +50,14 @@ interface MatchStore {
   activeLane: LaneIndex | null;
   error: string | null;
 
-  setFaction(f: PlayableFaction): void;
-  setDifficulty(d: Difficulty): void;
-  startMatch(): Promise<void>;
+  startMatch(deck?: DeckChoice, difficulty?: Difficulty): Promise<void>;
   toggleMulligan(uid: number): void;
   confirmMulligan(): void;
   play(action: PlannedAction): void;
   unplan(index: number): void;
   endTurn(): Promise<void>;
   showDetail(cardId: string | null): void;
-  backToSetup(): void;
+  leave(): void;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -116,9 +115,9 @@ export const useMatch = create<MatchStore>((set, get) => {
   }
 
   return {
-    screen: 'setup',
-    faction: 'ember',
+    deck: null,
     difficulty: 'normal',
+    opponentDeck: null,
     seed: 0,
     game: null,
     view: null,
@@ -131,17 +130,20 @@ export const useMatch = create<MatchStore>((set, get) => {
     activeLane: null,
     error: null,
 
-    setFaction: (faction) => set({ faction }),
-    setDifficulty: (difficulty) => set({ difficulty }),
-
-    async startMatch() {
-      const { faction } = get();
+    async startMatch(deckArg, difficultyArg) {
+      const deck = deckArg ?? get().deck;
+      const difficulty = difficultyArg ?? get().difficulty;
+      if (!deck) return;
       const seed = urlSeed() ?? randomSeed();
-      const others = PLAYABLE_FACTIONS.filter((f) => f !== faction);
-      const opponent = others[seed % others.length]!;
-      let game = initMatch({ decks: [starterDeck(faction), starterDeck(opponent)] }, seed);
+      // The opponent plays a random pre-built deck (a different one from yours when possible).
+      const pool = PREBUILT_DECKS.filter((d) => d.id !== deck.id);
+      const opponent = (pool.length > 0 ? pool : PREBUILT_DECKS)[seed % Math.max(1, pool.length)]!;
+      let game = initMatch({ decks: [deck.cards, opponent.cards] }, seed);
+      useApp.getState().go('match');
       set({
-        screen: 'match',
+        deck,
+        difficulty,
+        opponentDeck: opponent.id,
         seed,
         game,
         view: viewFromState(game),
@@ -192,9 +194,17 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ view: viewFromState(s) });
       await playback(events);
       set({ game: state, view: viewFromState(state), busy: false });
+      if (state.result) {
+        const { winner } = state.result;
+        const outcome = winner === null ? 'draw' : winner === HUMAN ? 'win' : 'loss';
+        useApp.getState().recordQuickPlay(get().deck!.id, outcome);
+      }
     },
 
     showDetail: (detail) => set({ detail }),
-    backToSetup: () => set({ screen: 'setup', game: null, view: null, busy: false }),
+    leave() {
+      set({ game: null, view: null, busy: false });
+      useApp.getState().go('quickplay');
+    },
   };
 });

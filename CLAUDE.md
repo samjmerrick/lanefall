@@ -8,7 +8,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm lint` — ESLint + Prettier check (`pnpm format` to fix)
 - `pnpm typecheck` — `tsc -b`
 - `pnpm test` — Vitest unit and simulation tests (includes 10,000 bot matches, ~15 s)
-- `pnpm coverage` — unit tests with the engine coverage gate (≥90%)
+- `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine` and `src/save`
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
 - `pnpm build` — production build (`VITE_BASE=/lanefall/` for GitHub Pages; CI sets it)
@@ -18,7 +18,8 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `src/engine/` — pure rules. No React, no DOM, no `src/ui` imports. Lint bans `Math.random` and `Date`
   here and in `src/run/` and `src/ai/`: all randomness comes from the seeded RNG in game state.
 - `src/content/` — JSON content, validated by Zod schemas.
-- `src/run/`, `src/ai/`, `src/save/` — roguelike run, opponent planners, persistence.
+- `src/run/`, `src/ai/` — roguelike run, opponent planners.
+- `src/save/` — profile schema (Zod), two-slot saves over IndexedDB, migrations (`tests/fixtures/save-v*.json`), save codes.
 - `src/ui/` — React screens. Only sends actions to the engine and animates returned events; never computes results.
 - `tools/sim/` — CLI simulator. `tests/unit`, `tests/e2e` — tests.
 
@@ -31,6 +32,8 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
   (`src/ui/aiClient.ts`).
 - The UI replays engine events onto a view model (`src/ui/view.ts`) to animate, then snaps to the engine's state.
   URL params `?seed=N&speed=0.05` make matches deterministic and fast for Playwright.
+- UI screens: `src/ui/app.ts` (navigation + profile + autosave) and `src/ui/store.ts` (the match). Bump
+  `CURRENT_SCHEMA` and add a migration + fixture whenever the profile shape changes.
 - Tests build boards with `tests/unit/helpers.ts` (`setup`, `place`, `give`, `plan`, `resolve`).
 
 ## Working rules

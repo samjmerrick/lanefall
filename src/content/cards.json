@@ -574,8 +574,8 @@
     "keywords": ["guard"],
     "effects": [],
     "text": "Guard.",
-    "rarity": "common",
-    "unlock": "starter"
+    "rarity": "uncommon",
+    "unlock": "track"
   },
   {
     "id": "bastion-high-cleric",
@@ -709,8 +709,8 @@
       }
     ],
     "text": "Summon two 1/1 Levies in a lane.",
-    "rarity": "common",
-    "unlock": "starter"
+    "rarity": "uncommon",
+    "unlock": "track"
   },
   {
     "id": "bastion-blessing",

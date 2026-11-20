@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { keepHand, startMatch, watchErrors } from './helpers';
+import { keepHand, openMenu, startMatch, watchErrors } from './helpers';
 import { VIEWPORTS } from './viewports';
 
 for (const vp of VIEWPORTS) {
@@ -16,10 +16,33 @@ for (const vp of VIEWPORTS) {
         expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
       };
 
-      await page.goto('./?seed=7');
-      await expect(page.getByRole('main', { name: 'New match' })).toBeVisible();
+      await openMenu(page, '?seed=7');
       await noOverflow();
-      await page.screenshot({ path: `test-results/screens/setup-${vp.width}x${vp.height}.png` });
+      await page.screenshot({ path: `test-results/screens/menu-${vp.width}x${vp.height}.png` });
+      for (const [button, screen] of [
+        ['Quick Play', 'Quick Play'],
+        ['Decks', 'Decks'],
+        ['Collection', 'Collection'],
+        ['Settings', 'Settings'],
+      ] as const) {
+        await page.getByRole('button', { name: button, exact: true }).click();
+        await expect(page.getByRole('main', { name: screen })).toBeVisible();
+        await noOverflow();
+        await page.screenshot({
+          path: `test-results/screens/${screen.toLowerCase().replace(' ', '')}-${vp.width}x${vp.height}.png`,
+        });
+        if (screen === 'Decks') {
+          await page.getByRole('button', { name: 'Copy Ember Blitz' }).click();
+          await expect(page.getByRole('main', { name: 'Deck builder' })).toBeVisible();
+          await noOverflow();
+          await page.screenshot({ path: `test-results/screens/builder-${vp.width}x${vp.height}.png` });
+          await page.getByRole('button', { name: /Show deck list/ }).click();
+          await noOverflow();
+          await page.screenshot({ path: `test-results/screens/builder-list-${vp.width}x${vp.height}.png` });
+          await page.getByRole('button', { name: 'Back' }).click();
+        }
+        await page.getByRole('button', { name: 'Back' }).click();
+      }
 
       await startMatch(page, { seed: 7 });
       await page.screenshot({ path: `test-results/screens/mulligan-${vp.width}x${vp.height}.png` });
@@ -63,6 +86,6 @@ test.describe('landscape', () => {
   test('shows the rotate notice', async ({ page }) => {
     await page.goto('./');
     await expect(page.getByText('Rotate your phone')).toBeVisible();
-    await expect(page.getByRole('main', { name: 'New match' })).toBeHidden();
+    await expect(page.getByRole('main', { name: 'Main menu' })).toBeHidden();
   });
 });

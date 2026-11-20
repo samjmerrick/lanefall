@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { getCard } from '../engine';
 import { CardView } from './CardView';
 import { glossaryFor, KEYWORD_NAMES } from './glossary';
+import { XP_LOSS, XP_WIN } from './app';
 import { AI, HUMAN, useMatch } from './store';
 
 export function MulliganOverlay() {
@@ -39,7 +40,7 @@ export function ResultOverlay() {
   const game = useMatch((s) => s.game);
   const busy = useMatch((s) => s.busy);
   const start = useMatch((s) => s.startMatch);
-  const back = useMatch((s) => s.backToSetup);
+  const back = useMatch((s) => s.leave);
   if (!game || game.phase !== 'over' || busy || !game.result) return null;
   const { winner, reason } = game.result;
   const title = winner === null ? 'Draw' : winner === HUMAN ? 'Victory' : 'Defeat';
@@ -56,8 +57,9 @@ export function ResultOverlay() {
         {reason === 'hp' ? `Decided in round ${game.round}` : 'Decided on HP after round 8'}
       </p>
       <p className="result__hp">
-        You ♥ {game.players[HUMAN].hp} · Opponent ♥ {game.players[AI].hp}
+        You ♥ {Math.max(0, game.players[HUMAN].hp)} · Opponent ♥ {Math.max(0, game.players[AI].hp)}
       </p>
+      <p className="result__xp">+{winner === HUMAN ? XP_WIN : XP_LOSS} XP</p>
       <button type="button" className="primary" onClick={() => void start()}>
         Play again
       </button>
