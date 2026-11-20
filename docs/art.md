@@ -31,8 +31,22 @@ This is placeholder art: simple geometric line icons, meant to be replaced by il
 | Bastion | stone, order, knights, defence | `#e8e2cf` |
 | Dusk    | shadow, night, death, trickery | `#c9a3f0` |
 
+## Run content
+
+Heroes, enemies, relics, lane effects and events get icons in the same flat folder, with the same structure and rules. Their ids are already uniquely prefixed. Missing files fall back to a text glyph in the UI (coverage is not yet required: `REQUIRE_RUN_ART` in `tests/unit/art.test.ts`).
+
+| Kind         | File                | LINE                                                           |
+| ------------ | ------------------- | -------------------------------------------------------------- |
+| Hero         | `hero-*.svg`        | the hero's faction colour (table above)                        |
+| Enemy / boss | `enemy-*`, `boss-*` | colour of any faction in the enemy's deck (see `enemies.json`) |
+| Relic        | `relic-*.svg`       | `#f0c75e` (gold)                                               |
+| Lane effect  | `lane-*.svg`        | `#d6d9e0`                                                      |
+| Event        | `event-*.svg`       | `#d6d9e0`                                                      |
+
+Sizes in the UI: hero 40 px (picker, level-up), relic 28 px, enemy and event 96 px, lane effect 18 px (in the 56 px lane strip, so it must read at that size).
+
 ## Checking your work
 
-`pnpm art:sheet <faction or id prefix>` writes `art-sheets/<filter>.png`, showing each card at 120, 64 and 40 px. Look at it. At 40 px the subject must still be recognisable. Cards in a faction must also look like one set, and like the reference pieces.
+`pnpm art:sheet [faction or id prefix]` (for example `ember`, `hero`, `boss`, `relic`, `relic-ember`, `lane`, `event`, or nothing for everything) writes `art-sheets/<filter>.png`, showing each card at 120, 64 and 40 px. Look at it. At 40 px the subject must still be recognisable. Cards in a faction must also look like one set, and like the reference pieces.
 
 Reference pieces: `ember-spark-imp`, `tide-kraken`, `grove-elder-stag`, `bastion-shieldbearer`, `dusk-shadow-bolt`.

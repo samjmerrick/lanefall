@@ -2,9 +2,17 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import cards from '../../src/content/cards.json';
+import heroes from '../../src/content/heroes.json';
+import enemies from '../../src/content/enemies.json';
+import relics from '../../src/content/relics.json';
+import lanes from '../../src/content/lanes.json';
+import events from '../../src/content/events.json';
 
 /** Flip to true once every card has art, so a missing illustration fails CI. */
 const REQUIRE_FULL_COVERAGE = true;
+
+/** Same for run content (heroes, enemies, relics, lane effects, events). Warns only while false. */
+const REQUIRE_RUN_ART = false;
 
 const ART_DIR = join(__dirname, '../../src/content/art');
 const MAX_BYTES = 2048;
@@ -30,7 +38,26 @@ function attr(attrs: string, name: string): string | undefined {
   return new RegExp(`(?:^|\\s)${name}\\s*=\\s*"([^"]*)"`).exec(attrs)?.[1];
 }
 
-const ids = new Set((cards as { id: string }[]).map((c) => c.id));
+const NEUTRAL = '#d6d9e0';
+const GOLD = '#f0c75e';
+const cardIds = new Set((cards as { id: string }[]).map((c) => c.id));
+const cardFaction = new Map((cards as { id: string; faction: string }[]).map((c) => [c.id, c.faction]));
+
+/** Expected LINE colours per art id (a set: an enemy may mix factions). */
+const runLines = new Map<string, string[]>();
+for (const h of heroes as { id: string; faction: string }[]) runLines.set(h.id, [PALETTE[h.faction]!.line]);
+for (const e of enemies as { id: string; deck: string[] }[]) {
+  const fs = new Set(e.deck.map((c) => cardFaction.get(c.replace(/\+$/, ''))));
+  runLines.set(
+    e.id,
+    [...fs].filter((f): f is string => !!f && f in PALETTE).map((f) => PALETTE[f]!.line),
+  );
+}
+for (const r of relics as { id: string }[]) runLines.set(r.id, [GOLD]);
+for (const l of lanes as { id: string }[]) runLines.set(l.id, [NEUTRAL]);
+for (const v of events as { id: string }[]) runLines.set(v.id, [NEUTRAL]);
+
+const ids = new Set([...cardIds, ...runLines.keys()]);
 const files = readdirSync(ART_DIR).filter((f) => f.endsWith('.svg'));
 
 /** Tiny tag scanner: returns each opening tag's name and raw attribute text. */
@@ -47,11 +74,11 @@ function attrNames(attrs: string): string[] {
 }
 
 describe('card art', () => {
-  it('only contains SVG files named after base card ids', () => {
+  it('only contains SVG files named after base card or run content ids', () => {
     for (const f of readdirSync(ART_DIR)) {
       if (f === '.gitkeep') continue;
       expect(f.endsWith('.svg'), `${f} is not an .svg file`).toBe(true);
-      expect(ids.has(f.slice(0, -4)), `${f} does not match a base card id`).toBe(true);
+      expect(ids.has(f.slice(0, -4)), `${f} does not match a card or run content id`).toBe(true);
     }
   });
 
@@ -91,12 +118,15 @@ describe('card art', () => {
       });
 
       it('follows the line-icon style', () => {
-        const pal = PALETTE[f.split('-')[0] ?? ''];
-        expect(pal, 'unknown faction prefix').toBeDefined();
+        const id = f.slice(0, -4);
+        const allowed = cardIds.has(id) ? [PALETTE[f.split('-')[0] ?? '']?.line] : runLines.get(id);
+        expect(allowed?.[0], 'unknown faction prefix or run id').toBeDefined();
         const [, group, ...shapes] = all;
         expect(group?.name, 'second element must be the stroke <g> (no backdrop shape)').toBe('g');
         for (const [k, v] of GROUP) expect(attr(group!.attrs, k), `<g ${k}>`).toBe(v);
-        expect(attr(group!.attrs, 'stroke'), '<g stroke> must be the faction line colour').toBe(pal!.line);
+        expect(allowed, '<g stroke> must be the expected line colour').toContain(
+          attr(group!.attrs, 'stroke'),
+        );
         expect(shapes.length, 'no drawing').toBeGreaterThan(0);
         for (const t of shapes) {
           expect(SHAPES.has(t.name), `<${t.name}> inside the group`).toBe(true);
@@ -113,11 +143,23 @@ describe('card art', () => {
 
   it('reports cards without art', () => {
     const have = new Set(files.map((f) => f.slice(0, -4)));
-    const missing = (cards as { id: string }[]).map((c) => c.id).filter((id) => !have.has(id));
+    const missing = [...cardIds].filter((id) => !have.has(id));
     if (REQUIRE_FULL_COVERAGE) {
       expect(missing, `cards missing art:\n${missing.join('\n')}`).toEqual([]);
     } else if (missing.length > 0) {
-      console.warn(`card art: ${missing.length} of ${ids.size} cards have no art yet`);
+      console.warn(`card art: ${missing.length} of ${cardIds.size} cards have no art yet`);
+    }
+  });
+
+  it('reports run content without art', () => {
+    const have = new Set(files.map((f) => f.slice(0, -4)));
+    const missing = [...runLines.keys()].filter((id) => !have.has(id));
+    if (REQUIRE_RUN_ART) {
+      expect(missing, `run content missing art:\n${missing.join('\n')}`).toEqual([]);
+    } else if (missing.length > 0) {
+      console.warn(
+        `run art: ${missing.length} of ${runLines.size} heroes, enemies, relics, lanes and events have no art yet`,
+      );
     }
   });
 });

@@ -4,7 +4,8 @@ import { getCard } from '../engine';
 import { getHero, getRelic, type UnlockBundle } from '../run';
 import { useApp } from './app';
 import { CardView } from './CardView';
-import { GLYPHS } from './factions';
+import { FACTION_NAME, GLYPHS } from './factions';
+import { Icon } from './Icon';
 import { FADE_SECONDS, useDurationScale } from './motion';
 import { sfx } from './feedback';
 import { useMatch } from './store';
@@ -36,11 +37,15 @@ function Bundle({ bundle }: { bundle: UnlockBundle }) {
               <p className="levelup__kind">New hero</p>
               <div className={`levelup__hero faction-${h.faction}`}>
                 <span className="hero-row__glyph" aria-hidden>
-                  {GLYPHS[h.faction]}
+                  <Icon id={h.id} size={40} fallback={GLYPHS[h.faction]} />
                 </span>
                 <span className="hero-row__text">
                   <span className="hero-row__name">
-                    {h.name} <span className="hero-row__title">· {h.title}</span>
+                    {h.name}{' '}
+                    <span className="hero-row__faction" aria-label={FACTION_NAME[h.faction]}>
+                      {GLYPHS[h.faction]}
+                    </span>{' '}
+                    <span className="hero-row__title">· {h.title}</span>
                   </span>
                   <span className="hero-row__passive">{h.passive}</span>
                 </span>
