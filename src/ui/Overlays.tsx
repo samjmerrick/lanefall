@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { getCard } from '../engine';
+import { FADE_SECONDS, useDurationScale } from './motion';
+import { useReduceMotion } from './useReduceMotion';
 import { CardView } from './CardView';
 import { glossaryFor, KEYWORD_NAMES } from './glossary';
 import { XP_LOSS, XP_WIN } from './app';
@@ -43,10 +45,20 @@ export function ResultOverlay() {
   const start = useMatch((s) => s.startMatch);
   const back = useMatch((s) => s.leave);
   const mode = useMatch((s) => s.mode);
+  const startTutorial = useMatch((s) => s.startTutorial);
+  const finishTutorial = useMatch((s) => s.finishTutorial);
   const finishMatch = useRun((s) => s.finishMatch);
+  const scale = useDurationScale();
   if (!game || game.phase !== 'over' || busy || !game.result) return null;
   const { winner, reason } = game.result;
-  const title = winner === null ? 'Draw' : winner === HUMAN ? 'Victory' : 'Defeat';
+  const tutorialWon = mode === 'tutorial' && winner === HUMAN;
+  const title = tutorialWon
+    ? 'Tutorial complete'
+    : winner === null
+      ? 'Draw'
+      : winner === HUMAN
+        ? 'Victory'
+        : 'Defeat';
   return (
     <motion.div
       className={`overlay overlay--result result--${title.toLowerCase()}`}
@@ -54,6 +66,7 @@ export function ResultOverlay() {
       aria-label="Match result"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 * scale }}
     >
       <h2 className="result__title">{title}</h2>
       <p className="overlay__hint">
@@ -62,7 +75,29 @@ export function ResultOverlay() {
       <p className="result__hp">
         You ♥ {Math.max(0, game.players[HUMAN].hp)} · Opponent ♥ {Math.max(0, game.players[AI].hp)}
       </p>
-      {mode === 'run' ? (
+      {mode === 'tutorial' ? (
+        <>
+          <p className="result__xp">
+            {tutorialWon
+              ? 'You know the basics. Good luck out there!'
+              : 'That is not how it was meant to go.'}
+          </p>
+          {tutorialWon ? (
+            <button type="button" className="primary" onClick={finishTutorial}>
+              Back to menu
+            </button>
+          ) : (
+            <>
+              <button type="button" className="primary" onClick={startTutorial}>
+                Try again
+              </button>
+              <button type="button" className="secondary" onClick={back}>
+                Back to menu
+              </button>
+            </>
+          )}
+        </>
+      ) : mode === 'run' ? (
         <>
           <p className="result__xp">{winner === HUMAN ? 'The way ahead is clear' : 'You lose 1 Heart'}</p>
           <button type="button" className="primary" onClick={() => finishMatch(winner === HUMAN)}>
@@ -87,6 +122,7 @@ export function ResultOverlay() {
 export function CardDetail() {
   const cardId = useMatch((s) => s.detail);
   const close = useMatch((s) => s.showDetail);
+  const scale = useDurationScale();
   return (
     <AnimatePresence>
       {cardId && (
@@ -98,6 +134,7 @@ export function CardDetail() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 * scale }}
         >
           <CardView cardId={cardId} size="large" />
           <dl className="glossary">
@@ -127,6 +164,8 @@ export function CardDetail() {
 
 export function RevealBanner() {
   const revealing = useMatch((s) => s.revealing);
+  const reduce = useReduceMotion();
+  const scale = useDurationScale();
   return (
     <div className="reveal" aria-live="polite">
       <AnimatePresence>
@@ -134,10 +173,12 @@ export function RevealBanner() {
           <motion.div
             key={revealing.id}
             className={`reveal__card reveal__card--${revealing.player === HUMAN ? 'player' : 'opponent'}`}
-            initial={{ rotateY: 90, scale: 0.7, opacity: 0 }}
-            animate={{ rotateY: 0, scale: 1, opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.25 }}
+            // The flip takes about 250 ms; the card then stays up for the rest of the event's hold.
+            // Reduce motion: a short fade in place of the flip.
+            initial={reduce ? { opacity: 0 } : { rotateY: 90, scale: 0.7, opacity: 0 }}
+            animate={reduce ? { opacity: 1 } : { rotateY: 0, scale: 1, opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.8 }}
+            transition={{ duration: (reduce ? FADE_SECONDS : 0.25) * scale }}
           >
             <span className="reveal__who">{revealing.player === HUMAN ? 'You' : 'Opponent'}</span>
             <CardView cardId={revealing.cardId} />

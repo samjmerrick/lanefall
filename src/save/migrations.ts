@@ -34,6 +34,20 @@ export const migrations: Record<number, (old: Record<string, unknown>) => Record
         : null,
     };
   },
+  // v5 (M7): Sound and Haptics settings (on), `tutorialDone` and `iosTipSeen`. Anyone who already has XP or
+  // results has played, so the tutorial counts as done.
+  4: (old) => {
+    const stats = (old.stats ?? {}) as { quickPlay?: object; runs?: object };
+    const hasStats =
+      Object.keys(stats.quickPlay ?? {}).length > 0 || Object.keys(stats.runs ?? {}).length > 0;
+    const xp = typeof old.xp === 'number' ? old.xp : 0;
+    return {
+      ...old,
+      settings: { ...(old.settings as object), sound: true, haptics: true },
+      tutorialDone: xp > 0 || hasStats,
+      iosTipSeen: false,
+    };
+  },
 };
 
 /** Runs migrations in order up to the current schema, then validates. Throws if the save is invalid. */

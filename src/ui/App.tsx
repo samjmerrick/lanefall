@@ -4,6 +4,7 @@ import { LevelUpOverlay } from './LevelUpOverlay';
 import { MatchScreen } from './MatchScreen';
 import { CardDetail } from './Overlays';
 import { RotateNotice } from './RotateNotice';
+import { useReduceMotion } from './useReduceMotion';
 import { CollectionScreen } from './screens/CollectionScreen';
 import { CorruptScreen } from './screens/CorruptScreen';
 import { DeckBuilderScreen } from './screens/DeckBuilderScreen';
@@ -53,6 +54,11 @@ export function App() {
   useEffect(() => {
     void boot();
   }, [boot]);
+  // CSS animations follow the same switch as the motion components (see the `.reduce-motion` rules).
+  const reduce = useReduceMotion();
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduce-motion', reduce);
+  }, [reduce]);
   return (
     <>
       <CurrentScreen />

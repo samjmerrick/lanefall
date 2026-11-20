@@ -5,19 +5,26 @@ import { HeroBar } from './HeroBar';
 import { ErrorToast, MulliganOverlay, RevealBanner, ResultOverlay } from './Overlays';
 import { AI, HUMAN } from './store';
 import { dropClass, useDrag } from './drag';
+import { useCoachKey } from './coach';
+import { TutorialCoach } from './TutorialCoach';
 
 export function MatchScreen() {
   const drag = useDrag((s) => s.drag);
   const dragging = drag?.moved ?? false;
+  const coachKey = useCoachKey();
   return (
     <main className={`match${dragging ? ' match--dragging' : ''}`} aria-label="Match">
       <HeroBar side={AI} />
-      <div className={`board${drag?.targets.has('board') ? dropClass(drag, 'board') : ''}`} data-drop="board">
+      <div
+        className={`board${drag?.targets.has('board') ? dropClass(drag, 'board') : ''}${coachKey === 'board' ? ' coach-target' : ''}`}
+        data-drop="board"
+      >
         <ForecastLabel />
         <Lanes side={AI} />
         <LaneStrip />
         <Lanes side={HUMAN} />
         <RevealBanner />
+        <TutorialCoach />
       </div>
       <HeroBar side={HUMAN} />
       <Hand />

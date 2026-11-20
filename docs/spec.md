@@ -217,7 +217,7 @@ The layout is designed for a 390 × 844 viewport (iPhone 14-class) and must work
 **Motion and feedback**
 
 - Reveal: cards flip in sequence, about 250 ms each. Combat: lane power numbers fly at the enemy units or hero, with damage numbers.
-- A Fast animations setting halves durations; the Reduce motion setting replaces movement with fades.
+- A Fast animations setting halves durations; the Reduce motion setting (which also follows the system setting) replaces movement with fades. Settings also has Sound and Haptics toggles, both on by default. Sounds are short synthesised tones.
 - Haptics use `navigator.vibrate` where the phone supports it (Android Chrome); on iOS Safari it does nothing.
 
 ## Tech stack and architecture
@@ -375,6 +375,7 @@ XP, levels, the unlock track, 10 heroes, Ascension 1–10 and the stats screen.
 Animation tuning, Fast animations and Reduce motion settings, haptics, simple sound effects, a tutorial match, and the iOS home-screen tip.
 
 - A committed set of screenshots of every screen at all 3 viewports, with no overflow.
+- The tutorial is a scripted 3-round match with a coach banner (no XP). It is offered on the menu to a new profile (Play or Skip) and stays available as a Tutorial button; finishing or skipping it sets `tutorialDone`.
 - A Playwright script completes the tutorial.
 
 ### M8: Balance and 1.0

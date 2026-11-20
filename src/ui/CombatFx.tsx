@@ -2,7 +2,7 @@
 // each counter is and what it shows, driven by the engine's events; this only draws it there.
 import { AnimatePresence, motion } from 'motion/react';
 import { useReduceMotion } from './useReduceMotion';
-import { animationScale } from './settings';
+import { FADE_SECONDS, useDurationScale } from './motion';
 import { useMatch, type CombatCounter, type CounterTarget } from './store';
 
 function selectorFor(t: CounterTarget): string {
@@ -24,20 +24,25 @@ function centreOf(t: CounterTarget): { x: number; y: number } | null {
 }
 
 function Counter({ c, sibling, reduce }: { c: CombatCounter; sibling: boolean; reduce: boolean }) {
+  const scale = useDurationScale();
   const at = centreOf(c.target);
   if (!at) return null;
   // Normal and Pierce counters sit side by side so both stay readable.
   const dx = sibling ? (c.kind === 'power' ? -13 : 15) : 0;
   const x = at.x + dx;
   const y = at.y;
-  const dur = 0.22 * animationScale();
+  const dur = 0.22 * scale;
   return (
     <motion.span
       className={`combat-counter combat-counter--${c.kind} combat-counter--${c.attacker === 0 ? 'player' : 'opponent'}${c.value === 0 ? ' combat-counter--spent' : ''}`}
       initial={reduce ? { opacity: 0, x, y } : { opacity: 0, scale: 0.6, x, y }}
       animate={{ opacity: 1, scale: 1, x, y }}
-      exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.12 } }}
-      transition={{ duration: reduce ? 0.12 : dur, ease: 'easeOut' }}
+      exit={
+        reduce
+          ? { opacity: 0, transition: { duration: FADE_SECONDS * scale } }
+          : { opacity: 0, scale: 0.8, transition: { duration: 0.12 * scale } }
+      }
+      transition={{ duration: reduce ? FADE_SECONDS * scale : dur, ease: 'easeOut' }}
       aria-hidden="true"
     >
       {c.kind === 'pierce' ? `✦${c.value}` : c.value}

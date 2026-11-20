@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { GameState } from '../engine';
 import { RunChoiceSchema, RunConfigSchema } from '../run/schema';
 
-export const CURRENT_SCHEMA = 4;
+export const CURRENT_SCHEMA = 5;
 export const MAX_SAVED_DECKS = 20;
 export const MAX_DECK_NAME = 24;
 
@@ -42,6 +42,8 @@ export const ProfileSchema = z.object({
   settings: z.object({
     fastAnimations: z.boolean(),
     reduceMotion: z.boolean(),
+    sound: z.boolean(),
+    haptics: z.boolean(),
   }),
   stats: z.object({
     /** Quick Play results per deck id (saved deck ids and pre-built ids). */
@@ -56,6 +58,10 @@ export const ProfileSchema = z.object({
     unlocked: z.number().int().min(0).max(10),
   }),
   activeRun: ActiveRunSchema.nullable(),
+  /** The tutorial match has been finished (or skipped). */
+  tutorialDone: z.boolean(),
+  /** The iOS "add to home screen" tip has been dismissed. */
+  iosTipSeen: z.boolean(),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;
@@ -70,9 +76,11 @@ export function newProfile(): Profile {
     unlocks: [],
     decks: [],
     nextDeckId: 1,
-    settings: { fastAnimations: false, reduceMotion: false },
+    settings: { fastAnimations: false, reduceMotion: false, sound: true, haptics: true },
     stats: { quickPlay: {}, runs: {} },
     ascension: { best: 0, unlocked: 0 },
     activeRun: null,
+    tutorialDone: false,
+    iosTipSeen: false,
   };
 }

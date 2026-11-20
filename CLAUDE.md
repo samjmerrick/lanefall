@@ -11,6 +11,7 @@ Portrait-mode, single-player 3-lane card battler (PWA). **The spec is `docs/spec
 - `pnpm test:sim` — only the simulation tests (CI runs `coverage` + `test:sim` instead of `test`)
 - `pnpm coverage` — unit tests with the coverage gate (≥90%) on `src/engine`, `src/run` and `src/save`
 - `pnpm e2e` — Playwright (builds, serves on :4173, tests at 360×740, 390×844, 430×932)
+- `pnpm screens` — regenerate the committed screenshots in `docs/screens/` (every screen at all 3 viewports; also checks overflow)
 - `pnpm sim [n] [easy|normal] [easy|normal]` — bot-vs-bot simulator (Ember vs Bastion)
 - `pnpm sim:run [n] [easy|normal|hard] [ascension]` — bot roguelike runs per hero, fully unlocked profile (win rate, nodes cleared)
 - `pnpm content:text` — rewrite every card's `text` in `cards.json` from its data (`src/engine/text.ts`)

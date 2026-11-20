@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { getCard, legalActions, type PlannedAction } from '../engine';
 import { CardView } from './CardView';
 import { dropKey, dropRects, pickTarget, rectCentre, useDrag } from './drag';
+import { stepAllows } from '../run';
+import { useCoachStep } from './coach';
 import { HUMAN, useMatch } from './store';
 
 const TAP_SLOP = 8;
@@ -57,6 +59,8 @@ export function Hand() {
   const busy = useMatch((s) => s.busy);
   const play = useMatch((s) => s.play);
   const showDetail = useMatch((s) => s.showDetail);
+  const coach = useCoachStep();
+  const tutorial = useMatch((s) => s.mode === 'tutorial');
   const drag = useDrag((s) => s.drag);
   const setDrag = useDrag((s) => s.set);
 
@@ -99,7 +103,10 @@ export function Hand() {
   const cards = me.hand.filter((h) => !plannedUids.has(h.uid));
   const n = cards.length;
   const canPlan = game.phase === 'plan' && !me.ready && !busy;
-  const legal = canPlan ? legalActions(game, HUMAN) : [];
+  // In the tutorial only the play the current step asks for is offered; every other card is dimmed.
+  const legal = (canPlan ? legalActions(game, HUMAN) : []).filter(
+    (a) => !tutorial || a.type !== 'plan' || stepAllows(coach, game, a.action),
+  );
   const playableUids = new Set(legal.flatMap((a) => (a.type === 'plan' ? [a.action.uid] : [])));
 
   const onPointerDown = (e: React.PointerEvent, uid: number, cardId: string) => {
@@ -128,11 +135,12 @@ export function Hand() {
       {cards.map((card, i) => {
         const offset = i - (n - 1) / 2;
         const playable = playableUids.has(card.uid);
+        const dim = tutorial && !playable;
         const dragging = drag?.uid === card.uid && drag.moved;
         return (
           <div
             key={card.uid}
-            className={`hand__slot${playable ? ' hand__slot--playable' : ''}${dragging ? ' hand__slot--dragging' : ''}`}
+            className={`hand__slot${playable ? ' hand__slot--playable' : ''}${tutorial && playable ? ' hand__slot--coach' : ''}${dim ? ' hand__slot--dim' : ''}${dragging ? ' hand__slot--dragging' : ''}`}
             data-uid={card.uid}
             onPointerDown={(e) => onPointerDown(e, card.uid, card.cardId)}
             style={

@@ -4,3 +4,4 @@ export * from './map';
 export * from './content';
 export * from './schema';
 export * from './meta';
+export * from './tutorial';
